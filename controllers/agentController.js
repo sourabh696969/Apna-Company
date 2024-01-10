@@ -1,7 +1,7 @@
-const asyncHandler = require('express-async-handler');
-const Agent = require('../model/agentModel');
-const otpGenerator = require('otp-generator');
-const jwt = require('jsonwebtoken');
+const asyncHandler = require("express-async-handler");
+const Agent = require("../model/agentModel");
+const otpGenerator = require("otp-generator");
+const jwt = require("jsonwebtoken");
 
 let otp;
 
@@ -9,109 +9,170 @@ let otp;
 //@route POST /api/user/register
 //@access public
 const registerAgent = asyncHandler(async (req, res) => {
-    const { username, phone, address } = req.body;
+  const agentId = req.user;
+  const { username, phone, address } = req.body;
 
-    if (!username, !phone, !address) {
-        res.status(404);
-        throw new Error('All fields required!');
-    }
+  if ((!username, !phone, !address)) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
 
-    const agentAvailable = await Agent.findOne({ phone });
+  const agentAvailable = await Agent.findOne({ phone });
+  const agentPhone = await Agent.findById(agentId.phone);
 
-    if (agentAvailable) {
-        res.status(400);
-        throw new Error('Agent already exists!');
-    }
+  if (!agentPhone) {
+    return res.status(404).json({
+      message: "User not found!",
+    });
+  }
+  if (!agentAvailable) {
+    res.status(400);
+    throw new Error("Agent does not exists!");
+  }
+  if (agentAvailable.phone !== phone) {
+    res.status(404);
+    throw new Error("phone number is invalid!");
+  }
 
-    const agent = await Agent.create({
-        username,
-        phone,
-        address
+  agentPhone.username = username;
+  agentPhone.phone = phone;
+  agentPhone.address = address;
+
+  agentPhone.save();
+
+  if (agentPhone) {
+    res.status(201).json({ message: "Agent Registered!", agentPhone });
+  } else {
+    res.status(400);
+    throw new Error("User data is not valid!");
+  }
+});
+
+//@desc Signup User
+//@route POST /api/user/signup
+//@access public
+const signupUser = asyncHandler(async (req, res) => {
+  const { phone } = req.body;
+
+  if (!phone) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  const agentAvailable = await Agent.findOne({ phone: phone });
+
+  if (!agentAvailable) {
+    const OTP = otpGenerator.generate(6, {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
     });
 
-    if (agent) {
-        res.status(201).json({ message: 'New Agent created!', _id: agent.id, username: agent.username, phone: agent.phone, address: agent.address });
-    } else {
-        res.status(400);
-        throw new Error('Agent data is not valid!');
-    }
+    otp = OTP;
 
-    res.status(200).json({ message: 'Agent Registered!' });
+    if (otp) {
+      const user = await Agent.create({
+        phone: phone,
+      });
+      res.status(201).json({ message: "OTP send Successfully!", otp: otp });
+    } else {
+      res.status(400);
+      throw new Error("data is not valid");
+    }
+  } else {
+    res.status(404);
+    throw new Error("Agent already exist!");
+  }
 });
 
 //@desc Login Agent
 //@route POST /api/agent/login
 //@access public
 const loginAgent = asyncHandler(async (req, res) => {
-    const { phone } = req.body;
+  const { phone } = req.body;
 
-    if (!phone) {
-        res.status(404);
-        throw new Error('All fields required!');
-    }
+  if (!phone) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
 
-    const agentAvailable = await Agent.findOne({ phone });
+  const agentAvailable = await Agent.findOne({ phone: phone });
 
-    if (agentAvailable) {
-        const OTP = otpGenerator.generate(6, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
+  if (agentAvailable) {
+    const OTP = otpGenerator.generate(6, {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
 
-        newotp = OTP;
+    otp = OTP;
 
-        if (newotp) {
-            res.status(201).json({ message: 'OTP send Successfully!', otp: newotp });
-        } else {
-            res.status(400);
-            throw new Error('data is not valid');
-        }
+    if (otp) {
+      res.status(201).json({ message: "OTP send Successfully!", otp: otp });
     } else {
-        res.status(404);
-        throw new Error('Agent data is not valid!');
+      res.status(400);
+      throw new Error("data is not valid");
     }
+  } else {
+    res.status(404);
+    throw new Error("Agent data is not valid!");
+  }
 });
 
 //@desc Verify Agent
 //@route POST /api/agent/login
 //@access public
 const veifyOtp = asyncHandler(async (req, res) => {
-    const { phone, otp } = req.body;
+  const { phone, Otp } = req.body;
 
-    if (!phone, !otp) {
-        res.status(404);
-        throw new Error('All fields required!');
-    }
+  if ((!phone, !Otp)) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
 
-    const phoneAvalaible = await Agent.findOne({ phone });
+  const phoneAvalaible = await Agent.findOne({ phone: phone });
 
-    if (phoneAvalaible && otp == newotp && phone == phoneAvalaible.phone) {
-        const accessToken = jwt.sign({
-            agent: {
-                id: phoneAvalaible.id,
-                username: phoneAvalaible.username,
-                phone: phoneAvalaible.phone,
-                address: phoneAvalaible.address
-            }
-        },
-            process.env.SECRET_KEY,
-            { expiresIn: '1d' }
-        );
-        res.status(201).json({ message: 'Agent Verified successfully!', phone: phone, token: accessToken });
+  if (!phoneAvalaible) {
+    res.status(400);
+    throw new Error("User with this phone number does not exists!");
+  }
 
-    } else {
-        res.status(400);
-        throw new Error('Agent with this phone number already exists!');
-    }
+  if (otp != Otp) {
+    res.status(400);
+    throw new Error("Incorrect OTP!");
+  }
+
+  const accessToken = jwt.sign(
+    {
+      agent: {
+        _id: phoneAvalaible._id,
+      },
+    },
+    process.env.SECRET_KEY,
+    { expiresIn: "1d" }
+  );
+  res.status(201).json({
+    message: "Agent Verified successfully!",
+    phone: phone,
+    token: accessToken,
+  });
 });
 
 //@desc Current Agent
 //@route Get /api/agent/current
 //@access private
 const currentUser = asyncHandler(async (req, res) => {
-    res.status(200).json(req.user);
+  const agentId = req.user;
+  const CurrentUser = await Agent.findById(agentId)
+  res.status(200).json(CurrentUser);
 });
 
 module.exports = {
-    currentUser,
-    registerAgent,
-    loginAgent,
-    veifyOtp
+  currentUser,
+  registerAgent,
+  loginAgent,
+  veifyOtp,
+  signupUser
 };

@@ -4,16 +4,13 @@ const userSchema = mongoose.Schema({
     
     username: {
         type: String,
-        required: true
     },
     role: {
         type: String,
-        required: true
     },
     work: {
         cat_Id: {
             type: mongoose.Schema.Types.ObjectId,
-            required: true,
             ref: 'Category'
         },
         CatName: String,
@@ -24,11 +21,9 @@ const userSchema = mongoose.Schema({
     },
     address: {
         type: String,
-        required: true
     },
     price: {
         type: String,
-        required: true
     },
 }, {
     timestamps: true

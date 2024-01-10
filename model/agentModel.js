@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const agentSchema = mongoose.Schema({
     username: {
         type: String,
-        required: true
+
     },
     phone: {
         type: String,
@@ -11,7 +11,7 @@ const agentSchema = mongoose.Schema({
     },
     address: {
         type: String,
-        required: true
+
     },
 }, {
     timestamps: true

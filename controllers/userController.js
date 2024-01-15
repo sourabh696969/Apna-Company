@@ -18,13 +18,14 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("All fields required!");
   }
 
-  const worker = await User.findById(userId.phone);
+  // console.log(userId._id)
+  const worker = await User.findById(userId._id);
   const userAvailable = await User.findOne({ phone });
   const category = await Category.findOne({ categoryName: work });
 
   if (!worker) {
     return res.status(404).json({
-      message: "User not found!",
+      message: "Worker not found!",
     });
   }
   if (!userAvailable) {

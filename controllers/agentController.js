@@ -18,11 +18,11 @@ const registerAgent = asyncHandler(async (req, res) => {
   }
 
   const agentAvailable = await Agent.findOne({ phone });
-  const agentPhone = await Agent.findById(agentId.phone);
+  const agentPhone = await Agent.findById(agentId._id);
 
   if (!agentPhone) {
     return res.status(404).json({
-      message: "User not found!",
+      message: "Agent not found!",
     });
   }
   if (!agentAvailable) {

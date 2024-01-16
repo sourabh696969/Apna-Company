@@ -21,11 +21,12 @@ const createCategory = asyncHandler(async (req, res) => {
     }
 
     const category = await Category.create({
-        categoryName
+        categoryName,
+        categoryImg: `http://localhost:5001/images/${req.file.filename}`
     });
 
     if (category) {
-        res.status(201).json({ message: 'New Category created!', _id: category.id, categoryName: category.categoryName });
+        res.status(201).json({ message: 'New Category created!', _id: category.id, categoryName: category.categoryName, categoryImg: `http://localhost:5001/images/${req.file.filename}` });
     } else {
         res.status(400);
         throw new Error('Agent data is not valid!');

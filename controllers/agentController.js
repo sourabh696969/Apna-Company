@@ -146,7 +146,7 @@ const veifyOtp = asyncHandler(async (req, res) => {
 
   const accessToken = jwt.sign(
     {
-      agent: {
+      user: {
         _id: phoneAvalaible._id,
       },
     },

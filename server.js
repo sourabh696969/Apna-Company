@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/agent', require('./routes/agentRoutes'));
+app.use('/api/others', require('./routes/workPostRoutes'));
 app.use('/images', express.static('upload/images'));
 
 function errHandler(err, req, res, next) {

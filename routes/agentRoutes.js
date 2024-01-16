@@ -10,7 +10,7 @@ router.post('/register',validateAgentToken, registerAgent);
 router.post('/login', loginAgent);
 router.post('/verify', veifyOtp);
 router.get('/currentAgent', validateAgentToken, currentUser);
-router.post('/category', validateAgentToken, createCategory);
+router.post('/category', createCategory);
 router.post('/signup', signupUser);
 router.get('/category', getCategory);
 router.get('/category/:id', AllUserById);

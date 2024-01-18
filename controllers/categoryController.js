@@ -1,6 +1,7 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
-const Category = require('../model/categoryModel')
+const Category = require('../model/categoryModel');
+const Role = require('../model/roleModel');
 
 //@desc Create Category
 //@route POST /api/user/category
@@ -42,4 +43,34 @@ const getCategory = asyncHandler(async (req, res) => {
     res.status(200).json(categories);
 });
 
-module.exports = { createCategory, getCategory };
+//@desc Create Role
+//@route POST /api/other/role
+//@access private
+const createRole = asyncHandler(async (req, res) => {
+    const { roleName } = req.body;
+
+    if (!roleName) {
+        res.status(404);
+        throw new Error('All Fields required!');
+    }
+
+    const roleAvailable = await Role.findOne({ roleName });
+
+    if (roleAvailable) {
+        res.status(400);
+        throw new Error('Role already exists!');
+    }
+
+    const role = await Role.create({
+        roleName,
+    });
+
+    if (role) {
+        res.status(201).json({ message: 'New Role created!', role });
+    } else {
+        res.status(400);
+        throw new Error('Agent data is not valid!');
+    }
+});
+
+module.exports = { createCategory, getCategory, createRole };

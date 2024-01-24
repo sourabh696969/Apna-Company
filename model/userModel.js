@@ -1,32 +1,33 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
-    
+const userSchema = mongoose.Schema(
+  {
     username: {
-        type: String,
+      type: String,
     },
     role: {
-        type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
     },
-    work: {
-        cat_Id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Category'
-        },
-        CatName: String,
+
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
     },
     phone: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     address: {
-        type: String,
+      type: String,
     },
     price: {
-        type: String,
+      type: String,
     },
-}, {
-    timestamps: true
-});
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);

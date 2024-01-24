@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../model/userModel");
 const Category = require("../model/categoryModel");
+const Role = require("../model/roleModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
 
@@ -11,9 +12,9 @@ let otp;
 //@access public
 const registerUser = asyncHandler(async (req, res) => {
   const userId = req.user;
-  const { username, role, work, phone, address, price } = req.body;
+  const { username, roleId, categoryId, phone, address, price } = req.body;
 
-  if ((!username, !role, !work, !phone, !address, !price)) {
+  if ((!username, !roleId, !categoryId, !phone, !address, !price)) {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -21,7 +22,8 @@ const registerUser = asyncHandler(async (req, res) => {
   // console.log(userId._id)
   const worker = await User.findById(userId._id);
   const userAvailable = await User.findOne({ phone });
-  const category = await Category.findOne({ categoryName: work });
+  const category = await Category.findById(categoryId);
+  const role = await Role.findById(roleId);
 
   if (!worker) {
     return res.status(404).json({
@@ -34,7 +36,11 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   if (!category) {
     res.status(404);
-    throw new Error("Work does not exists!");
+    throw new Error("Category does not exists!");
+  }
+  if (!role) {
+    res.status(404);
+    throw new Error("Role does not exists!");
   }
   if (userAvailable.phone !== phone) {
     res.status(404);
@@ -42,9 +48,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   worker.username = username;
-  worker.role = role;
-  worker.work.cat_Id = category._id;
-  worker.work.CatName = category.categoryName;
+  worker.role = role._id;
+  worker.category = category._id;
   worker.phone = phone;
   worker.address = address;
   worker.price = price;
@@ -182,12 +187,20 @@ const currentUser = asyncHandler(async (req, res) => {
 });
 
 const AllUser = asyncHandler(async (req, res) => {
-  const all = await User.find();
+  const all = await User.find().populate('role', 'roleName').populate('category', 'categoryName categoryImg');
+  if (!all) {
+    res.status(400);
+    throw new Error("data not found");
+  }
   res.status(200).json(all);
 });
 
 const AllUserById = asyncHandler(async (req, res) => {
-  const data = await User.find({ "work.cat_Id": req.params.id });
+  const data = await User.find({ "category": req.params.id }).populate('role', 'roleName').populate('category', 'categoryName categoryImg');
+  if (!data) {
+    res.status(400);
+    throw new Error("data not found");
+  }
   res.status(200).json(data);
 });
 

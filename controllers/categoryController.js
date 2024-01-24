@@ -20,14 +20,15 @@ const createCategory = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Category already exists!');
     }
+    const images = req.files['categoryImg'] || [];
 
     const category = await Category.create({
         categoryName,
-        categoryImg: `http://localhost:5001/images/${req.file.filename}`
+        categoryImg: images.map(file => file.path)
     });
 
     if (category) {
-        res.status(201).json({ message: 'New Category created!', _id: category.id, categoryName: category.categoryName, categoryImg: `http://localhost:5001/images/${req.file.filename}` });
+        res.status(201).json({ message: 'New Category created!', _id: category.id, categoryName: category.categoryName, categoryImg: images.map(file => file.path) });
     } else {
         res.status(400);
         throw new Error('Agent data is not valid!');
@@ -73,4 +74,13 @@ const createRole = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { createCategory, getCategory, createRole };
+//@desc Get Category
+//@route GET /api/other/role
+//@access private
+const getRole = asyncHandler(async (req, res) => {
+    const roles = await Role.find();
+
+    res.status(200).json(roles);
+});
+
+module.exports = { createCategory, getCategory, createRole, getRole };

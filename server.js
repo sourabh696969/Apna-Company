@@ -2,7 +2,7 @@ const express = require('express');
 const connectDB = require('./config/dbConnection');
 const errorHandler = require('./middleware/errorHandler');
 const dotenv = require('dotenv').config();
-const multer = require("multer");
+// const multer = require("multer");
 
 connectDB();
 const app = express();
@@ -14,15 +14,15 @@ app.use('/api/agent', require('./routes/agentRoutes'));
 app.use('/api/others', require('./routes/workPostRoutes'));
 app.use('/images', express.static('upload/images'));
 
-function errHandler(err, req, res, next) {
-    if (err instanceof multer.MulterError) {
-        res.json({
-            success: 0,
-            message: err.message
-        })
-    }
-}
-app.use(errHandler);
+// function errHandler(err, req, res, next) {
+//     if (err instanceof multer.MulterError) {
+//         res.json({
+//             success: 0,
+//             message: err.message
+//         })
+//     }
+// }
+// app.use(errHandler);
 app.use(errorHandler);
 
 app.listen(PORT, () => {

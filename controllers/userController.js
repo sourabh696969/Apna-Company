@@ -97,8 +97,24 @@ const signupUser = asyncHandler(async (req, res) => {
       throw new Error("data is not valid");
     }
   } else {
-    res.status(404);
-    throw new Error("User already exist!");
+    const OTP = otpGenerator.generate(6, {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+
+    otp = OTP;
+
+    if (otp) {
+      const user = await User.update({
+        phone: phone,
+      });
+      res.status(201).json({ message: "OTP send Successfully!", otp: otp });
+    } else {
+      res.status(400);
+      throw new Error("data is not valid");
+    }
   }
 });
 

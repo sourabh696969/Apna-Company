@@ -54,7 +54,7 @@ const updateWorkPost = asyncHandler(async (req, res) => {
 const getWorkPostById = asyncHandler(async(req, res) => {
     const postId = req.user;
 
-    const post = await WorkPost.find({ agent: postId }).populate('agent', 'phone username').populate('work', 'categoryName categoryImg');
+    const post = await WorkPost.find({ agent: postId }).populate('user', 'phone username').populate('work', 'categoryName categoryImg');
 
     if (!post) {
         res.status(404);
@@ -72,7 +72,7 @@ const getWorkPostById = asyncHandler(async(req, res) => {
 const getWorkPostByWork = asyncHandler(async(req, res) => {
     const workId = req.params.id;
 
-    const post = await WorkPost.find({ work: workId }).populate('agent', 'phone username').populate('work', 'categoryName categoryImg');
+    const post = await WorkPost.find({ work: workId }).populate('user', 'phone username').populate('work', 'categoryName categoryImg');
 
     if (!post) {
         res.status(404);

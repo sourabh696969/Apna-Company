@@ -58,7 +58,36 @@ const loginAdmin = asyncHandler(async (req, res) => {
   });
 });
 
+const forgotPasswordAdmin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  if ((!email, !password)) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+  const adminAvailable = await Admin.findOne({ email });
+
+  if (!adminAvailable) {
+    res.status(404);
+    throw new Error("Admin not found!");
+  }
+
+  if (password == adminAvailable.password) {
+    res.status(403);
+    throw new Error("Please enter new password!");
+  }
+
+  if (email == adminAvailable.email) {
+    const newPassword = await Admin.updateOne({
+      password: password,
+    });
+  }
+  res.status(200).json({
+    message: "password changed successfully!",
+  });
+});
+
 module.exports = {
   registerAdmin,
   loginAdmin,
+  forgotPasswordAdmin,
 };

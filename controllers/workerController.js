@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 let otp;
 
 //@desc Create User
-//@route POST /api/user/register
+//@route POST /api/worker/register
 //@access public
 const registerUser = asyncHandler(async (req, res) => {
   const userId = req.user;
@@ -65,7 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 //@desc Signup User
-//@route POST /api/user/signup
+//@route POST /api/worker/signup
 //@access public
 const signupUser = asyncHandler(async (req, res) => {
   const { phone } = req.body;
@@ -119,7 +119,7 @@ const signupUser = asyncHandler(async (req, res) => {
 });
 
 //@desc Login User
-//@route POST /api/user/login
+//@route POST /api/worker/login
 //@access public
 const loginUser = asyncHandler(async (req, res) => {
   const { phone } = req.body;
@@ -154,7 +154,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 //@desc Verify User
-//@route POST /api/user/verify
+//@route POST /api/worker/verify
 //@access public
 const veifyOtp = asyncHandler(async (req, res) => {
   const { phone, Otp } = req.body;
@@ -194,7 +194,7 @@ const veifyOtp = asyncHandler(async (req, res) => {
 });
 
 //@desc Current User
-//@route Get /api/user/current
+//@route Get /api/worker/current
 //@access private
 const currentUser = asyncHandler(async (req, res) => {
   const userId = req.user;

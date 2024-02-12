@@ -1,10 +1,9 @@
 const express = require('express');
-const { createWorkPost, updateWorkPost, getWorkPostById, getWorkPostByWork } = require('../controllers/workPostControllers');
 const { validateUserToken } = require('../middleware/validateTokenHandler');
-const { createRole, getRole, deleteRole, updateRole } = require('../controllers/categoryController');
+const { registerAdmin } = require('../controllers/adminController');
 
 const router = express.Router();
 
-router.post('/workpost',validateUserToken, createWorkPost);
+router.post('/register', registerAdmin);
 
 module.exports = router;

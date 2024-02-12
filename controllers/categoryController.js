@@ -4,7 +4,7 @@ const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
 
 //@desc Create Category
-//@route POST /api/user/category
+//@route POST /api/worker/category
 //@access private
 const createCategory = asyncHandler(async (req, res) => {
   const { categoryName } = req.body;
@@ -45,7 +45,7 @@ const createCategory = asyncHandler(async (req, res) => {
 });
 
 //@desc Get Category
-//@route GET /api/agent/category
+//@route GET /api/worker/category
 //@access private
 const getCategory = asyncHandler(async (req, res) => {
   const categories = await Category.find();
@@ -53,7 +53,7 @@ const getCategory = asyncHandler(async (req, res) => {
 });
 
 //@desc Delete Category
-//@route DELETE /api/agent/category/id
+//@route DELETE /api/worker/category/id
 //@access private
 const deleteCategory = asyncHandler(async (req, res) => {
   const catId = req.params.id;
@@ -62,7 +62,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
 });
 
 //@desc Update Category
-//@route Update /api/agent/category/id
+//@route Update /api/worker/category/id
 //@access private
 const updateCategory = asyncHandler(async (req, res) => {
   const catId = req.params.id;
@@ -93,7 +93,7 @@ const updateCategory = asyncHandler(async (req, res) => {
 });
 
 //@desc Create Role
-//@route POST /api/other/role
+//@route POST /api/worker/role
 //@access private
 const createRole = asyncHandler(async (req, res) => {
   const { roleName } = req.body;
@@ -123,7 +123,7 @@ const createRole = asyncHandler(async (req, res) => {
 });
 
 //@desc Get Category
-//@route GET /api/other/role
+//@route GET /api/worker/role
 //@access private
 const getRole = asyncHandler(async (req, res) => {
   const roles = await Role.find();
@@ -132,7 +132,7 @@ const getRole = asyncHandler(async (req, res) => {
 });
 
 //@desc Delete Role
-//@route DELETE /api/other/role/id
+//@route DELETE /api/worker/role/id
 //@access private
 const deleteRole = asyncHandler(async (req, res) => {
   const roleId = req.params.id;
@@ -141,7 +141,7 @@ const deleteRole = asyncHandler(async (req, res) => {
 });
 
 //@desc Update Role
-//@route Update /api/other/role/id
+//@route Update /api/worker/role/id
 //@access private
 const updateRole = asyncHandler(async (req, res) => {
   const roleId = req.params.id;

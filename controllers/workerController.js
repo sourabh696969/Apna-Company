@@ -1,5 +1,7 @@
 const asyncHandler = require("express-async-handler");
-const Agent = require("../model/agentModel");
+const User = require("../model/workerModel");
+const Category = require("../model/categoryModel");
+const Role = require("../model/roleModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
 
@@ -8,40 +10,54 @@ let otp;
 //@desc Create User
 //@route POST /api/user/register
 //@access public
-const registerAgent = asyncHandler(async (req, res) => {
-  const agentId = req.user;
-  const { username, phone, address } = req.body;
+const registerUser = asyncHandler(async (req, res) => {
+  const userId = req.user;
+  const { username, roleId, categoryId, phone, address, price } = req.body;
 
-  if ((!username, !phone, !address)) {
+  if ((!username, !roleId, !categoryId, !phone, !address, !price)) {
     res.status(404);
     throw new Error("All fields required!");
   }
 
-  const agentAvailable = await Agent.findOne({ phone });
-  const agentPhone = await Agent.findById(agentId._id);
+  // console.log(userId._id)
+  const worker = await User.findById(userId._id);
+  const userAvailable = await User.findOne({ phone });
+  const category = await Category.findById(categoryId);
+  const role = await Role.findById(roleId);
 
-  if (!agentPhone) {
+  if (!worker) {
     return res.status(404).json({
-      message: "Agent not found!",
+      message: "Worker not found!",
     });
   }
-  if (!agentAvailable) {
+  if (!userAvailable) {
     res.status(400);
-    throw new Error("Agent does not exists!");
+    throw new Error("User does not exists!");
   }
-  if (agentAvailable.phone !== phone) {
+  if (!category) {
+    res.status(404);
+    throw new Error("Category does not exists!");
+  }
+  if (!role) {
+    res.status(404);
+    throw new Error("Role does not exists!");
+  }
+  if (userAvailable.phone !== phone) {
     res.status(404);
     throw new Error("phone number is invalid!");
   }
 
-  agentPhone.username = username;
-  agentPhone.phone = phone;
-  agentPhone.address = address;
+  worker.username = username;
+  worker.role = role._id;
+  worker.category = category._id;
+  worker.phone = phone;
+  worker.address = address;
+  worker.price = price;
 
-  agentPhone.save();
+  worker.save();
 
-  if (agentPhone) {
-    res.status(201).json({ message: "Agent Registered!", agentPhone });
+  if (worker) {
+    res.status(201).json({ message: "User Registered!", worker });
   } else {
     res.status(400);
     throw new Error("User data is not valid!");
@@ -59,9 +75,9 @@ const signupUser = asyncHandler(async (req, res) => {
     throw new Error("All fields required!");
   }
 
-  const agentAvailable = await Agent.findOne({ phone: phone });
+  const userAvailable = await User.findOne({ phone: phone });
 
-  if (!agentAvailable) {
+  if (!userAvailable) {
     const OTP = otpGenerator.generate(6, {
       digits: true,
       lowerCaseAlphabets: false,
@@ -72,7 +88,7 @@ const signupUser = asyncHandler(async (req, res) => {
     otp = OTP;
 
     if (otp) {
-      const user = await Agent.create({
+      const user = await User.create({
         phone: phone,
       });
       res.status(201).json({ message: "OTP send Successfully!", otp: otp });
@@ -91,7 +107,7 @@ const signupUser = asyncHandler(async (req, res) => {
     otp = OTP;
 
     if (otp) {
-      const user = await Agent.update({
+      const user = await User.update({
         phone: phone,
       });
       res.status(201).json({ message: "OTP send Successfully!", otp: otp });
@@ -102,10 +118,10 @@ const signupUser = asyncHandler(async (req, res) => {
   }
 });
 
-//@desc Login Agent
-//@route POST /api/agent/login
+//@desc Login User
+//@route POST /api/user/login
 //@access public
-const loginAgent = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res) => {
   const { phone } = req.body;
 
   if (!phone) {
@@ -113,9 +129,9 @@ const loginAgent = asyncHandler(async (req, res) => {
     throw new Error("All fields required!");
   }
 
-  const agentAvailable = await Agent.findOne({ phone: phone });
+  const userAvailable = await User.findOne({ phone: phone });
 
-  if (agentAvailable) {
+  if (userAvailable) {
     const OTP = otpGenerator.generate(6, {
       digits: true,
       lowerCaseAlphabets: false,
@@ -133,22 +149,23 @@ const loginAgent = asyncHandler(async (req, res) => {
     }
   } else {
     res.status(404);
-    throw new Error("Agent data is not valid!");
+    throw new Error("User data is not valid!");
   }
 });
 
-//@desc Verify Agent
-//@route POST /api/agent/login
+//@desc Verify User
+//@route POST /api/user/verify
 //@access public
 const veifyOtp = asyncHandler(async (req, res) => {
   const { phone, Otp } = req.body;
+  console.log(otp);
 
   if ((!phone, !Otp)) {
     res.status(404);
     throw new Error("All fields required!");
   }
 
-  const phoneAvalaible = await Agent.findOne({ phone: phone });
+  const phoneAvalaible = await User.findOne({ phone });
 
   if (!phoneAvalaible) {
     res.status(400);
@@ -170,25 +187,45 @@ const veifyOtp = asyncHandler(async (req, res) => {
     { expiresIn: "1d" }
   );
   res.status(201).json({
-    message: "Agent Verified successfully!",
+    message: "User Verified successfully!",
     phone: phone,
     token: accessToken,
   });
 });
 
-//@desc Current Agent
-//@route Get /api/agent/current
+//@desc Current User
+//@route Get /api/user/current
 //@access private
 const currentUser = asyncHandler(async (req, res) => {
-  const agentId = req.user;
-  const CurrentUser = await Agent.findById(agentId)
+  const userId = req.user;
+  const CurrentUser = await User.findById(userId)
   res.status(200).json(CurrentUser);
 });
 
+const AllUser = asyncHandler(async (req, res) => {
+  const all = await User.find().populate('role', 'roleName').populate('category', 'categoryName categoryImg');
+  if (!all) {
+    res.status(400);
+    throw new Error("data not found");
+  }
+  res.status(200).json(all);
+});
+
+const AllUserById = asyncHandler(async (req, res) => {
+  const data = await User.find({ "category": req.params.id }).populate('role', 'roleName').populate('category', 'categoryName categoryImg');
+  if (!data) {
+    res.status(400);
+    throw new Error("data not found");
+  }
+  res.status(200).json(data);
+});
+
 module.exports = {
-  currentUser,
-  registerAgent,
-  loginAgent,
+  registerUser,
+  loginUser,
   veifyOtp,
-  signupUser
+  currentUser,
+  AllUser,
+  AllUserById,
+  signupUser,
 };

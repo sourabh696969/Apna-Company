@@ -1,33 +1,20 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const userSchema = mongoose.Schema(
-  {
+const agentSchema = mongoose.Schema({
     username: {
-      type: String,
-    },
-    role: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Role",
-    },
+        type: String,
 
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
     },
     phone: {
-      type: String,
-      required: true,
+        type: String,
+        required: true
     },
     address: {
-      type: String,
-    },
-    price: {
-      type: String,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+        type: String,
 
-module.exports = mongoose.model("User", userSchema);
+    },
+}, {
+    timestamps: true
+});
+
+module.exports = mongoose.model('User', agentSchema);

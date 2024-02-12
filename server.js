@@ -10,9 +10,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
-app.use('/api/user', require('./routes/userRoutes'));
-app.use('/api/agent', require('./routes/agentRoutes'));
-app.use('/api/others', require('./routes/workPostRoutes'));
+app.use('/api', require('./routes/workerRoutes'));
 app.use('/images', express.static('upload/images'));
 app.use(errorHandler);
 

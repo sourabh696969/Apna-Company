@@ -17,7 +17,7 @@ const workPost = mongoose.Schema(
     },
     agent: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Agent",
+      ref: "User",
     },
   },
   {

@@ -91,7 +91,7 @@ const signupUser = asyncHandler(async (req, res) => {
     otp = OTP;
 
     if (otp) {
-      const user = await User.update({
+      const user = await User.updateOne({
         phone: phone,
       });
       res.status(201).json({ message: "OTP send Successfully!", otp: otp });
@@ -185,10 +185,20 @@ const currentUser = asyncHandler(async (req, res) => {
   res.status(200).json(CurrentUser);
 });
 
+const getAllUser = asyncHandler(async (req, res) => {
+  const allUser = await User.find();
+  if (!allUser) {
+    res.status(404);
+    throw new Error("Users not found!");
+  }
+  res.status(200).json(allUser);
+});
+
 module.exports = {
   currentUser,
   registerUser,
   loginUser,
   veifyOtp,
-  signupUser
+  signupUser,
+  getAllUser
 };

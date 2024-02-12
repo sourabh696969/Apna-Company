@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const User = require("../model/workerModel");
+const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
 const otpGenerator = require("otp-generator");
@@ -20,8 +20,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // console.log(userId._id)
-  const worker = await User.findById(userId._id);
-  const userAvailable = await User.findOne({ phone });
+  const worker = await Worker.findById(userId._id);
+  const userAvailable = await Worker.findOne({ phone });
   const category = await Category.findById(categoryId);
   const role = await Role.findById(roleId);
 
@@ -75,7 +75,7 @@ const signupUser = asyncHandler(async (req, res) => {
     throw new Error("All fields required!");
   }
 
-  const userAvailable = await User.findOne({ phone: phone });
+  const userAvailable = await Worker.findOne({ phone: phone });
 
   if (!userAvailable) {
     const OTP = otpGenerator.generate(6, {
@@ -88,7 +88,7 @@ const signupUser = asyncHandler(async (req, res) => {
     otp = OTP;
 
     if (otp) {
-      const user = await User.create({
+      const user = await Worker.create({
         phone: phone,
       });
       res.status(201).json({ message: "OTP send Successfully!", otp: otp });
@@ -107,7 +107,7 @@ const signupUser = asyncHandler(async (req, res) => {
     otp = OTP;
 
     if (otp) {
-      const user = await User.update({
+      const user = await Worker.updateOne({
         phone: phone,
       });
       res.status(201).json({ message: "OTP send Successfully!", otp: otp });
@@ -129,7 +129,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("All fields required!");
   }
 
-  const userAvailable = await User.findOne({ phone: phone });
+  const userAvailable = await Worker.findOne({ phone: phone });
 
   if (userAvailable) {
     const OTP = otpGenerator.generate(6, {
@@ -165,7 +165,7 @@ const veifyOtp = asyncHandler(async (req, res) => {
     throw new Error("All fields required!");
   }
 
-  const phoneAvalaible = await User.findOne({ phone });
+  const phoneAvalaible = await Worker.findOne({ phone });
 
   if (!phoneAvalaible) {
     res.status(400);
@@ -198,12 +198,12 @@ const veifyOtp = asyncHandler(async (req, res) => {
 //@access private
 const currentUser = asyncHandler(async (req, res) => {
   const userId = req.user;
-  const CurrentUser = await User.findById(userId)
+  const CurrentUser = await Worker.findById(userId)
   res.status(200).json(CurrentUser);
 });
 
 const AllUser = asyncHandler(async (req, res) => {
-  const all = await User.find().populate('role', 'roleName').populate('category', 'categoryName categoryImg');
+  const all = await Worker.find().populate('role', 'roleName').populate('category', 'categoryName categoryImg');
   if (!all) {
     res.status(400);
     throw new Error("data not found");
@@ -212,7 +212,7 @@ const AllUser = asyncHandler(async (req, res) => {
 });
 
 const AllUserById = asyncHandler(async (req, res) => {
-  const data = await User.find({ "category": req.params.id }).populate('role', 'roleName').populate('category', 'categoryName categoryImg');
+  const data = await Worker.find({ "category": req.params.id }).populate('role', 'roleName').populate('category', 'categoryName categoryImg');
   if (!data) {
     res.status(400);
     throw new Error("data not found");

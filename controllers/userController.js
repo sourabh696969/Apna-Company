@@ -5,9 +5,6 @@ const jwt = require("jsonwebtoken");
 
 let otp;
 
-//@desc Create User
-//@route POST /api/user/register
-//@access public
 const registerUser = asyncHandler(async (req, res) => {
   const userId = req.user;
   const { username, phone, address } = req.body;
@@ -48,9 +45,6 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-//@desc Signup User
-//@route POST /api/user/signup
-//@access public
 const signupUser = asyncHandler(async (req, res) => {
   const { phone } = req.body;
 
@@ -102,9 +96,6 @@ const signupUser = asyncHandler(async (req, res) => {
   }
 });
 
-//@desc Login Agent
-//@route POST /api/agent/login
-//@access public
 const loginUser = asyncHandler(async (req, res) => {
   const { phone } = req.body;
 
@@ -137,9 +128,6 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-//@desc Verify Agent
-//@route POST /api/agent/login
-//@access public
 const veifyOtp = asyncHandler(async (req, res) => {
   const { phone, Otp } = req.body;
 
@@ -176,13 +164,14 @@ const veifyOtp = asyncHandler(async (req, res) => {
   });
 });
 
-//@desc Current Agent
-//@route Get /api/agent/current
-//@access private
-const currentUser = asyncHandler(async (req, res) => {
-  const agentId = req.user;
-  const CurrentUser = await User.findById(agentId)
-  res.status(200).json(CurrentUser);
+const getUserById = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const singleUser = await User.findById(userId);
+  if (!singleUser) {
+    res.status(404);
+    throw new Error("Users not found!");
+  }
+  res.status(200).json(singleUser);
 });
 
 const getAllUser = asyncHandler(async (req, res) => {
@@ -194,11 +183,22 @@ const getAllUser = asyncHandler(async (req, res) => {
   res.status(200).json(allUser);
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const user = await User.findByIdAndDelete(userId);
+  if (!user) {
+    res.status(404);
+    throw new Error("Users not found!");
+  }
+  res.status(200).json({ message: "User Deleted Successfully!" });
+});
+
 module.exports = {
-  currentUser,
+  getUserById,
   registerUser,
   loginUser,
   veifyOtp,
   signupUser,
-  getAllUser
+  getAllUser,
+  deleteUser,
 };

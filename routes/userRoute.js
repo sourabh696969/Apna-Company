@@ -3,9 +3,10 @@ const {
   registerUser,
   loginUser,
   veifyOtp,
-  currentUser,
   signupUser,
   getAllUser,
+  getUserById,
+  deleteUser,
 } = require("../controllers/userController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 
@@ -15,7 +16,8 @@ router.post("/register", validateUserToken, registerUser);
 router.post("/login", loginUser);
 router.post("/signup", signupUser);
 router.post("/verify", veifyOtp);
-router.get("/currentUser", validateUserToken, currentUser);
+router.get("/single/:id", getUserById);
 router.get("/all", getAllUser);
+router.delete("/:id", deleteUser);
 
 module.exports = router;

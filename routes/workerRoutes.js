@@ -3,9 +3,10 @@ const {
   registerUser,
   loginUser,
   veifyOtp,
-  currentUser,
   AllUser,
   signupUser,
+  getUserById,
+  deleteUser,
 } = require("../controllers/workerController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const {
@@ -51,8 +52,9 @@ router.post("/register", validateUserToken, registerUser);
 router.post("/login", loginUser);
 router.post("/signup", signupUser);
 router.post("/verify", veifyOtp);
-router.get("/currentWorker", validateUserToken, currentUser);
+router.get("/single/:id", getUserById);
 router.get("/all", AllUser);
+router.delete("/:id", deleteUser);
 
 /////// Role ////////
 router.post("/role", createRole);

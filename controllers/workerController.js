@@ -7,9 +7,6 @@ const jwt = require("jsonwebtoken");
 
 let otp;
 
-//@desc Create User
-//@route POST /api/worker/register
-//@access public
 const registerUser = asyncHandler(async (req, res) => {
   const userId = req.user;
   const { username, roleId, categoryId, phone, address, price } = req.body;
@@ -64,9 +61,6 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-//@desc Signup User
-//@route POST /api/worker/signup
-//@access public
 const signupUser = asyncHandler(async (req, res) => {
   const { phone } = req.body;
 
@@ -118,9 +112,6 @@ const signupUser = asyncHandler(async (req, res) => {
   }
 });
 
-//@desc Login User
-//@route POST /api/worker/login
-//@access public
 const loginUser = asyncHandler(async (req, res) => {
   const { phone } = req.body;
 
@@ -153,9 +144,6 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-//@desc Verify User
-//@route POST /api/worker/verify
-//@access public
 const veifyOtp = asyncHandler(async (req, res) => {
   const { phone, Otp } = req.body;
   console.log(otp);
@@ -193,17 +181,20 @@ const veifyOtp = asyncHandler(async (req, res) => {
   });
 });
 
-//@desc Current User
-//@route Get /api/worker/current
-//@access private
-const currentUser = asyncHandler(async (req, res) => {
-  const userId = req.user;
-  const CurrentUser = await Worker.findById(userId)
-  res.status(200).json(CurrentUser);
+const getUserById = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const singleUser = await Worker.findById(userId);
+  if (!singleUser) {
+    res.status(404);
+    throw new Error("Users not found!");
+  }
+  res.status(200).json(singleUser);
 });
 
 const AllUser = asyncHandler(async (req, res) => {
-  const all = await Worker.find().populate('role', 'roleName').populate('category', 'categoryName categoryImg');
+  const all = await Worker.find()
+    .populate("role", "roleName")
+    .populate("category", "categoryName categoryImg");
   if (!all) {
     res.status(400);
     throw new Error("data not found");
@@ -212,7 +203,9 @@ const AllUser = asyncHandler(async (req, res) => {
 });
 
 const AllUserById = asyncHandler(async (req, res) => {
-  const data = await Worker.find({ "category": req.params.id }).populate('role', 'roleName').populate('category', 'categoryName categoryImg');
+  const data = await Worker.find({ category: req.params.id })
+    .populate("role", "roleName")
+    .populate("category", "categoryName categoryImg");
   if (!data) {
     res.status(400);
     throw new Error("data not found");
@@ -220,12 +213,23 @@ const AllUserById = asyncHandler(async (req, res) => {
   res.status(200).json(data);
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const user = await Worker.findByIdAndDelete(userId);
+  if (!user) {
+    res.status(404);
+    throw new Error("Users not found!");
+  }
+  res.status(200).json({ message: "User Deleted Successfully!" });
+});
+
 module.exports = {
   registerUser,
   loginUser,
   veifyOtp,
-  currentUser,
+  getUserById,
   AllUser,
   AllUserById,
   signupUser,
+  deleteUser,
 };

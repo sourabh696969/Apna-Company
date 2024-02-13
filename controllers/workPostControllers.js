@@ -2,94 +2,116 @@ const asyncHandler = require("express-async-handler");
 const WorkPost = require("../model/workPostModel");
 
 const createWorkPost = asyncHandler(async (req, res) => {
-    const { title, description, work } = req.body;
-    const postId = req.user;
+  const { title, description, work } = req.body;
+  const user = req.user;
 
-    if (!title, !description, !work) {
-        res.status(404);
-        throw new Error('All Fields required!');
-    }
+  if ((!title, !description, !work)) {
+    res.status(404);
+    throw new Error("All Fields required!");
+  }
 
-    const workpost = await WorkPost.create({
-        title,
-        description,
-        work,
-        agent: postId
-    })
-    if (workpost) {
-        res.status(201).json({ message: 'Work Post Created!', workpost });
-    } else {
-        res.status(400);
-        throw new Error('data is not valid!');
-    }
+  const workpost = await WorkPost.create({
+    title,
+    description,
+    work,
+    user,
+  });
+  if (workpost) {
+    res.status(201).json({ message: "Work Post Created!", workpost });
+  } else {
+    res.status(400);
+    throw new Error("data is not valid!");
+  }
 });
 
 const updateWorkPost = asyncHandler(async (req, res) => {
-    const { title, description, work } = req.body;
-    const postId = req.params.id;
+  const { title, description, work } = req.body;
+  const postId = req.params.id;
 
-    if (!title, !description, !work) {
-        res.status(404);
-        throw new Error('All Fields required!');
-    }
+  if ((!title, !description, !work)) {
+    res.status(404);
+    throw new Error("All Fields required!");
+  }
 
-    const workpost = await WorkPost.findByIdAndUpdate(postId, {
-        title,
-        description,
-        work,
-    });
+  const workpost = await WorkPost.findByIdAndUpdate(postId, {
+    title,
+    description,
+    work,
+  });
 
-    if (!workpost) {
-        res.status(404);
-        throw new Error('Post not found!');
-    }
-    if (workpost) {
-        res.status(201).json({ message: 'Work Post Updated!', workpost });
-    } else {
-        res.status(400);
-        throw new Error('data is not valid!');
-    }
+  if (!workpost) {
+    res.status(404);
+    throw new Error("Post not found!");
+  }
+  if (workpost) {
+    res.status(201).json({ message: "Work Post Updated!", workpost });
+  } else {
+    res.status(400);
+    throw new Error("data is not valid!");
+  }
 });
 
-const getWorkPostById = asyncHandler(async(req, res) => {
-    const postId = req.user;
+const getWorkPostById = asyncHandler(async (req, res) => {
+  const postId = req.user;
 
-    const post = await WorkPost.find({ agent: postId }).populate('user', 'phone username').populate('work', 'categoryName categoryImg');
+  const post = await WorkPost.find({ user: postId })
+    .populate("user", "phone username")
+    .populate("work", "categoryName categoryImg");
 
-    if (!post) {
-        res.status(404);
-        throw new Error('Post not found!');
-    }
+  if (!post) {
+    res.status(404);
+    throw new Error("Post not found!");
+  }
 
-    if (post) {
-        res.status(200).json({ post });
-    } else {
-        res.status(400);
-        throw new Error('data is not valid!');
-    }
+  if (post) {
+    res.status(200).json({ post });
+  } else {
+    res.status(400);
+    throw new Error("data is not valid!");
+  }
 });
 
-const getWorkPostByWork = asyncHandler(async(req, res) => {
-    const workId = req.params.id;
+const getWorkPostByWork = asyncHandler(async (req, res) => {
+  const workId = req.params.id;
 
-    const post = await WorkPost.find({ work: workId }).populate('user', 'phone username').populate('work', 'categoryName categoryImg');
+  const post = await WorkPost.find({ work: workId })
+    .populate("user", "phone username")
+    .populate("work", "categoryName categoryImg");
 
-    if (!post) {
-        res.status(404);
-        throw new Error('Post not found!');
+  if (!post) {
+    res.status(404);
+    throw new Error("Post not found!");
+  }
+
+  if (post) {
+    res.status(200).json({ post });
+  } else {
+    res.status(400);
+    throw new Error("data is not valid!");
+  }
+});
+
+const getAllWorkPost = asyncHandler(async (req, res) => {
+  try {
+    const post = await WorkPost.find()
+      .populate("user", "phone username")
+      .populate("work", "categoryName categoryImg");
+
+    if (post.length === 0) {
+      res.status(404);
+      throw new Error("Post not found!");
     }
-
-    if (post) {
-        res.status(200).json({ post });
-    } else {
-        res.status(400);
-        throw new Error('data is not valid!');
-    }
+    res.status(200).json({ post });
+  } catch (error) {
+    console.log(error);
+    res.status(200).json({ error });
+  }
 });
 
 module.exports = {
-    createWorkPost,
-    updateWorkPost,
-    getWorkPostById,
-    getWorkPostByWork,
-}
+  createWorkPost,
+  updateWorkPost,
+  getWorkPostById,
+  getWorkPostByWork,
+  getAllWorkPost,
+};

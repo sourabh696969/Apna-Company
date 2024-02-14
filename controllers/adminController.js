@@ -182,7 +182,7 @@ const verifyPosts = asyncHandler(async(req, res) => {
   const { status } = req.body;
   const postId = req.params.id;
 
-  if ((!status)) {
+  if (status === undefined || status === null || status === "") {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -190,7 +190,7 @@ const verifyPosts = asyncHandler(async(req, res) => {
     status: status
   });
 
-  res.status(201).json({ message: "Post Verified successfully!" });
+  res.status(201).json({ message: "Post status changed successfully!" });
 });
 
 module.exports = {

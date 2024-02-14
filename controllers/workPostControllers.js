@@ -111,7 +111,7 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
 const deleteWorkPost = asyncHandler(async (req, res) => {
   const workId = req.params.id;
 
-  const deletedPost = await WorkPost.findByIdAndDelete({ workId });
+  const deletedPost = await WorkPost.findByIdAndDelete(workId);
 
   if (!deletedPost) {
     res.status(404);
@@ -119,7 +119,7 @@ const deleteWorkPost = asyncHandler(async (req, res) => {
   }
 
   if (deletedPost) {
-    res.status(200).json({ deletedPost });
+    res.status(200).json({ message: 'Post deleted Successfully!' });
   } else {
     res.status(400);
     throw new Error("data is not valid!");

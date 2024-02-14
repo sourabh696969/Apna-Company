@@ -1,5 +1,4 @@
 const express = require('express');
-const { validateUserToken } = require('../middleware/validateTokenHandler');
 const { registerAdmin, loginAdmin, forgotPasswordAdmin, createWorker, updateWorker, verifyPosts } = require('../controllers/adminController');
 
 const router = express.Router();

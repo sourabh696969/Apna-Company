@@ -3,6 +3,7 @@ const Admin = require("../model/adminModel");
 const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
+const WorkPost = require("../model/workPostModel");
 const jwt = require("jsonwebtoken");
 
 const registerAdmin = asyncHandler(async (req, res) => {
@@ -177,10 +178,26 @@ const updateWorker = asyncHandler(async (req, res) => {
   }
 });
 
+const verifyPosts = asyncHandler(async(req, res) => {
+  const { status } = req.body;
+  const postId = req.params.id;
+
+  if ((!status)) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+  const post = await WorkPost.findByIdAndUpdate(postId, {
+    status: status
+  });
+
+  res.status(201).json({ message: "Post Verified successfully!" });
+});
+
 module.exports = {
   registerAdmin,
   loginAdmin,
   forgotPasswordAdmin,
   createWorker,
-  updateWorker
+  updateWorker,
+  verifyPosts
 };

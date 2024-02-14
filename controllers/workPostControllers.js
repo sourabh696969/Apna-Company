@@ -74,7 +74,7 @@ const getWorkPostById = asyncHandler(async (req, res) => {
 const getWorkPostByWork = asyncHandler(async (req, res) => {
   const workId = req.params.id;
 
-  const post = await WorkPost.find({ work: workId })
+  const post = await WorkPost.find({ work: workId, status: true })
     .populate("user", "phone username")
     .populate("work", "categoryName categoryImg");
 

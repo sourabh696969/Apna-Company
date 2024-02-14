@@ -8,3 +8,5 @@ router.get('/all', getTermCondition);
 router.get('/:id', getTermConditionById);
 router.put('/:id', updateTermCondition);
 router.delete('/:id', deleteTermCondition);
+
+module.exports = router;

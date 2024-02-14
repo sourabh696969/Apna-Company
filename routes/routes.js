@@ -6,6 +6,6 @@ router.use("/worker", require("./workerRoutes"));
 router.use("/admin", require("./adminRoute"));
 router.use("/workpost", require("./workPostRoute"));
 router.use("/support", require("./supportRoute"));
-router.use("/termsCondition", require("./"));
+router.use("/termsCondition", require("./term&conditionRoute"));
 
 module.exports = router;

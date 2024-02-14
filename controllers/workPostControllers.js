@@ -111,7 +111,7 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
 const deleteWorkPost = asyncHandler(async (req, res) => {
   const workId = req.params.id;
 
-  const deletedPost = await WorkPost.findByIdAndDelete({ work: workId });
+  const deletedPost = await WorkPost.findByIdAndDelete({ workId });
 
   if (!deletedPost) {
     res.status(404);

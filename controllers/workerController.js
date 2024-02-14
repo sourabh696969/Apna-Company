@@ -177,6 +177,7 @@ const veifyOtp = asyncHandler(async (req, res) => {
   res.status(201).json({
     message: "User Verified successfully!",
     phone: phone,
+    userId: phoneAvalaible._id,
     token: accessToken,
   });
 });

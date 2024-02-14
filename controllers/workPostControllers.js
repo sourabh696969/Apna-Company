@@ -108,10 +108,29 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteWorkPost = asyncHandler(async (req, res) => {
+  const workId = req.params.id;
+
+  const deletedPost = await WorkPost.findByIdAndDelete({ work: workId });
+
+  if (!deletedPost) {
+    res.status(404);
+    throw new Error("Post not found!");
+  }
+
+  if (deletedPost) {
+    res.status(200).json({ deletedPost });
+  } else {
+    res.status(400);
+    throw new Error("data is not valid!");
+  }
+});
+
 module.exports = {
   createWorkPost,
   updateWorkPost,
   getWorkPostById,
   getWorkPostByWork,
   getAllWorkPost,
+  deleteWorkPost,
 };

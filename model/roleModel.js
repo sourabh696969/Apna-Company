@@ -5,6 +5,10 @@ const roleSchema = mongoose.Schema(
     roleName: {
       type: String,
       required: true,
+    },
+    status: {
+      type: Boolean,
+      default: false
     }
   },
   {

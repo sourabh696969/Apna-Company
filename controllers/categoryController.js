@@ -17,7 +17,7 @@ const createCategory = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Category already exists!");
   }
-  const images = req.files["categoryImg"] || [];
+  const images = req.files["categoryImg"] ? req.files["categoryImg"][0].path : null;
   if (!images) {
     res.status(404);
     throw new Error("image is required!");
@@ -25,15 +25,13 @@ const createCategory = asyncHandler(async (req, res) => {
 
   const category = await Category.create({
     categoryName,
-    categoryImg: images.map((file) => file.path),
+    categoryImg: images,
   });
 
   if (category) {
     res.status(201).json({
       message: "New Category created!",
-      _id: category.id,
-      categoryName: category.categoryName,
-      categoryImg: images.map((file) => file.path),
+      category
     });
   } else {
     res.status(400);
@@ -61,7 +59,7 @@ const updateCategory = asyncHandler(async (req, res) => {
     throw new Error("All Fields required!");
   }
 
-  const images = req.files["categoryImg"] || [];
+  const images = req.files["categoryImg"] ? req.files["categoryImg"][0].path : null;
 
   if (!images) {
     res.status(404);
@@ -70,14 +68,14 @@ const updateCategory = asyncHandler(async (req, res) => {
 
   const updateCategory = await Category.findByIdAndUpdate(catId, {
     categoryName,
-    categoryImg: images.map((file) => file.path),
+    categoryImg: images,
   });
 
   if (!updateCategory) {
     res.status(404);
     throw new Error("Category not found!");
   }
-  res.status(200).json({ message: "Category Upddated successfully!" });
+  res.status(200).json({ message: "Category Updated successfully!" });
 });
 
 const createRole = asyncHandler(async (req, res) => {
@@ -121,15 +119,16 @@ const deleteRole = asyncHandler(async (req, res) => {
 
 const updateRole = asyncHandler(async (req, res) => {
   const roleId = req.params.id;
-  const { roleName } = req.body;
+  const { roleName, status } = req.body;
 
-  if (!roleName) {
+  if (!roleName, status === undefined || status === null || status === "") {
     res.status(404);
     throw new Error("All Fields required!");
   }
 
   const updateRole = await Role.findByIdAndUpdate(roleId, {
     roleName,
+    status: status
   });
 
   if (!updateRole) {

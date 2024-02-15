@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
-const categorySchema = mongoose.Schema(
+const offerSchema = mongoose.Schema(
   {
-    categoryName: {
+    offerName: {
       type: String,
       required: true,
     },
-    categoryImg: {
+    offerImg: {
       type: String,
       required: true,
     },
@@ -16,4 +16,4 @@ const categorySchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Category", categorySchema);
+module.exports = mongoose.model("Offer", offerSchema);

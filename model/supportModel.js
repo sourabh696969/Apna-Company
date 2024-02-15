@@ -8,6 +8,10 @@ const supportSchema = mongoose.Schema({
     userData: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+    },
+    status: {
+        type: Boolean,
+        default: false
     }
 },
 {

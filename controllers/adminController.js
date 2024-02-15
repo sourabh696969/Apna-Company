@@ -4,6 +4,7 @@ const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
 const WorkPost = require("../model/workPostModel");
+const Support = require("../model/supportModel");
 const jwt = require("jsonwebtoken");
 
 const registerAdmin = asyncHandler(async (req, res) => {
@@ -190,8 +191,35 @@ const verifyPosts = asyncHandler(async(req, res) => {
     status: status
   });
 
+  if (!post) {
+    res.status(404);
+    throw new Error("post not found!");
+  }
+
   res.status(201).json({ message: "Post status changed successfully!" });
 });
+
+const updateSupport = asyncHandler(async(req, res) => {
+  const { status } = req.body;
+  const supportId = req.params.id;
+
+  if (status === undefined || status === null || status === "") {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+  const suppot = await Support.findByIdAndUpdate(supportId, {
+    status: status
+  });
+
+  if (!suppot) {
+    res.status(404);
+    throw new Error("support not found!");
+  }
+
+  res.status(201).json({ message: "Support status changed successfully!" });
+});
+
+
 
 module.exports = {
   registerAdmin,
@@ -199,5 +227,6 @@ module.exports = {
   forgotPasswordAdmin,
   createWorker,
   updateWorker,
-  verifyPosts
+  verifyPosts,
+  updateSupport
 };

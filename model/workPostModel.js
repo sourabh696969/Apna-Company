@@ -18,8 +18,8 @@ const workPost = mongoose.Schema(
     },
     status: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   {
     timestamps: true,

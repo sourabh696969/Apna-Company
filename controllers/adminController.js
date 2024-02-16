@@ -126,7 +126,7 @@ const createWorker = asyncHandler(async (req, res) => {
       phone,
       address,
       price,
-      status: true
+      status: true,
     });
     res.status(201).json({ message: "User Registered!", worker });
   }
@@ -180,7 +180,7 @@ const updateWorker = asyncHandler(async (req, res) => {
   }
 });
 
-const verifyPosts = asyncHandler(async(req, res) => {
+const verifyPosts = asyncHandler(async (req, res) => {
   const { status } = req.body;
   const postId = req.params.id;
 
@@ -189,7 +189,7 @@ const verifyPosts = asyncHandler(async(req, res) => {
     throw new Error("All fields required!");
   }
   const post = await WorkPost.findByIdAndUpdate(postId, {
-    status: status
+    status: status,
   });
 
   if (!post) {
@@ -200,7 +200,7 @@ const verifyPosts = asyncHandler(async(req, res) => {
   res.status(201).json({ message: "Post status changed successfully!" });
 });
 
-const updateSupport = asyncHandler(async(req, res) => {
+const updateSupport = asyncHandler(async (req, res) => {
   const { status } = req.body;
   const supportId = req.params.id;
 
@@ -209,7 +209,7 @@ const updateSupport = asyncHandler(async(req, res) => {
     throw new Error("All fields required!");
   }
   const suppot = await Support.findByIdAndUpdate(supportId, {
-    status: status
+    status: status,
   });
 
   if (!suppot) {
@@ -220,8 +220,6 @@ const updateSupport = asyncHandler(async(req, res) => {
   res.status(201).json({ message: "Support status changed successfully!" });
 });
 
-
-
 module.exports = {
   registerAdmin,
   loginAdmin,
@@ -229,5 +227,5 @@ module.exports = {
   createWorker,
   updateWorker,
   verifyPosts,
-  updateSupport
+  updateSupport,
 };

@@ -73,5 +73,5 @@ module.exports = {
   getTermCondition,
   getTermConditionById,
   updateTermCondition,
-  deleteTermCondition
+  deleteTermCondition,
 };

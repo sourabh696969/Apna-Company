@@ -56,12 +56,14 @@ const getWorkPostById = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
 
   const pages = Number(page);
-  const limits = Number(limit);
+  const limits = Number(limit) || 20;
   const skip = (pages - 1) * limits;
 
   const post = await WorkPost.find({ user: postId })
     .populate("user", "phone username")
-    .populate("work", "categoryName categoryImg").skip(skip).limit(limits);
+    .populate("work", "categoryName categoryImg")
+    .skip(skip)
+    .limit(limits);
 
   if (!post) {
     res.status(404);
@@ -81,12 +83,14 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
 
   const pages = Number(page);
-  const limits = Number(limit);
+  const limits = Number(limit) || 20;
   const skip = (pages - 1) * limits;
 
   const post = await WorkPost.find({ work: workId, status: true })
     .populate("user", "phone username")
-    .populate("work", "categoryName categoryImg").skip(skip).limit(limits);
+    .populate("work", "categoryName categoryImg")
+    .skip(skip)
+    .limit(limits);
 
   if (!post) {
     res.status(404);
@@ -105,19 +109,20 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
 
   const pages = Number(page);
-  const limits = Number(limit);
+  const limits = Number(limit) || 20;
   const skip = (pages - 1) * limits;
 
-    const post = await WorkPost.find()
-      .populate("user", "phone username")
-      .populate("work", "categoryName categoryImg").skip(skip).limit(limits);
+  const post = await WorkPost.find()
+    .populate("user", "phone username")
+    .populate("work", "categoryName categoryImg")
+    .skip(skip)
+    .limit(limits);
 
-    if (post.length === 0) {
-      res.status(404);
-      throw new Error("Post not found!");
-    }
-    res.status(200).json({ post });
- 
+  if (post.length === 0) {
+    res.status(404);
+    throw new Error("Post not found!");
+  }
+  res.status(200).json({ post });
 });
 
 const deleteWorkPost = asyncHandler(async (req, res) => {
@@ -131,7 +136,7 @@ const deleteWorkPost = asyncHandler(async (req, res) => {
   }
 
   if (deletedPost) {
-    res.status(200).json({ message: 'Post deleted Successfully!' });
+    res.status(200).json({ message: "Post deleted Successfully!" });
   } else {
     res.status(400);
     throw new Error("data is not valid!");

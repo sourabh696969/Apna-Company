@@ -1,21 +1,23 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const supportSchema = mongoose.Schema({
+const supportSchema = mongoose.Schema(
+  {
     description: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     userData: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     status: {
-        type: Boolean,
-        default: false
-    }
-},
-{
-    timestamps: true
-});
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = mongoose.model('Support', supportSchema);
+module.exports = mongoose.model("Support", supportSchema);

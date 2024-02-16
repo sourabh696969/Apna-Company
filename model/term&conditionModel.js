@@ -12,4 +12,4 @@ const termsConditionSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('termsCondition', termsConditionSchema);
+module.exports = mongoose.model("termsCondition", termsConditionSchema);

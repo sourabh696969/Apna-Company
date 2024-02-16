@@ -1,24 +1,25 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const agentSchema = mongoose.Schema({
+const agentSchema = mongoose.Schema(
+  {
     username: {
-        type: String,
-
+      type: String,
     },
     phone: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     address: {
-        type: String,
-
+      type: String,
     },
     status: {
-        type: Boolean,
-        dafault: false
-    }
-}, {
-    timestamps: true
-});
+      type: Boolean,
+      dafault: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = mongoose.model('User', agentSchema);
+module.exports = mongoose.model("User", agentSchema);

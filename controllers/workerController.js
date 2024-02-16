@@ -197,12 +197,14 @@ const AllUser = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
 
   const pages = Number(page);
-  const limits = Number(limit);
+  const limits = Number(limit) || 20;
   const skip = (pages - 1) * limits;
 
   const all = await Worker.find({ status: true })
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryImg").skip(skip).limit(limits);
+    .populate("category", "categoryName categoryImg")
+    .skip(skip)
+    .limit(limits);
   if (!all) {
     res.status(400);
     throw new Error("data not found");
@@ -214,12 +216,14 @@ const AllUserById = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
 
   const pages = Number(page);
-  const limits = Number(limit);
+  const limits = Number(limit) || 20;
   const skip = (pages - 1) * limits;
 
   const data = await Worker.find({ category: req.params.id, status: true })
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryImg").skip(skip).limit(limits);
+    .populate("category", "categoryName categoryImg")
+    .skip(skip)
+    .limit(limits);
   if (!data) {
     res.status(400);
     throw new Error("data not found");

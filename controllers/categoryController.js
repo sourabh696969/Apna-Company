@@ -17,7 +17,9 @@ const createCategory = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Category already exists!");
   }
-  const images = req.files["categoryImg"] ? req.files["categoryImg"][0].path : null;
+  const images = req.files["categoryImg"]
+    ? req.files["categoryImg"][0].path
+    : null;
   if (!images) {
     res.status(404);
     throw new Error("image is required!");
@@ -31,7 +33,7 @@ const createCategory = asyncHandler(async (req, res) => {
   if (category) {
     res.status(201).json({
       message: "New Category created!",
-      category
+      category,
     });
   } else {
     res.status(400);
@@ -59,7 +61,9 @@ const updateCategory = asyncHandler(async (req, res) => {
     throw new Error("All Fields required!");
   }
 
-  const images = req.files["categoryImg"] ? req.files["categoryImg"][0].path : null;
+  const images = req.files["categoryImg"]
+    ? req.files["categoryImg"][0].path
+    : null;
 
   if (!images) {
     res.status(404);
@@ -121,14 +125,14 @@ const updateRole = asyncHandler(async (req, res) => {
   const roleId = req.params.id;
   const { roleName, status } = req.body;
 
-  if (!roleName, status === undefined || status === null || status === "") {
+  if ((!roleName, status === undefined || status === null || status === "")) {
     res.status(404);
     throw new Error("All Fields required!");
   }
 
   const updateRole = await Role.findByIdAndUpdate(roleId, {
     roleName,
-    status: status
+    status: status,
   });
 
   if (!updateRole) {

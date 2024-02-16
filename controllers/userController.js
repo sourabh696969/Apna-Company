@@ -180,9 +180,9 @@ const getAllUser = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
 
   const pages = Number(page);
-  const limits = Number(limit);
+  const limits = Number(limit) || 20;
   const skip = (pages - 1) * limits;
-  
+
   const allUser = await User.find({ status: true }).skip(skip).limit(limits);
   if (!allUser) {
     res.status(404);

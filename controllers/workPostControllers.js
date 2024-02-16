@@ -122,7 +122,7 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Post not found!");
   }
-  res.status(200).json({ post });
+  res.status(200).json(post);
 });
 
 const deleteWorkPost = asyncHandler(async (req, res) => {

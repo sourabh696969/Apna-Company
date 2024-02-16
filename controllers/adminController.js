@@ -126,6 +126,7 @@ const createWorker = asyncHandler(async (req, res) => {
       phone,
       address,
       price,
+      status: true
     });
     res.status(201).json({ message: "User Registered!", worker });
   }

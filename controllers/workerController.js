@@ -50,6 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
   worker.phone = phone;
   worker.address = address;
   worker.price = price;
+  worker.status = true;
 
   worker.save();
 
@@ -193,9 +194,15 @@ const getUserById = asyncHandler(async (req, res) => {
 });
 
 const AllUser = asyncHandler(async (req, res) => {
-  const all = await Worker.find()
+  const { page, limit } = req.query;
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
+
+  const all = await Worker.find({ status: true })
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryImg");
+    .populate("category", "categoryName categoryImg").skip(skip).limit(limits);
   if (!all) {
     res.status(400);
     throw new Error("data not found");
@@ -204,9 +211,15 @@ const AllUser = asyncHandler(async (req, res) => {
 });
 
 const AllUserById = asyncHandler(async (req, res) => {
-  const data = await Worker.find({ category: req.params.id })
+  const { page, limit } = req.query;
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
+
+  const data = await Worker.find({ category: req.params.id, status: true })
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryImg");
+    .populate("category", "categoryName categoryImg").skip(skip).limit(limits);
   if (!data) {
     res.status(400);
     throw new Error("data not found");

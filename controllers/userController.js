@@ -34,6 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
   userPhone.username = username;
   userPhone.phone = phone;
   userPhone.address = address;
+  userPhone.status = true;
 
   userPhone.save();
 
@@ -176,7 +177,13 @@ const getUserById = asyncHandler(async (req, res) => {
 });
 
 const getAllUser = asyncHandler(async (req, res) => {
-  const allUser = await User.find();
+  const { page, limit } = req.query;
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
+  
+  const allUser = await User.find({ status: true }).skip(skip).limit(limits);
   if (!allUser) {
     res.status(404);
     throw new Error("Users not found!");

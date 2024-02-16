@@ -27,10 +27,17 @@ const createSupport = asyncHandler(async (req, res) => {
 });
 
 const getSupport = asyncHandler(async (req, res) => {
+  const { page, limit } = req.query;
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
+
   const supportData = await Support.find().populate(
     "userData",
     "username phone"
-  );
+  ).skip(skip).limit(limits);
+  
   if (!supportData) {
     res.status(404);
     throw new Error("data not found!");

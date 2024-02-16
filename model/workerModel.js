@@ -24,6 +24,10 @@ const userSchema = mongoose.Schema(
     price: {
       type: String,
     },
+    status: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,

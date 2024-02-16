@@ -53,10 +53,15 @@ const updateWorkPost = asyncHandler(async (req, res) => {
 
 const getWorkPostById = asyncHandler(async (req, res) => {
   const postId = req.user;
+  const { page, limit } = req.query;
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
 
   const post = await WorkPost.find({ user: postId })
     .populate("user", "phone username")
-    .populate("work", "categoryName categoryImg");
+    .populate("work", "categoryName categoryImg").skip(skip).limit(limits);
 
   if (!post) {
     res.status(404);
@@ -73,10 +78,15 @@ const getWorkPostById = asyncHandler(async (req, res) => {
 
 const getWorkPostByWork = asyncHandler(async (req, res) => {
   const workId = req.params.id;
+  const { page, limit } = req.query;
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
 
   const post = await WorkPost.find({ work: workId, status: true })
     .populate("user", "phone username")
-    .populate("work", "categoryName categoryImg");
+    .populate("work", "categoryName categoryImg").skip(skip).limit(limits);
 
   if (!post) {
     res.status(404);
@@ -92,20 +102,22 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
 });
 
 const getAllWorkPost = asyncHandler(async (req, res) => {
-  try {
+  const { page, limit } = req.query;
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
+
     const post = await WorkPost.find()
       .populate("user", "phone username")
-      .populate("work", "categoryName categoryImg");
+      .populate("work", "categoryName categoryImg").skip(skip).limit(limits);
 
     if (post.length === 0) {
       res.status(404);
       throw new Error("Post not found!");
     }
     res.status(200).json({ post });
-  } catch (error) {
-    console.log(error);
-    res.status(200).json({ error });
-  }
+ 
 });
 
 const deleteWorkPost = asyncHandler(async (req, res) => {

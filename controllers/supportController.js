@@ -30,7 +30,7 @@ const getSupport = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
 
   const pages = Number(page);
-  const limits = Number(limit) || 20;
+  const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
   const supportData = await Support.find()

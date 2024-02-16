@@ -197,7 +197,7 @@ const AllUser = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
 
   const pages = Number(page);
-  const limits = Number(limit) || 20;
+  const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
   const all = await Worker.find({ status: true })
@@ -216,7 +216,7 @@ const AllUserById = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
 
   const pages = Number(page);
-  const limits = Number(limit) || 20;
+  const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
   const data = await Worker.find({ category: req.params.id, status: true })

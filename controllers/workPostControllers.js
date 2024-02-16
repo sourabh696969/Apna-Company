@@ -109,7 +109,7 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
 
   const pages = Number(page);
-  const limits = Number(limit) || 20;
+  const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
   const post = await WorkPost.find()

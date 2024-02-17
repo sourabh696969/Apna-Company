@@ -24,6 +24,9 @@ const userSchema = mongoose.Schema(
     price: {
       type: String,
     },
+    profileImg: {
+      type: String,
+    },
     status: {
       type: Boolean,
       default: false,

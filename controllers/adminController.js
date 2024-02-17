@@ -118,6 +118,9 @@ const createWorker = asyncHandler(async (req, res) => {
       throw new Error("phone number is already exist!");
     }
   }
+  const image = req.files["profileImg"]
+    ? req.files["profileImg"][0].path
+    : null;
 
   if (!userAvailable) {
     const worker = await Worker.create({
@@ -128,6 +131,7 @@ const createWorker = asyncHandler(async (req, res) => {
       address,
       price,
       status: true,
+      profileImg: image,
     });
     res.status(201).json({ message: "User Registered!", worker });
   }
@@ -163,6 +167,9 @@ const updateWorker = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("phone number is invalid!");
   }
+  const image = req.files["profileImg"]
+    ? req.files["profileImg"][0].path
+    : null;
 
   worker.username = username;
   worker.role = role._id;
@@ -170,6 +177,7 @@ const updateWorker = asyncHandler(async (req, res) => {
   worker.phone = worker.phone;
   worker.address = address;
   worker.price = price;
+  worker.profileImg = image;
 
   worker.save();
 
@@ -226,13 +234,11 @@ const getLengthOfData = asyncHandler(async (req, res) => {
   const allUser = await User.find({ status: true }).count();
   const allWorkPost = await WorkPost.find().count();
 
-  res
-    .status(200)
-    .json({
-      UserCount: allUser,
-      WorkerCount: allWorker,
-      WorkPostCount: allWorkPost,
-    });
+  res.status(200).json({
+    UserCount: allUser,
+    WorkerCount: allWorker,
+    WorkPostCount: allWorkPost,
+  });
 });
 
 module.exports = {

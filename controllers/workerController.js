@@ -44,6 +44,10 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("phone number is invalid!");
   }
 
+  const image = req.files["profileImg"]
+    ? req.files["profileImg"][0].path
+    : null;
+
   worker.username = username;
   worker.role = role._id;
   worker.category = category._id;
@@ -51,6 +55,7 @@ const registerUser = asyncHandler(async (req, res) => {
   worker.address = address;
   worker.price = price;
   worker.status = true;
+  worker.profileImg = image;
 
   worker.save();
 

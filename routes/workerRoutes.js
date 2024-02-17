@@ -48,7 +48,12 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 
 /////// Authentication ////////
-router.post("/register", validateUserToken, registerUser);
+router.post(
+  "/register",
+  validateUserToken,
+  upload.fields([{ name: "profileImg", maxCount: 1 }]),
+  registerUser
+);
 router.post("/login", loginUser);
 router.post("/signup", signupUser);
 router.post("/verify", veifyOtp);

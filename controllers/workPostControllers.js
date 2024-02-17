@@ -62,8 +62,16 @@ const getWorkPostById = asyncHandler(async (req, res) => {
   const post = await WorkPost.find({
     user: postId,
     $or: [
-      { title: { $regex: searchQuary, $options: "i" } },
-      { description: { $regex: searchQuary, $options: "i" } },
+      {
+        user: {
+          $in: await User.find({
+            $or: [
+              { username: { $regex: searchQuary, $options: "i" } },
+              { phone: { $regex: searchQuary, $options: "i" } },
+            ],
+          }).distinct("_id"),
+        },
+      },
     ],
   })
     .populate("user", "phone username")
@@ -96,8 +104,16 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
     work: workId,
     status: true,
     $or: [
-      { title: { $regex: searchQuary, $options: "i" } },
-      { description: { $regex: searchQuary, $options: "i" } },
+      {
+        user: {
+          $in: await User.find({
+            $or: [
+              { username: { $regex: searchQuary, $options: "i" } },
+              { phone: { $regex: searchQuary, $options: "i" } },
+            ],
+          }).distinct("_id"),
+        },
+      },
     ],
   })
     .populate("user", "phone username")
@@ -127,8 +143,16 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
 
   const post = await WorkPost.find({
     $or: [
-      { title: { $regex: searchQuary, $options: "i" } },
-      { description: { $regex: searchQuary, $options: "i" } },
+      {
+        user: {
+          $in: await User.find({
+            $or: [
+              { username: { $regex: searchQuary, $options: "i" } },
+              { phone: { $regex: searchQuary, $options: "i" } },
+            ],
+          }).distinct("_id"),
+        },
+      },
     ],
   })
     .populate("user", "phone username")

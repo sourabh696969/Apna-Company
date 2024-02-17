@@ -33,9 +33,20 @@ const getSupport = asyncHandler(async (req, res) => {
   const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
-  const supportData = await Support.find({ $or: [
-    { description: { $regex: searchQuary, $options: "i" } },
-  ], })
+  const supportData = await Support.find({
+    $or: [
+      {
+        userData: {
+          $in: await User.find({
+            $or: [
+              { username: { $regex: searchQuary, $options: "i" } },
+              { phone: { $regex: searchQuary, $options: "i" } },
+            ],
+          }).distinct("_id"),
+        },
+      },
+    ],
+  })
     .populate("userData", "username phone")
     .skip(skip)
     .limit(limits);

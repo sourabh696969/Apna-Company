@@ -239,6 +239,7 @@ const getLengthOfData = asyncHandler(async (req, res) => {
     UserCount: allUser,
     WorkerCount: allWorker,
     SupportCount: allSupport,
+    WorkPostCount: allWorkPost,
   });
 });
 

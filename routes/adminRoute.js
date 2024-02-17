@@ -7,6 +7,7 @@ const {
   updateWorker,
   verifyPosts,
   updateSupport,
+  getLengthOfData,
 } = require("../controllers/adminController");
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.post("/createWorker", createWorker);
 router.put("/updateWorker/:id", updateWorker);
 router.put("/verifyPost/:id", verifyPosts);
 router.put("/updateSupport/:id", updateSupport);
+router.get("/counts", getLengthOfData);
 
 module.exports = router;

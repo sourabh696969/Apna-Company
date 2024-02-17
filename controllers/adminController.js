@@ -4,6 +4,7 @@ const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
 const WorkPost = require("../model/workPostModel");
+const User = require("../model/userModel");
 const Support = require("../model/supportModel");
 const jwt = require("jsonwebtoken");
 
@@ -208,16 +209,30 @@ const updateSupport = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("All fields required!");
   }
-  const suppot = await Support.findByIdAndUpdate(supportId, {
+  const supprot = await Support.findByIdAndUpdate(supportId, {
     status: status,
   });
 
-  if (!suppot) {
+  if (!supprot) {
     res.status(404);
     throw new Error("support not found!");
   }
 
   res.status(201).json({ message: "Support status changed successfully!" });
+});
+
+const getLengthOfData = asyncHandler(async (req, res) => {
+  const allWorker = await Worker.find({ status: true }).count();
+  const allUser = await User.find({ status: true }).count();
+  const allWorkPost = await WorkPost.find().count();
+
+  res
+    .status(200)
+    .json({
+      UserCount: allUser,
+      WorkerCount: allWorker,
+      WorkPostCount: allWorkPost,
+    });
 });
 
 module.exports = {
@@ -228,4 +243,5 @@ module.exports = {
   updateWorker,
   verifyPosts,
   updateSupport,
+  getLengthOfData,
 };

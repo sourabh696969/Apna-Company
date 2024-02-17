@@ -185,8 +185,9 @@ const veifyOtp = asyncHandler(async (req, res) => {
 
 const getUserById = asyncHandler(async (req, res) => {
   const userId = req.params.id;
-  const singleUser = await Worker.findById(userId).populate("role", "roleName")
-  .populate("category", "categoryName categoryImg");
+  const singleUser = await Worker.findById(userId)
+    .populate("role", "roleName")
+    .populate("category", "categoryName categoryImg");
   if (!singleUser) {
     res.status(404);
     throw new Error("Users not found!");

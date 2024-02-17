@@ -201,18 +201,24 @@ const getUserById = asyncHandler(async (req, res) => {
 });
 
 const AllUser = asyncHandler(async (req, res) => {
-  const { page, limit } = req.query;
+  const { page, limit, searchQuary } = req.query;
 
   const pages = Number(page);
   const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
-  const all = await Worker.find({ status: true })
+  const all = await Worker.find({
+    status: true,
+    $or: [
+      { username: { $regex: searchQuary, $options: "i" } },
+      { phone: { $regex: searchQuary, $options: "i" } },
+    ],
+  })
     .populate("role", "roleName")
     .populate("category", "categoryName categoryImg")
     .skip(skip)
     .limit(limits);
-  if (!all) {
+  if (!all || all.length === 0) {
     res.status(400);
     throw new Error("data not found");
   }
@@ -220,18 +226,25 @@ const AllUser = asyncHandler(async (req, res) => {
 });
 
 const AllUserById = asyncHandler(async (req, res) => {
-  const { page, limit } = req.query;
+  const { page, limit, searchQuary } = req.query;
 
   const pages = Number(page);
   const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
-  const data = await Worker.find({ category: req.params.id, status: true })
+  const data = await Worker.find({
+    category: req.params.id,
+    status: true,
+    $or: [
+      { username: { $regex: searchQuary, $options: "i" } },
+      { phone: { $regex: searchQuary, $options: "i" } },
+    ],
+  })
     .populate("role", "roleName")
     .populate("category", "categoryName categoryImg")
     .skip(skip)
     .limit(limits);
-  if (!data) {
+  if (!data || data.length === 0) {
     res.status(400);
     throw new Error("data not found");
   }

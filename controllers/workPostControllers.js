@@ -53,19 +53,25 @@ const updateWorkPost = asyncHandler(async (req, res) => {
 
 const getWorkPostById = asyncHandler(async (req, res) => {
   const postId = req.user;
-  const { page, limit } = req.query;
+  const { page, limit, searchQuary } = req.query;
 
   const pages = Number(page);
   const limits = Number(limit) || 20;
   const skip = (pages - 1) * limits;
 
-  const post = await WorkPost.find({ user: postId })
+  const post = await WorkPost.find({
+    user: postId,
+    $or: [
+      { title: { $regex: searchQuary, $options: "i" } },
+      { description: { $regex: searchQuary, $options: "i" } },
+    ],
+  })
     .populate("user", "phone username")
     .populate("work", "categoryName categoryImg")
     .skip(skip)
     .limit(limits);
 
-  if (!post) {
+  if (!post || post.length === 0) {
     res.status(404);
     throw new Error("Post not found!");
   }
@@ -80,13 +86,20 @@ const getWorkPostById = asyncHandler(async (req, res) => {
 
 const getWorkPostByWork = asyncHandler(async (req, res) => {
   const workId = req.params.id;
-  const { page, limit } = req.query;
+  const { page, limit, searchQuary } = req.query;
 
   const pages = Number(page);
   const limits = Number(limit) || 20;
   const skip = (pages - 1) * limits;
 
-  const post = await WorkPost.find({ work: workId, status: true })
+  const post = await WorkPost.find({
+    work: workId,
+    status: true,
+    $or: [
+      { title: { $regex: searchQuary, $options: "i" } },
+      { description: { $regex: searchQuary, $options: "i" } },
+    ],
+  })
     .populate("user", "phone username")
     .populate("work", "categoryName categoryImg")
     .skip(skip)
@@ -97,7 +110,7 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
     throw new Error("Post not found!");
   }
 
-  if (post) {
+  if (post || post.length === 0) {
     res.status(200).json({ post });
   } else {
     res.status(400);
@@ -106,13 +119,18 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
 });
 
 const getAllWorkPost = asyncHandler(async (req, res) => {
-  const { page, limit } = req.query;
+  const { page, limit, searchQuary } = req.query;
 
   const pages = Number(page);
   const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
-  const post = await WorkPost.find()
+  const post = await WorkPost.find({
+    $or: [
+      { title: { $regex: searchQuary, $options: "i" } },
+      { description: { $regex: searchQuary, $options: "i" } },
+    ],
+  })
     .populate("user", "phone username")
     .populate("work", "categoryName categoryImg")
     .skip(skip)

@@ -177,14 +177,23 @@ const getUserById = asyncHandler(async (req, res) => {
 });
 
 const getAllUser = asyncHandler(async (req, res) => {
-  const { page, limit } = req.query;
+  const { page, limit, searchQuary } = req.query;
+  console.log(searchQuary);
 
   const pages = Number(page);
   const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
-  const allUser = await User.find({ status: true }).skip(skip).limit(limits);
-  if (!allUser) {
+  const allUser = await User.find({
+    status: true,
+    $or: [
+      { username: { $regex: searchQuary, $options: "i" } },
+      { phone: { $regex: searchQuary, $options: "i" } },
+    ],
+  })
+    .skip(skip)
+    .limit(limits);
+  if (!allUser || allUser.length === 0) {
     res.status(404);
     throw new Error("Users not found!");
   }

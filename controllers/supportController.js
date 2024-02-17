@@ -27,18 +27,20 @@ const createSupport = asyncHandler(async (req, res) => {
 });
 
 const getSupport = asyncHandler(async (req, res) => {
-  const { page, limit } = req.query;
+  const { page, limit, searchQuary } = req.query;
 
   const pages = Number(page);
   const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
-  const supportData = await Support.find()
+  const supportData = await Support.find({ $or: [
+    { description: { $regex: searchQuary, $options: "i" } },
+  ], })
     .populate("userData", "username phone")
     .skip(skip)
     .limit(limits);
 
-  if (!supportData) {
+  if (!supportData || supportData.length === 0) {
     res.status(404);
     throw new Error("data not found!");
   }

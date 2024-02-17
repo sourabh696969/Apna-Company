@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const WorkPost = require("../model/workPostModel");
+const User = require("../model/userModel");
 
 const createWorkPost = asyncHandler(async (req, res) => {
   const { title, description, work } = req.body;

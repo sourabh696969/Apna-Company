@@ -233,11 +233,12 @@ const getLengthOfData = asyncHandler(async (req, res) => {
   const allWorker = await Worker.find({ status: true }).count();
   const allUser = await User.find({ status: true }).count();
   const allWorkPost = await WorkPost.find().count();
+  const allSupport = await Support.find().count();
 
   res.status(200).json({
     UserCount: allUser,
     WorkerCount: allWorker,
-    WorkPostCount: allWorkPost,
+    SupportCount: allSupport,
   });
 });
 

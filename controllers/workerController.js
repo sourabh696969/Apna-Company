@@ -212,6 +212,7 @@ const AllUser = asyncHandler(async (req, res) => {
     $or: [
       { username: { $regex: searchQuary, $options: "i" } },
       { phone: { $regex: searchQuary, $options: "i" } },
+      { address: { $regex: searchQuary, $options: "i" } },
     ],
   })
     .populate("role", "roleName")
@@ -238,6 +239,7 @@ const AllUserById = asyncHandler(async (req, res) => {
     $or: [
       { username: { $regex: searchQuary, $options: "i" } },
       { phone: { $regex: searchQuary, $options: "i" } },
+      { address: { $regex: searchQuary, $options: "i" } },
     ],
   })
     .populate("role", "roleName")

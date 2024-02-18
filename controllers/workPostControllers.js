@@ -3,10 +3,10 @@ const WorkPost = require("../model/workPostModel");
 const User = require("../model/userModel");
 
 const createWorkPost = asyncHandler(async (req, res) => {
-  const { title, description, work } = req.body;
+  const { title, description, work, duration } = req.body;
   const user = req.user;
 
-  if ((!title, !description, !work)) {
+  if ((!title, !description, !work, !duration)) {
     res.status(404);
     throw new Error("All Fields required!");
   }
@@ -16,6 +16,7 @@ const createWorkPost = asyncHandler(async (req, res) => {
     description,
     work,
     user,
+    duration,
   });
   if (workpost) {
     res.status(201).json({ message: "Work Post Created!", workpost });
@@ -26,10 +27,10 @@ const createWorkPost = asyncHandler(async (req, res) => {
 });
 
 const updateWorkPost = asyncHandler(async (req, res) => {
-  const { title, description, work } = req.body;
+  const { title, description, work, duration } = req.body;
   const postId = req.params.id;
 
-  if ((!title, !description, !work)) {
+  if ((!title, !description, !work, !duration)) {
     res.status(404);
     throw new Error("All Fields required!");
   }
@@ -38,6 +39,7 @@ const updateWorkPost = asyncHandler(async (req, res) => {
     title,
     description,
     work,
+    duration
   });
 
   if (!workpost) {
@@ -75,7 +77,7 @@ const getWorkPostById = asyncHandler(async (req, res) => {
       },
     ],
   })
-    .populate("user", "phone username")
+    .populate("user", "phone username address")
     .populate("work", "categoryName categoryImg")
     .skip(skip)
     .limit(limits);
@@ -117,7 +119,7 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
       },
     ],
   })
-    .populate("user", "phone username")
+    .populate("user", "phone username address")
     .populate("work", "categoryName categoryImg")
     .skip(skip)
     .limit(limits);
@@ -156,7 +158,7 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
       },
     ],
   })
-    .populate("user", "phone username")
+    .populate("user", "phone username address")
     .populate("work", "categoryName categoryImg")
     .skip(skip)
     .limit(limits);

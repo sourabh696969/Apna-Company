@@ -95,6 +95,26 @@ const getWorkPostById = asyncHandler(async (req, res) => {
   }
 });
 
+const getSingleWorkPost = asyncHandler(async (req, res) => {
+  const postId = req.params.id;
+
+  const post = await WorkPost.findById(postId)
+    .populate("user", "phone username address")
+    .populate("work", "categoryName categoryImg");
+
+  if (!post || post.length === 0) {
+    res.status(404);
+    throw new Error("Post not found!");
+  }
+
+  if (post) {
+    res.status(200).json( post );
+  } else {
+    res.status(400);
+    throw new Error("data is not valid!");
+  }
+});
+
 const getWorkPostByWork = asyncHandler(async (req, res) => {
   const workId = req.params.id;
   const { page, limit, searchQuary } = req.query;
@@ -194,5 +214,6 @@ module.exports = {
   getWorkPostById,
   getWorkPostByWork,
   getAllWorkPost,
+  getSingleWorkPost,
   deleteWorkPost,
 };

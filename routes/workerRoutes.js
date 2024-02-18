@@ -14,6 +14,7 @@ const {
   getRole,
   deleteRole,
   updateRole,
+  updateRoleStatus,
 } = require("../controllers/categoryController");
 const {
   createCategory,
@@ -66,6 +67,7 @@ router.post("/role", createRole);
 router.get("/role", getRole);
 router.delete("/role/:id", deleteRole);
 router.put("/role/:id", updateRole);
+router.patch("/role/:id", updateRoleStatus);
 
 /////// Category ////////
 router.post(

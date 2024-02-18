@@ -123,15 +123,34 @@ const deleteRole = asyncHandler(async (req, res) => {
 
 const updateRole = asyncHandler(async (req, res) => {
   const roleId = req.params.id;
-  const { roleName, status } = req.body;
+  const { roleName } = req.body;
 
-  if ((!roleName, status === undefined || status === null || status === "")) {
+  if ((!roleName)) {
     res.status(404);
     throw new Error("All Fields required!");
   }
 
   const updateRole = await Role.findByIdAndUpdate(roleId, {
     roleName,
+  });
+
+  if (!updateRole) {
+    res.status(404);
+    throw new Error("Role not found!");
+  }
+  res.status(200).json({ message: "Role Upddated successfully!" });
+});
+
+const updateRoleStatus = asyncHandler(async (req, res) => {
+  const roleId = req.params.id;
+  const { status } = req.body;
+
+  if (( status === undefined || status === null || status === "")) {
+    res.status(404);
+    throw new Error("All Fields required!");
+  }
+
+  const updateRole = await Role.findByIdAndUpdate(roleId, {
     status: status,
   });
 
@@ -151,4 +170,5 @@ module.exports = {
   updateCategory,
   deleteRole,
   updateRole,
+  updateRoleStatus
 };

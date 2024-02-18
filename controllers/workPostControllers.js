@@ -150,7 +150,7 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
   }
 
   if (post || post.length === 0) {
-    res.status(200).json({ post });
+    res.status(200).json( post );
   } else {
     res.status(400);
     throw new Error("data is not valid!");

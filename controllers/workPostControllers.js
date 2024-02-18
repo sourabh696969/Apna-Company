@@ -39,7 +39,7 @@ const updateWorkPost = asyncHandler(async (req, res) => {
     title,
     description,
     work,
-    duration
+    duration,
   });
 
   if (!workpost) {
@@ -88,7 +88,7 @@ const getWorkPostById = asyncHandler(async (req, res) => {
   }
 
   if (post) {
-    res.status(200).json({ post });
+    res.status(200).json(post);
   } else {
     res.status(400);
     throw new Error("data is not valid!");
@@ -108,7 +108,7 @@ const getSingleWorkPost = asyncHandler(async (req, res) => {
   }
 
   if (post) {
-    res.status(200).json( post );
+    res.status(200).json(post);
   } else {
     res.status(400);
     throw new Error("data is not valid!");
@@ -150,7 +150,7 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
   }
 
   if (post || post.length === 0) {
-    res.status(200).json( post );
+    res.status(200).json(post);
   } else {
     res.status(400);
     throw new Error("data is not valid!");
@@ -250,5 +250,5 @@ module.exports = {
   getAllWorkPost,
   getSingleWorkPost,
   deleteWorkPost,
-  getAllVerifiedWorkPost
+  getAllVerifiedWorkPost,
 };

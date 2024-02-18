@@ -190,6 +190,40 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
   res.status(200).json(post);
 });
 
+const getAllVerifiedWorkPost = asyncHandler(async (req, res) => {
+  const { page, limit, searchQuary } = req.query;
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
+
+  const post = await WorkPost.find({
+    status: true,
+    $or: [
+      {
+        user: {
+          $in: await User.find({
+            $or: [
+              { username: { $regex: searchQuary, $options: "i" } },
+              { phone: { $regex: searchQuary, $options: "i" } },
+            ],
+          }).distinct("_id"),
+        },
+      },
+    ],
+  })
+    .populate("user", "phone username address")
+    .populate("work", "categoryName categoryImg")
+    .skip(skip)
+    .limit(limits);
+
+  if (post.length === 0) {
+    res.status(404);
+    throw new Error("Post not found!");
+  }
+  res.status(200).json(post);
+});
+
 const deleteWorkPost = asyncHandler(async (req, res) => {
   const workId = req.params.id;
 
@@ -216,4 +250,5 @@ module.exports = {
   getAllWorkPost,
   getSingleWorkPost,
   deleteWorkPost,
+  getAllVerifiedWorkPost
 };

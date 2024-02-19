@@ -208,6 +208,10 @@ const updateWorker = asyncHandler(async (req, res) => {
     throw new Error("phone number is invalid!");
   }
 
+  const image = req.files["profileImg"]
+  ? req.files["profileImg"][0].path
+  : null;
+
   worker.username = username;
   worker.role = role._id;
   worker.category = category._id;
@@ -215,7 +219,7 @@ const updateWorker = asyncHandler(async (req, res) => {
   worker.address = address;
   worker.price = price;
   worker.status = true;
-  worker.profileImg = worker.profileImg;
+  worker.profileImg = image == null ? worker.profileImg : image;
 
   worker.save();
 
@@ -227,6 +231,17 @@ const updateWorker = asyncHandler(async (req, res) => {
   }
 });
 
+const getSingleSubAdmin = asyncHandler(async (req, res) => {
+    const subAdminId = req.params.id;
+
+    const subAdmin = await SubAdmin.findById(subAdminId);
+    if (!subAdmin) {
+      res.status(404);
+      throw new Error("SubAdmin not found!");
+    }
+    res.status(200).json(subAdmin);
+  });
+
 module.exports = {
   registerSubAdmin,
   loginSubAdmin,
@@ -234,4 +249,5 @@ module.exports = {
   createWorker,
   AllUser,
   updateWorker,
+  getSingleSubAdmin
 };

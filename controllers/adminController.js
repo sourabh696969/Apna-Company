@@ -265,6 +265,25 @@ const getLengthOfData = asyncHandler(async (req, res) => {
   });
 });
 
+const deleteSubAdmin = asyncHandler(async (req, res) => {
+  const subAdminId = req.params.id;
+  const subAdmin = await SubAdmin.findByIdAndDelete(subAdminId);
+  if (!subAdmin) {
+    res.status(404);
+    throw new Error("SubAdmin not found!");
+  }
+  res.status(200).json({ message: "SubAdmin Deleted Successfully!" });
+});
+
+const getAllSubAdmin = asyncHandler(async (req, res) => {
+  const subAdmin = await SubAdmin.find();
+  if (!subAdmin) {
+    res.status(404);
+    throw new Error("SubAdmin not found!");
+  }
+  res.status(200).json(subAdmin);
+});
+
 module.exports = {
   registerAdmin,
   loginAdmin,
@@ -274,5 +293,7 @@ module.exports = {
   verifyPosts,
   updateSupport,
   getLengthOfData,
-  verifySubAdmin
+  verifySubAdmin,
+  deleteSubAdmin,
+  getAllSubAdmin,
 };

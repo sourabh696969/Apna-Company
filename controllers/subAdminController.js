@@ -172,10 +172,66 @@ const AllUser = asyncHandler(async (req, res) => {
   res.status(200).json(all);
 });
 
+const updateWorker = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const { username, roleId, categoryId, phone, address, price } = req.body;
+
+  if ((!username, !roleId, !categoryId, !phone, !address, !price)) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  const worker = await Worker.findById(userId);
+  const userAvailable = await Worker.findOne({ phone });
+  const category = await Category.findById(categoryId);
+  const role = await Role.findById(roleId);
+
+  if (!worker) {
+    return res.status(404).json({
+      message: "Worker not found!",
+    });
+  }
+  if (!userAvailable) {
+    res.status(400);
+    throw new Error("User does not exists!");
+  }
+  if (!category) {
+    res.status(404);
+    throw new Error("Category does not exists!");
+  }
+  if (!role) {
+    res.status(404);
+    throw new Error("Role does not exists!");
+  }
+  if (userAvailable.phone !== phone) {
+    res.status(404);
+    throw new Error("phone number is invalid!");
+  }
+
+  worker.username = username;
+  worker.role = role._id;
+  worker.category = category._id;
+  worker.phone = phone;
+  worker.address = address;
+  worker.price = price;
+  worker.status = true;
+  worker.profileImg = worker.profileImg;
+
+  worker.save();
+
+  if (worker) {
+    res.status(201).json({ message: "Worker Updated!", worker });
+  } else {
+    res.status(400);
+    throw new Error("data is not valid!");
+  }
+});
+
 module.exports = {
   registerSubAdmin,
   loginSubAdmin,
   forgotPasswordSubAdmin,
   createWorker,
   AllUser,
+  updateWorker,
 };

@@ -5,6 +5,7 @@ const {
   forgotPasswordSubAdmin,
   createWorker,
   AllUser,
+  updateWorker,
 } = require("../controllers/subAdminController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const multer = require("multer");
@@ -41,5 +42,6 @@ router.post(
   createWorker
 );
 router.get("/all", AllUser);
+router.put("/updateWorker/:id", updateWorker);
 
 module.exports = router;

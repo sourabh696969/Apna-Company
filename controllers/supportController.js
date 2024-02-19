@@ -22,7 +22,7 @@ const createSupportUser = asyncHandler(async (req, res) => {
   const support = await Support.create({
     description,
     userData: userId,
-    createdBy: "User"
+    createdBy: "User",
   });
 
   res.status(201).json({ message: "Support Created!", support });
@@ -47,7 +47,7 @@ const createSupportWorker = asyncHandler(async (req, res) => {
   const support = await Support.create({
     description,
     userData: userId,
-    createdBy: "Worker"
+    createdBy: "Worker",
   });
 
   res.status(201).json({ message: "Support Created!", support });

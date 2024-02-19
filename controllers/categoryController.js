@@ -125,7 +125,7 @@ const updateRole = asyncHandler(async (req, res) => {
   const roleId = req.params.id;
   const { roleName } = req.body;
 
-  if ((!roleName)) {
+  if (!roleName) {
     res.status(404);
     throw new Error("All Fields required!");
   }
@@ -145,7 +145,7 @@ const updateRoleStatus = asyncHandler(async (req, res) => {
   const roleId = req.params.id;
   const { status } = req.body;
 
-  if (( status === undefined || status === null || status === "")) {
+  if (status === undefined || status === null || status === "") {
     res.status(404);
     throw new Error("All Fields required!");
   }
@@ -170,5 +170,5 @@ module.exports = {
   updateCategory,
   deleteRole,
   updateRole,
-  updateRoleStatus
+  updateRoleStatus,
 };

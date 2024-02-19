@@ -1,10 +1,7 @@
 const mongoose = require("mongoose");
 
-const workPost = mongoose.Schema(
+const workPostSchema = mongoose.Schema(
   {
-    title: {
-      type: String,
-    },
     description: {
       type: String,
     },
@@ -29,4 +26,26 @@ const workPost = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("WorkPost", workPost);
+const savedWorkPostSchema = mongoose.Schema(
+  {
+    workpostData: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "WorkPost",
+    },
+    worker: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Worker",
+    }
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const WorkPost = mongoose.model("WorkPost", workPostSchema);
+const SavedWorkPost = mongoose.model("SavedWorkPost", savedWorkPostSchema);
+
+module.exports = {
+  WorkPost,
+  SavedWorkPost
+}

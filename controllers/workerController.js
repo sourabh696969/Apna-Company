@@ -301,5 +301,5 @@ module.exports = {
   AllUserById,
   signupUser,
   deleteUser,
-  AllUserByRole
+  AllUserByRole,
 };

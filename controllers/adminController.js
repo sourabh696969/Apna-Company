@@ -313,6 +313,7 @@ const getWorkerBySubAdminId = asyncHandler(async (req, res) => {
   }
   res.status(200).json(subAdmin);
 });
+
 module.exports = {
   registerAdmin,
   loginAdmin,

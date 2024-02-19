@@ -1,18 +1,17 @@
 const asyncHandler = require("express-async-handler");
-const WorkPost = require("../model/workPostModel");
+const { WorkPost, SavedWorkPost } = require("../model/workPostModel");
 const User = require("../model/userModel");
 
 const createWorkPost = asyncHandler(async (req, res) => {
-  const { title, description, work, duration } = req.body;
+  const { description, work, duration } = req.body;
   const user = req.user;
 
-  if ((!title, !description, !work, !duration)) {
+  if ((!description, !work, !duration)) {
     res.status(404);
     throw new Error("All Fields required!");
   }
 
   const workpost = await WorkPost.create({
-    title,
     description,
     work,
     user,
@@ -27,16 +26,15 @@ const createWorkPost = asyncHandler(async (req, res) => {
 });
 
 const updateWorkPost = asyncHandler(async (req, res) => {
-  const { title, description, work, duration } = req.body;
+  const { description, work, duration } = req.body;
   const postId = req.params.id;
 
-  if ((!title, !description, !work, !duration)) {
+  if ((!description, !work, !duration)) {
     res.status(404);
     throw new Error("All Fields required!");
   }
 
   const workpost = await WorkPost.findByIdAndUpdate(postId, {
-    title,
     description,
     work,
     duration,
@@ -242,6 +240,70 @@ const deleteWorkPost = asyncHandler(async (req, res) => {
   }
 });
 
+const saveWorkpost = asyncHandler(async (req, res) => {
+  const { workPostId } = req.body;
+  const workerId = req.user;
+
+  const alreadySaved = await SavedWorkPost.findOne({
+    workpostData: workPostId,
+  });
+
+  if (alreadySaved) {
+    res.status(403);
+    throw new Error("WorkPost Already Saved!");
+  }
+
+  const saveWorkPost = await SavedWorkPost.create({
+    workpostData: workPostId,
+    worker: workerId,
+  });
+
+  res.status(200).json({ message: "Post Saved Successfully!", saveWorkPost });
+});
+
+const getSavedWorkPost = asyncHandler(async (req, res) => {
+  const workerId = req.params.id;
+
+  const post = await SavedWorkPost.find({
+    worker: workerId,
+  }).populate({
+    path: "workpostData",
+    populate: {
+      path: "work",
+      select: "categoryName",
+    },
+  });
+
+  await SavedWorkPost.populate(post, {
+    path: "workpostData.user",
+    select: "username phone",
+  });
+
+  if (post.length === 0) {
+    res.status(404);
+    throw new Error("Post not found!");
+  }
+  res.status(200).json(post);
+});
+
+const deleteSavedWorkPost = asyncHandler(async (req, res) => {
+  const savedPostId = req.params.id;
+
+  const deletedPost = await SavedWorkPost.findByIdAndDelete(savedPostId);
+
+  if (!deletedPost) {
+    res.status(404);
+    throw new Error("Post not found!");
+  }
+
+  if (deletedPost) {
+    res.status(200).json({ message: "Post Unsaved Successfully!" });
+  } else {
+    res.status(400);
+    throw new Error("data is not valid!");
+  }
+});
+
 module.exports = {
   createWorkPost,
   updateWorkPost,
@@ -251,4 +313,7 @@ module.exports = {
   getSingleWorkPost,
   deleteWorkPost,
   getAllVerifiedWorkPost,
+  saveWorkpost,
+  deleteSavedWorkPost,
+  getSavedWorkPost,
 };

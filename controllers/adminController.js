@@ -184,7 +184,7 @@ const updateWorker = asyncHandler(async (req, res) => {
   worker.phone = worker.phone;
   worker.address = address;
   worker.price = price;
-  worker.profileImg = image;
+  worker.profileImg = image == null ? worker.profileImg : image;
 
   worker.save();
 

@@ -162,9 +162,7 @@ const AllUser = asyncHandler(async (req, res) => {
       { phone: { $regex: searchQuary, $options: "i" } },
       { address: { $regex: searchQuary, $options: "i" } },
     ],
-  })
-    .populate("subAdminData", "name phone email")
-    .populate("role", "roleName")
+  }).populate("role", "roleName")
     .populate("category", "categoryName categoryImg")
     .skip(skip)
     .limit(limits);

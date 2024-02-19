@@ -215,6 +215,7 @@ const AllUser = asyncHandler(async (req, res) => {
       { address: { $regex: searchQuary, $options: "i" } },
     ],
   })
+    .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryImg")
     .skip(skip)
@@ -253,6 +254,34 @@ const AllUserById = asyncHandler(async (req, res) => {
   res.status(200).json(data);
 });
 
+const AllUserByRole = asyncHandler(async (req, res) => {
+  const { page, limit, searchQuary } = req.query;
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
+
+  const data = await Worker.find({
+    category: req.params.catid,
+    role: req.params.roleid,
+    status: true,
+    $or: [
+      { username: { $regex: searchQuary, $options: "i" } },
+      { phone: { $regex: searchQuary, $options: "i" } },
+      { address: { $regex: searchQuary, $options: "i" } },
+    ],
+  })
+    .populate("role", "roleName")
+    .populate("category", "categoryName categoryImg")
+    .skip(skip)
+    .limit(limits);
+  if (!data || data.length === 0) {
+    res.status(400);
+    throw new Error("data not found");
+  }
+  res.status(200).json(data);
+});
+
 const deleteUser = asyncHandler(async (req, res) => {
   const userId = req.params.id;
   const user = await Worker.findByIdAndDelete(userId);
@@ -272,4 +301,5 @@ module.exports = {
   AllUserById,
   signupUser,
   deleteUser,
+  AllUserByRole
 };

@@ -7,6 +7,7 @@ const {
   signupUser,
   getUserById,
   deleteUser,
+  AllUserByRole,
 } = require("../controllers/workerController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const {
@@ -59,6 +60,7 @@ router.post("/login", loginUser);
 router.post("/signup", signupUser);
 router.post("/verify", veifyOtp);
 router.get("/single/:id", getUserById);
+router.get("/single/:catid/:roleid", AllUserByRole);
 router.get("/all", AllUser);
 router.delete("/:id", deleteUser);
 

@@ -8,6 +8,7 @@ const {
   verifyPosts,
   updateSupport,
   getLengthOfData,
+  verifySubAdmin,
 } = require("../controllers/adminController");
 const multer = require("multer");
 const path = require("path");
@@ -49,6 +50,7 @@ router.put(
 );
 router.put("/verifyPost/:id", verifyPosts);
 router.put("/updateSupport/:id", updateSupport);
+router.patch("/verifySubAdmin/:id", verifySubAdmin);
 router.get("/counts", getLengthOfData);
 
 module.exports = router;

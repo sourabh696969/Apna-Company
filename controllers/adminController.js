@@ -6,6 +6,7 @@ const Role = require("../model/roleModel");
 const WorkPost = require("../model/workPostModel");
 const User = require("../model/userModel");
 const Support = require("../model/supportModel");
+const SubAdmin = require("../model/subAdminModel");
 const jwt = require("jsonwebtoken");
 
 const registerAdmin = asyncHandler(async (req, res) => {
@@ -230,6 +231,26 @@ const updateSupport = asyncHandler(async (req, res) => {
   res.status(201).json({ message: "Support status changed successfully!" });
 });
 
+const verifySubAdmin = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const subAdminId = req.params.id;
+
+  if (status === undefined || status === null || status === "") {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+  const subAdmin = await SubAdmin.findByIdAndUpdate(subAdminId, {
+    status: status,
+  });
+
+  if (!subAdmin) {
+    res.status(404);
+    throw new Error("SubAdmin not found!");
+  }
+
+  res.status(201).json({ message: "SubAdmin status changed successfully!" });
+});
+
 const getLengthOfData = asyncHandler(async (req, res) => {
   const allWorker = await Worker.find({ status: true }).count();
   const allUser = await User.find({ status: true }).count();
@@ -253,4 +274,5 @@ module.exports = {
   verifyPosts,
   updateSupport,
   getLengthOfData,
+  verifySubAdmin
 };

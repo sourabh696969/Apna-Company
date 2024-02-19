@@ -31,11 +31,10 @@ const registerAdmin = asyncHandler(async (req, res) => {
       email,
       password,
     });
-  
+
     res.status(201).json({ message: "Admin Registered!", admin });
   }
   res.status(401).json({ message: "Cannot create more than 1 admin!" });
-  
 });
 
 const loginAdmin = asyncHandler(async (req, res) => {
@@ -289,6 +288,21 @@ const getAllSubAdmin = asyncHandler(async (req, res) => {
   res.status(200).json(subAdmin);
 });
 
+const getWorkerBySubAdminId = asyncHandler(async (req, res) => {
+  const subAdminId = req.params.id;
+
+  const subAdmin = await Worker.find({
+    subAdminData: subAdminId,
+  })
+    .populate("subAdminData", "name phone email")
+    .populate("role", "roleName")
+    .populate("category", "categoryName categoryImg");
+  if (!subAdmin) {
+    res.status(404);
+    throw new Error("SubAdmin not found!");
+  }
+  res.status(200).json(subAdmin);
+});
 module.exports = {
   registerAdmin,
   loginAdmin,
@@ -301,4 +315,5 @@ module.exports = {
   verifySubAdmin,
   deleteSubAdmin,
   getAllSubAdmin,
+  getWorkerBySubAdminId,
 };

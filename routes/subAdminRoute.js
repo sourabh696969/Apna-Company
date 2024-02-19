@@ -40,6 +40,7 @@ router.post("/login", loginSubAdmin);
 router.post(
   "/createWorker",
   upload.fields([{ name: "profileImg", maxCount: 1 }]),
+  validateUserToken,
   createWorker
 );
 router.get("/all", AllUser);

@@ -102,6 +102,7 @@ const forgotPasswordSubAdmin = asyncHandler(async (req, res) => {
 
 const createWorker = asyncHandler(async (req, res) => {
   const { username, roleId, categoryId, phone, address, price } = req.body;
+  const subAdminId = req.user;
 
   if ((!username, !roleId, !categoryId, !phone, !address, !price)) {
     res.status(404);
@@ -141,6 +142,7 @@ const createWorker = asyncHandler(async (req, res) => {
       status: true,
       profileImg: image,
       createdBy: "SubAdmin",
+      subAdminData: subAdminId,
     });
     res.status(201).json({ message: "User Registered!", worker });
   }
@@ -161,6 +163,7 @@ const AllUser = asyncHandler(async (req, res) => {
       { address: { $regex: searchQuary, $options: "i" } },
     ],
   })
+    .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryImg")
     .skip(skip)
@@ -209,8 +212,8 @@ const updateWorker = asyncHandler(async (req, res) => {
   }
 
   const image = req.files["profileImg"]
-  ? req.files["profileImg"][0].path
-  : null;
+    ? req.files["profileImg"][0].path
+    : null;
 
   worker.username = username;
   worker.role = role._id;
@@ -232,15 +235,18 @@ const updateWorker = asyncHandler(async (req, res) => {
 });
 
 const getSingleSubAdmin = asyncHandler(async (req, res) => {
-    const subAdminId = req.params.id;
+  const subAdminId = req.params.id;
 
-    const subAdmin = await SubAdmin.findById(subAdminId);
-    if (!subAdmin) {
-      res.status(404);
-      throw new Error("SubAdmin not found!");
-    }
-    res.status(200).json(subAdmin);
-  });
+  const subAdmin = await SubAdmin.findById(subAdminId)
+    .populate("subAdminData", "name phone email")
+    .populate("role", "roleName")
+    .populate("category", "categoryName categoryImg");
+  if (!subAdmin) {
+    res.status(404);
+    throw new Error("SubAdmin not found!");
+  }
+  res.status(200).json(subAdmin);
+});
 
 module.exports = {
   registerSubAdmin,
@@ -249,5 +255,5 @@ module.exports = {
   createWorker,
   AllUser,
   updateWorker,
-  getSingleSubAdmin
+  getSingleSubAdmin,
 };

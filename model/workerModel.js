@@ -9,7 +9,6 @@ const userSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role",
     },
-
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
@@ -30,6 +29,10 @@ const userSchema = mongoose.Schema(
     status: {
       type: Boolean,
       default: false,
+    },
+    subAdminData: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubAdmin",
     },
     createdBy: {
       type: String,

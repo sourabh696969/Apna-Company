@@ -11,6 +11,7 @@ const {
   verifySubAdmin,
   deleteSubAdmin,
   getAllSubAdmin,
+  getWorkerBySubAdminId,
 } = require("../controllers/adminController");
 const multer = require("multer");
 const path = require("path");
@@ -54,7 +55,8 @@ router.put("/verifyPost/:id", verifyPosts);
 router.put("/updateSupport/:id", updateSupport);
 router.patch("/verifySubAdmin/:id", verifySubAdmin);
 router.get("/counts", getLengthOfData);
-router.delete("/deleteSubAdmin", deleteSubAdmin);
+router.delete("/deleteSubAdmin/:id", deleteSubAdmin);
 router.get("/SubAdmin", getAllSubAdmin);
+router.get("/workerBySubadmin/:id", getWorkerBySubAdminId);
 
 module.exports = router;

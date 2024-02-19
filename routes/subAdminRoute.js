@@ -45,6 +45,10 @@ router.post(
 );
 router.get("/all", AllUser);
 router.get("/profile/:id", getSingleSubAdmin);
-router.put("/updateWorker/:id", updateWorker);
+router.put(
+  "/updateWorker/:id",
+  upload.fields([{ name: "profileImg", maxCount: 1 }]),
+  updateWorker
+);
 
 module.exports = router;

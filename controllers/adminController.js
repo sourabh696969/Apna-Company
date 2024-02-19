@@ -290,9 +290,19 @@ const getAllSubAdmin = asyncHandler(async (req, res) => {
 
 const getWorkerBySubAdminId = asyncHandler(async (req, res) => {
   const subAdminId = req.params.id;
+  const { page, limit, searchQuary } = req.query;
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
 
   const subAdmin = await Worker.find({
     subAdminData: subAdminId,
+    $or: [
+      { username: { $regex: searchQuary, $options: "i" } },
+      { phone: { $regex: searchQuary, $options: "i" } },
+      { address: { $regex: searchQuary, $options: "i" } },
+    ],
   })
     .populate("subAdminData", "name phone email")
     .populate("role", "roleName")

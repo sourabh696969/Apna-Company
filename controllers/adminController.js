@@ -18,19 +18,24 @@ const registerAdmin = asyncHandler(async (req, res) => {
   }
 
   const adminEmail = await Admin.findOne({ email });
+  const adminCount = await Admin.find();
 
   if (adminEmail) {
     res.status(403);
     throw new Error("Admin already exist with this email!");
   }
 
-  const admin = await Admin.create({
-    name,
-    email,
-    password,
-  });
-
-  res.status(401).json({ message: "Admin Registered!", admin });
+  if (adminCount === 0) {
+    const admin = await Admin.create({
+      name,
+      email,
+      password,
+    });
+  
+    res.status(201).json({ message: "Admin Registered!", admin });
+  }
+  res.status(401).json({ message: "Cannot create more than 1 admin!" });
+  
 });
 
 const loginAdmin = asyncHandler(async (req, res) => {

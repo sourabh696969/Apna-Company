@@ -31,6 +31,10 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    createdBy: {
+      type: String,
+      default: "worker",
+    },
   },
   {
     timestamps: true,

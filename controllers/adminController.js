@@ -132,6 +132,7 @@ const createWorker = asyncHandler(async (req, res) => {
       price,
       status: true,
       profileImg: image,
+      createdBy: "Admin",
     });
     res.status(201).json({ message: "User Registered!", worker });
   }

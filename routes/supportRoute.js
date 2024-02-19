@@ -1,15 +1,17 @@
 const express = require("express");
 const {
-  createSupport,
+  createSupportUser,
   getSupport,
   getSupportById,
   deleteSupport,
+  createSupportWorker,
 } = require("../controllers/supportController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 
 const router = express.Router();
 
-router.post("/create", validateUserToken, createSupport);
+router.post("/userSupport", validateUserToken, createSupportUser);
+router.post("/workerSupport", validateUserToken, createSupportWorker);
 router.get("/all", getSupport);
 router.get("/:id", getSupportById);
 router.delete("/:id", deleteSupport);

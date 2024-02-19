@@ -1,8 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../model/userModel");
+const Worker = require("../model/workerModel");
 const Support = require("../model/supportModel");
 
-const createSupport = asyncHandler(async (req, res) => {
+const createSupportUser = asyncHandler(async (req, res) => {
   const { description } = req.body;
   const userId = req.user;
 
@@ -21,6 +22,32 @@ const createSupport = asyncHandler(async (req, res) => {
   const support = await Support.create({
     description,
     userData: userId,
+    createdBy: "User"
+  });
+
+  res.status(201).json({ message: "Support Created!", support });
+});
+
+const createSupportWorker = asyncHandler(async (req, res) => {
+  const { description } = req.body;
+  const userId = req.user;
+
+  if (!description) {
+    res.status(404);
+    throw new Error("All Fields required!");
+  }
+
+  const workerData = await Worker.findById(userId);
+
+  if (!workerData) {
+    res.status(404);
+    throw new Error("Worker not found!");
+  }
+
+  const support = await Support.create({
+    description,
+    userData: userId,
+    createdBy: "Worker"
   });
 
   res.status(201).json({ message: "Support Created!", support });
@@ -82,7 +109,8 @@ const deleteSupport = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  createSupport,
+  createSupportUser,
+  createSupportWorker,
   getSupport,
   getSupportById,
   deleteSupport,

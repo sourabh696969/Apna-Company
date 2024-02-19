@@ -14,6 +14,9 @@ const supportSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    createdBy: {
+      type: String,
+    },
   },
   {
     timestamps: true,

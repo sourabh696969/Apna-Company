@@ -34,6 +34,7 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
+///// POST Routes /////
 router.post("/register", registerSubAdmin);
 router.post("/forgot", forgotPasswordSubAdmin);
 router.post("/login", loginSubAdmin);
@@ -43,12 +44,16 @@ router.post(
   validateUserToken,
   createWorker
 );
-router.get("/all", AllUser);
-router.get("/profile/:id", getSingleSubAdmin);
+
+///// PUT Routes /////
 router.put(
   "/updateWorker/:id",
   upload.fields([{ name: "profileImg", maxCount: 1 }]),
   updateWorker
 );
+
+///// GET Routes /////
+router.get("/all", AllUser);
+router.get("/profile/:id", getSingleSubAdmin);
 
 module.exports = router;

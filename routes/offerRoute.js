@@ -31,18 +31,25 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
+///// POST Routes /////
 router.post(
   "/create",
   upload.fields([{ name: "offerImg", maxCount: 1 }]),
   createOffer
 );
-router.get("/all", getOffer);
-router.get("/:id", getOfferById);
+
+///// PUT Routes /////
 router.put(
   "/:id",
   upload.fields([{ name: "offerImg", maxCount: 1 }]),
   updateOffer
 );
+
+///// GET Routes /////
+router.get("/all", getOffer);
+router.get("/:id", getOfferById);
+
+///// DELETE Routes /////
 router.delete("/:id", deleteOffer);
 
 module.exports = router;

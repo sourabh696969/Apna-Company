@@ -9,10 +9,17 @@ const {
 
 const router = express.Router();
 
+///// POST Routes /////
 router.post("/create", createTermCondition);
+
+///// PUT Routes /////
+router.put("/:id", updateTermCondition);
+
+///// GET Routes /////
 router.get("/all", getTermCondition);
 router.get("/:id", getTermConditionById);
-router.put("/:id", updateTermCondition);
+
+///// GET Routes /////
 router.delete("/:id", deleteTermCondition);
 
 module.exports = router;

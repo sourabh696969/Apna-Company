@@ -38,25 +38,32 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
+///// POST Routes /////
 router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
-router.put("/forgotPassword", forgotPasswordAdmin);
 router.post(
   "/createWorker",
   upload.fields([{ name: "profileImg", maxCount: 1 }]),
   createWorker
 );
+
+///// PUT & PATCH Routes /////
+router.put("/verifyPost/:id", verifyPosts);
+router.put("/updateSupport/:id", updateSupport);
+router.put("/forgotPassword", forgotPasswordAdmin);
+router.patch("/verifySubAdmin/:id", verifySubAdmin);
 router.put(
   "/updateWorker/:id",
   upload.fields([{ name: "profileImg", maxCount: 1 }]),
   updateWorker
 );
-router.put("/verifyPost/:id", verifyPosts);
-router.put("/updateSupport/:id", updateSupport);
-router.patch("/verifySubAdmin/:id", verifySubAdmin);
+
+///// GET Routes /////
 router.get("/counts", getLengthOfData);
-router.delete("/deleteSubAdmin/:id", deleteSubAdmin);
 router.get("/SubAdmin", getAllSubAdmin);
 router.get("/workerBySubadmin/:id", getWorkerBySubAdminId);
+
+///// DELETE Routes /////
+router.delete("/deleteSubAdmin/:id", deleteSubAdmin);
 
 module.exports = router;

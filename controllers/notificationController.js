@@ -9,7 +9,9 @@ const getUnreadNotification = asyncHandler(async (req, res) => {
     throw new Error("data not found!");
   }
 
-  res.status(200).json(notificationData);
+  res
+    .status(200)
+    .json({ totalNotification: notificationData.length, notificationData });
 });
 
 const getReadNotification = asyncHandler(async (req, res) => {
@@ -20,7 +22,9 @@ const getReadNotification = asyncHandler(async (req, res) => {
     throw new Error("data not found!");
   }
 
-  res.status(200).json(notificationData);
+  res
+    .status(200)
+    .json({ totalNotification: notificationData.length, notificationData });
 });
 
 const updateNotificationStatus = asyncHandler(async (req, res) => {

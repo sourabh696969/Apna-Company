@@ -113,7 +113,12 @@ const createWorker = asyncHandler(async (req, res) => {
   const userAvailable = await Worker.findOne({ phone });
   const category = await Category.findById(categoryId);
   const role = await Role.findById(roleId);
+  const subAdminAvailable = await SubAdmin.findById(subAdminId);
 
+  if (subAdminAvailable.status == false) {
+    res.status(404);
+    throw new Error("You do not have access of subadmin!");
+  }
   if (!category) {
     res.status(404);
     throw new Error("Category does not exists!");

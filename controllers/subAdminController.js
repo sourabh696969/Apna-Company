@@ -188,7 +188,7 @@ const updateWorker = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("All fields required!");
   }
-
+  
   const worker = await Worker.findById(userId);
   const userAvailable = await Worker.findOne({ phone });
   const category = await Category.findById(categoryId);

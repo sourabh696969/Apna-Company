@@ -13,6 +13,9 @@ const subAdminSchema = mongoose.Schema({
   password: {
     type: String,
   },
+  subAdminImg: {
+    type: String,
+  },
   status: {
     type: Boolean,
     default: false,

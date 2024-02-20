@@ -7,6 +7,8 @@ const {
   AllUser,
   updateWorker,
   getSingleSubAdmin,
+  addSubAdminImage,
+  updateSubAdmin,
 } = require("../controllers/subAdminController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const multer = require("multer");
@@ -50,6 +52,15 @@ router.put(
   "/updateWorker/:id",
   upload.fields([{ name: "profileImg", maxCount: 1 }]),
   updateWorker
+);
+router.put(
+  "/addImage/:id",
+  upload.fields([{ name: "subAdminImg", maxCount: 1 }]),
+  addSubAdminImage
+);
+router.put(
+  "/update/:id",
+  updateSubAdmin
 );
 
 ///// GET Routes /////

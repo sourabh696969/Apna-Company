@@ -25,10 +25,11 @@ const registerSubAdmin = asyncHandler(async (req, res) => {
     email,
     phone,
     password,
+    subAdminImg: null
   });
 
   res
-    .status(401)
+    .status(200)
     .json({ message: "please wait account under process!", subAdmin });
 });
 
@@ -244,6 +245,56 @@ const getSingleSubAdmin = asyncHandler(async (req, res) => {
   res.status(200).json(subAdmin);
 });
 
+const updateSubAdmin = asyncHandler(async (req, res) => {
+  const { name } = req.body;
+  const subAdminId = req.params.id;
+
+  if ((!name)) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  const subAdmin = await SubAdmin.findByIdAndUpdate(subAdminId, {
+    name
+  });
+
+  if (!subAdmin) {
+    res.status(403);
+    throw new Error("data not found!");
+  }
+
+  res
+    .status(200)
+    .json({ message: "SubAdmin Updated!" });
+});
+
+const addSubAdminImage = asyncHandler(async (req, res) => {
+  const subAdminId = req.params.id;
+
+  const images = req.files["subAdminImg"]
+  ? req.files["subAdminImg"][0].path
+  : null;
+
+  if ((!images)) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  const subAdmin = await SubAdmin.findByIdAndUpdate(subAdminId, {
+    subAdminImg: images
+  });
+
+  if (!subAdmin) {
+    res.status(403);
+    throw new Error("data not found!");
+  }
+
+  res
+    .status(200)
+    .json({ message: "SubAdmin Updated!" });
+});
+
+
 module.exports = {
   registerSubAdmin,
   loginSubAdmin,
@@ -252,4 +303,6 @@ module.exports = {
   AllUser,
   updateWorker,
   getSingleSubAdmin,
+  addSubAdminImage,
+  updateSubAdmin
 };

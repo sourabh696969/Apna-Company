@@ -1,10 +1,13 @@
 const asyncHandler = require("express-async-handler");
 const { WorkPost, SavedWorkPost } = require("../model/workPostModel");
+const Notification = require("../model/notificationModel");
 const User = require("../model/userModel");
 
 const createWorkPost = asyncHandler(async (req, res) => {
   const { description, work, duration } = req.body;
   const user = req.user;
+
+  const userData = await User.findById(user);
 
   if ((!description, !work, !duration)) {
     res.status(404);
@@ -19,6 +22,9 @@ const createWorkPost = asyncHandler(async (req, res) => {
   });
   if (workpost) {
     res.status(201).json({ message: "Work Post Created!", workpost });
+    await Notification.create({
+      notification: `WorkPost created by ${userData.username}`,
+    });
   } else {
     res.status(400);
     throw new Error("data is not valid!");

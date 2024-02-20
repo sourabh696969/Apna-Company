@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../model/userModel");
+const Notification = require("../model/notificationModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
 
@@ -40,6 +41,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (userPhone) {
     res.status(201).json({ message: "Agent Registered!", userPhone });
+    await Notification.create({
+      notification: `New User registered with phone number ${phone} and name ${username}`,
+    });
   } else {
     res.status(400);
     throw new Error("User data is not valid!");

@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../model/userModel");
 const Worker = require("../model/workerModel");
 const Support = require("../model/supportModel");
+const Notification = require("../model/notificationModel");
 
 const createSupportUser = asyncHandler(async (req, res) => {
   const { description } = req.body;
@@ -26,6 +27,9 @@ const createSupportUser = asyncHandler(async (req, res) => {
   });
 
   res.status(201).json({ message: "Support Created!", support });
+  await Notification.create({
+    notification: `Quary raised by User named ${userData.username}`,
+  });
 });
 
 const createSupportWorker = asyncHandler(async (req, res) => {
@@ -51,6 +55,9 @@ const createSupportWorker = asyncHandler(async (req, res) => {
   });
 
   res.status(201).json({ message: "Support Created!", support });
+  await Notification.create({
+    notification: `Quary raised by Worker named ${workerData.username}`,
+  });
 });
 
 const getSupport = asyncHandler(async (req, res) => {

@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
+const Notification = require("../model/notificationModel");
 const Role = require("../model/roleModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
@@ -61,6 +62,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (worker) {
     res.status(201).json({ message: "User Registered!", worker });
+    await Notification.create({
+      notification: `New Worker registered with phone number ${phone} and name ${username}`,
+    });
   } else {
     res.status(400);
     throw new Error("User data is not valid!");
@@ -180,6 +184,12 @@ const veifyOtp = asyncHandler(async (req, res) => {
     process.env.SECRET_KEY,
     { expiresIn: "1d" }
   );
+
+  if (!accessToken) {
+    res.status(500);
+    throw new Error("Server Error!");
+  }
+
   res.status(201).json({
     message: "User Verified successfully!",
     phone: phone,

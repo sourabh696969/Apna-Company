@@ -3,6 +3,7 @@ const SubAdmin = require("../model/subAdminModel");
 const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
+const Notification = require("../model/notificationModel");
 const jwt = require("jsonwebtoken");
 
 const registerSubAdmin = asyncHandler(async (req, res) => {
@@ -27,7 +28,9 @@ const registerSubAdmin = asyncHandler(async (req, res) => {
     password,
     subAdminImg: null
   });
-
+  await Notification.create({
+    notification: `New SubAdmin registered with phone number ${phone} and name ${name}`,
+  });
   res
     .status(200)
     .json({ message: "please wait account under process!", subAdmin });

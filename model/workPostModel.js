@@ -18,7 +18,7 @@ const workPostSchema = mongoose.Schema(
       default: false,
     },
     duration: {
-      type: String,
+      type: Number,
     },
   },
   {

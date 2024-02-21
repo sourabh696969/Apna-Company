@@ -20,6 +20,11 @@ const createWorkPost = asyncHandler(async (req, res) => {
     user,
     duration,
   });
+
+  setTimeout(async () => {
+    await WorkPost.findByIdAndDelete(workpost._id);
+  }, duration * 86400000);
+
   if (workpost) {
     res.status(201).json({ message: "Work Post Created!", workpost });
     await Notification.create({
@@ -32,10 +37,10 @@ const createWorkPost = asyncHandler(async (req, res) => {
 });
 
 const updateWorkPost = asyncHandler(async (req, res) => {
-  const { description, work, duration } = req.body;
+  const { description, work } = req.body;
   const postId = req.params.id;
 
-  if ((!description, !work, !duration)) {
+  if ((!description, !work)) {
     res.status(404);
     throw new Error("All Fields required!");
   }
@@ -43,13 +48,13 @@ const updateWorkPost = asyncHandler(async (req, res) => {
   const workpost = await WorkPost.findByIdAndUpdate(postId, {
     description,
     work,
-    duration,
   });
 
   if (!workpost) {
     res.status(404);
     throw new Error("Post not found!");
   }
+
   if (workpost) {
     res.status(201).json({ message: "Work Post Updated!", workpost });
   } else {

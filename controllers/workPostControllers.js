@@ -73,6 +73,7 @@ const getWorkPostById = asyncHandler(async (req, res) => {
 
   const post = await WorkPost.find({
     user: postId,
+    status: true,
     $or: [
       {
         user: {

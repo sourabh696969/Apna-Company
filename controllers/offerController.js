@@ -36,7 +36,7 @@ const updateOffer = asyncHandler(async (req, res) => {
   }
   const offer = await Offer.findByIdAndUpdate(offerId, {
     offerName,
-    offerImg,
+    offerImg: offerImg == null ? offer.offerImg : offerImg,
   });
 
   if (!offer) {

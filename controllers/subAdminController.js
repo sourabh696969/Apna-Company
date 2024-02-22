@@ -26,7 +26,7 @@ const registerSubAdmin = asyncHandler(async (req, res) => {
     email,
     phone,
     password,
-    subAdminImg: null
+    subAdminImg: null,
   });
   await Notification.create({
     notification: `New SubAdmin registered with phone number ${phone} and name ${name}`,
@@ -191,7 +191,7 @@ const updateWorker = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("All fields required!");
   }
-  
+
   const worker = await Worker.findById(userId);
   const userAvailable = await Worker.findOne({ phone });
   const category = await Category.findById(categoryId);
@@ -245,7 +245,7 @@ const updateWorker = asyncHandler(async (req, res) => {
 const getSingleSubAdmin = asyncHandler(async (req, res) => {
   const subAdminId = req.params.id;
 
-  const subAdmin = await SubAdmin.findById(subAdminId);
+  const subAdmin = await SubAdmin.findById({ subAdminId }, "-password");
   if (!subAdmin) {
     res.status(404);
     throw new Error("SubAdmin not found!");
@@ -257,13 +257,13 @@ const updateSubAdmin = asyncHandler(async (req, res) => {
   const { name } = req.body;
   const subAdminId = req.params.id;
 
-  if ((!name)) {
+  if (!name) {
     res.status(404);
     throw new Error("All fields required!");
   }
 
   const subAdmin = await SubAdmin.findByIdAndUpdate(subAdminId, {
-    name
+    name,
   });
 
   if (!subAdmin) {
@@ -271,25 +271,23 @@ const updateSubAdmin = asyncHandler(async (req, res) => {
     throw new Error("data not found!");
   }
 
-  res
-    .status(200)
-    .json({ message: "SubAdmin Updated!" });
+  res.status(200).json({ message: "SubAdmin Updated!" });
 });
 
 const addSubAdminImage = asyncHandler(async (req, res) => {
   const subAdminId = req.params.id;
 
   const images = req.files["subAdminImg"]
-  ? req.files["subAdminImg"][0].path
-  : null;
+    ? req.files["subAdminImg"][0].path
+    : null;
 
-  if ((!images)) {
+  if (!images) {
     res.status(404);
     throw new Error("All fields required!");
   }
 
   const subAdmin = await SubAdmin.findByIdAndUpdate(subAdminId, {
-    subAdminImg: images
+    subAdminImg: images == null ? subAdmin.subAdminImg : images,
   });
 
   if (!subAdmin) {
@@ -297,11 +295,8 @@ const addSubAdminImage = asyncHandler(async (req, res) => {
     throw new Error("data not found!");
   }
 
-  res
-    .status(200)
-    .json({ message: "SubAdmin Updated!" });
+  res.status(200).json({ message: "SubAdmin Updated!" });
 });
-
 
 module.exports = {
   registerSubAdmin,
@@ -312,5 +307,5 @@ module.exports = {
   updateWorker,
   getSingleSubAdmin,
   addSubAdminImage,
-  updateSubAdmin
+  updateSubAdmin,
 };

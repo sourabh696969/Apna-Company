@@ -136,7 +136,7 @@ const createWorker = asyncHandler(async (req, res) => {
       address,
       price,
       status: true,
-      profileImg: image,
+      profileImg: image == null ? userAvailable.profileImg : image,
       createdBy: "Admin",
     });
     res.status(201).json({ message: "User Registered!", worker });
@@ -280,7 +280,7 @@ const deleteSubAdmin = asyncHandler(async (req, res) => {
 });
 
 const getAllSubAdmin = asyncHandler(async (req, res) => {
-  const subAdmin = await SubAdmin.find();
+  const subAdmin = await SubAdmin.find({}, '-password');
   if (!subAdmin) {
     res.status(404);
     throw new Error("SubAdmin not found!");

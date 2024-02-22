@@ -72,7 +72,7 @@ const updateCategory = asyncHandler(async (req, res) => {
 
   const updateCategory = await Category.findByIdAndUpdate(catId, {
     categoryName,
-    categoryImg: images,
+    categoryImg: images == null ? updateCategory.categoryImg : images,
   });
 
   if (!updateCategory) {

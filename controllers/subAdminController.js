@@ -245,7 +245,7 @@ const updateWorker = asyncHandler(async (req, res) => {
 const getSingleSubAdmin = asyncHandler(async (req, res) => {
   const subAdminId = req.params.id;
 
-  const subAdmin = await SubAdmin.findById(subAdminId, "-password");
+  const subAdmin = await SubAdmin.findById(subAdminId);
   if (!subAdmin) {
     res.status(404);
     throw new Error("SubAdmin not found!");

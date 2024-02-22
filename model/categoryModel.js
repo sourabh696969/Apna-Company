@@ -6,6 +6,10 @@ const categorySchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    categoryNameHindi: {
+      type: String,
+      required: true,
+    },
     categoryImg: {
       type: String,
       required: true,

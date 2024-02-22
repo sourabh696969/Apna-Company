@@ -173,7 +173,7 @@ const AllUser = asyncHandler(async (req, res) => {
     ],
   })
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryImg")
+    .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
   if (!all || all.length === 0) {

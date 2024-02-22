@@ -328,7 +328,7 @@ const getWorkerBySubAdminId = asyncHandler(async (req, res) => {
   })
     .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryImg");
+    .populate("category", "categoryName categoryNameHindi categoryImg");
   if (!subAdmin) {
     res.status(404);
     throw new Error("SubAdmin not found!");

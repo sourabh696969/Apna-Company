@@ -202,7 +202,7 @@ const getUserById = asyncHandler(async (req, res) => {
   const userId = req.params.id;
   const singleUser = await Worker.findById(userId)
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryImg");
+    .populate("category", "categoryName categoryNameHindi categoryImg");
   if (!singleUser) {
     res.status(404);
     throw new Error("Users not found!");
@@ -227,7 +227,7 @@ const AllUser = asyncHandler(async (req, res) => {
   })
     .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryImg")
+    .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
   if (!all || all.length === 0) {
@@ -254,7 +254,7 @@ const AllUserById = asyncHandler(async (req, res) => {
     ],
   })
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryImg")
+    .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
   if (!data || data.length === 0) {
@@ -282,7 +282,7 @@ const AllUserByRole = asyncHandler(async (req, res) => {
     ],
   })
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryImg")
+    .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
   if (!data || data.length === 0) {

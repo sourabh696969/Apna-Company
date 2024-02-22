@@ -87,7 +87,7 @@ const getWorkPostById = asyncHandler(async (req, res) => {
     ],
   })
     .populate("user", "phone username address")
-    .populate("work", "categoryName categoryImg")
+    .populate("work", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
 
@@ -109,7 +109,7 @@ const getSingleWorkPost = asyncHandler(async (req, res) => {
 
   const post = await WorkPost.findById(postId)
     .populate("user", "phone username address")
-    .populate("work", "categoryName categoryImg");
+    .populate("work", "categoryName categoryNameHindi categoryImg");
 
   if (!post || post.length === 0) {
     res.status(404);
@@ -149,7 +149,7 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
     ],
   })
     .populate("user", "phone username address")
-    .populate("work", "categoryName categoryImg")
+    .populate("work", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
 
@@ -188,7 +188,7 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
     ],
   })
     .populate("user", "phone username address")
-    .populate("work", "categoryName categoryImg")
+    .populate("work", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
 
@@ -222,7 +222,7 @@ const getAllVerifiedWorkPost = asyncHandler(async (req, res) => {
     ],
   })
     .populate("user", "phone username address")
-    .populate("work", "categoryName categoryImg")
+    .populate("work", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
 
@@ -281,7 +281,7 @@ const getSavedWorkPost = asyncHandler(async (req, res) => {
     path: "workpostData",
     populate: {
       path: "work",
-      select: "categoryName",
+      select: "categoryName categoryNameHindi",
     },
   });
 

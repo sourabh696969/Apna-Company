@@ -4,9 +4,9 @@ const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
 
 const createCategory = asyncHandler(async (req, res) => {
-  const { categoryName } = req.body;
+  const { categoryName, categoryNameHindi } = req.body;
 
-  if (!categoryName) {
+  if (!categoryName, !categoryNameHindi) {
     res.status(404);
     throw new Error("All Fields required!");
   }
@@ -27,6 +27,7 @@ const createCategory = asyncHandler(async (req, res) => {
 
   const category = await Category.create({
     categoryName,
+    categoryNameHindi,
     categoryImg: images,
   });
 
@@ -54,9 +55,9 @@ const deleteCategory = asyncHandler(async (req, res) => {
 
 const updateCategory = asyncHandler(async (req, res) => {
   const catId = req.params.id;
-  const { categoryName } = req.body;
+  const { categoryName, categoryNameHindi } = req.body;
 
-  if (!categoryName) {
+  if (!categoryName, !categoryNameHindi) {
     res.status(404);
     throw new Error("All Fields required!");
   }
@@ -72,6 +73,7 @@ const updateCategory = asyncHandler(async (req, res) => {
 
   const updateCategory = await Category.findByIdAndUpdate(catId, {
     categoryName,
+    categoryNameHindi,
     categoryImg: images == null ? updateCategory.categoryImg : images,
   });
 

@@ -5,7 +5,7 @@ const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
 const { WorkPost } = require("../model/workPostModel");
 const User = require("../model/userModel");
-const Support = require("../model/supportModel");
+const { UserSupport, WorkerSupport } = require("../model/supportModel");
 const SubAdmin = require("../model/subAdminModel");
 const jwt = require("jsonwebtoken");
 
@@ -215,7 +215,7 @@ const verifyPosts = asyncHandler(async (req, res) => {
   res.status(201).json({ message: "Post status changed successfully!" });
 });
 
-const updateSupport = asyncHandler(async (req, res) => {
+const updateUserSupport = asyncHandler(async (req, res) => {
   const { status } = req.body;
   const supportId = req.params.id;
 
@@ -223,7 +223,27 @@ const updateSupport = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("All fields required!");
   }
-  const supprot = await Support.findByIdAndUpdate(supportId, {
+  const supprot = await UserSupport.findByIdAndUpdate(supportId, {
+    status: status,
+  });
+
+  if (!supprot) {
+    res.status(404);
+    throw new Error("support not found!");
+  }
+
+  res.status(201).json({ message: "Support status changed successfully!" });
+});
+
+const updateWorkerSupport = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const supportId = req.params.id;
+
+  if (status === undefined || status === null || status === "") {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+  const supprot = await WorkerSupport.findByIdAndUpdate(supportId, {
     status: status,
   });
 
@@ -259,12 +279,14 @@ const getLengthOfData = asyncHandler(async (req, res) => {
   const allWorker = await Worker.find({ status: true }).count();
   const allUser = await User.find({ status: true }).count();
   const allWorkPost = await WorkPost.find().count();
-  const allSupport = await Support.find().count();
+  const userSupport = await UserSupport.find().count();
+  const workerSupport = await WorkerSupport.find().count();
 
   res.status(200).json({
     UserCount: allUser,
     WorkerCount: allWorker,
-    SupportCount: allSupport,
+    UserSupportCount: userSupport,
+    WorkerSupportCount: workerSupport,
     WorkPostCount: allWorkPost,
   });
 });
@@ -280,7 +302,7 @@ const deleteSubAdmin = asyncHandler(async (req, res) => {
 });
 
 const getAllSubAdmin = asyncHandler(async (req, res) => {
-  const subAdmin = await SubAdmin.find({}, '-password');
+  const subAdmin = await SubAdmin.find({}, "-password");
   if (!subAdmin) {
     res.status(404);
     throw new Error("SubAdmin not found!");
@@ -321,7 +343,8 @@ module.exports = {
   createWorker,
   updateWorker,
   verifyPosts,
-  updateSupport,
+  updateUserSupport,
+  updateWorkerSupport,
   getLengthOfData,
   verifySubAdmin,
   deleteSubAdmin,

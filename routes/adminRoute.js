@@ -6,12 +6,13 @@ const {
   createWorker,
   updateWorker,
   verifyPosts,
-  updateSupport,
   getLengthOfData,
   verifySubAdmin,
   deleteSubAdmin,
   getAllSubAdmin,
   getWorkerBySubAdminId,
+  updateUserSupport,
+  updateWorkerSupport,
 } = require("../controllers/adminController");
 const multer = require("multer");
 const path = require("path");
@@ -49,14 +50,15 @@ router.post(
 
 ///// PUT & PATCH Routes /////
 router.put("/verifyPost/:id", verifyPosts);
-router.put("/updateSupport/:id", updateSupport);
-router.put("/forgotPassword", forgotPasswordAdmin);
-router.patch("/verifySubAdmin/:id", verifySubAdmin);
 router.put(
   "/updateWorker/:id",
   upload.fields([{ name: "profileImg", maxCount: 1 }]),
   updateWorker
 );
+router.put("/forgotPassword", forgotPasswordAdmin);
+router.patch("/verifySubAdmin/:id", verifySubAdmin);
+router.patch("/updateUserSupport/:id", updateUserSupport);
+router.patch("/updateWorkerSupport/:id", updateWorkerSupport);
 
 ///// GET Routes /////
 router.get("/counts", getLengthOfData);

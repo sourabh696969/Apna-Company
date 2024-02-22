@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const supportSchema = mongoose.Schema(
+const userSupportSchema = mongoose.Schema(
   {
     description: {
       type: String,
@@ -14,8 +14,25 @@ const supportSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    createdBy: {
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const workerSupportSchema = mongoose.Schema(
+  {
+    description: {
       type: String,
+      required: true,
+    },
+    workerData: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Worker",
+    },
+    status: {
+      type: Boolean,
+      default: false,
     },
   },
   {
@@ -23,4 +40,10 @@ const supportSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Support", supportSchema);
+const UserSupport = mongoose.model("UserSupport", userSupportSchema);
+const WorkerSupport = mongoose.model("WorkerSupport", workerSupportSchema);
+
+module.exports = {
+  UserSupport,
+  WorkerSupport,
+};

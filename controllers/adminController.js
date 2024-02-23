@@ -308,7 +308,7 @@ const deleteSubAdmin = asyncHandler(async (req, res) => {
 });
 
 const getAllSubAdmin = asyncHandler(async (req, res) => {
-  const subAdmin = await SubAdmin.find({}, "-password");
+  const subAdmin = await SubAdmin.find({}, "-password").sort({ updatedAt: -1 });
   if (!subAdmin) {
     res.status(404);
     throw new Error("SubAdmin not found!");
@@ -334,7 +334,8 @@ const getWorkerBySubAdminId = asyncHandler(async (req, res) => {
   })
     .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
-    .populate("category", "categoryName categoryNameHindi categoryImg");
+    .populate("category", "categoryName categoryNameHindi categoryImg")
+    .sort({ updatedAt: -1 });
   if (!subAdmin) {
     res.status(404);
     throw new Error("SubAdmin not found!");

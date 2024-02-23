@@ -40,7 +40,7 @@ const registerUser = asyncHandler(async (req, res) => {
   userPhone.save();
 
   if (userPhone) {
-    res.status(201).json({ message: "Agent Registered!", userPhone });
+    res.status(201).json({ message: "User Registered!", userPhone });
     await Notification.create({
       notification: `${username} !! New User registered.`,
     });
@@ -129,7 +129,7 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   } else {
     res.status(404);
-    throw new Error("Agent data is not valid!");
+    throw new Error("User data is not valid!");
   }
 });
 
@@ -197,7 +197,8 @@ const getAllUser = asyncHandler(async (req, res) => {
     ],
   })
     .skip(skip)
-    .limit(limits).sort({updatedAt: -1});
+    .limit(limits)
+    .sort({ updatedAt: -1 });
   if (!allUser || allUser.length === 0) {
     res.status(404);
     throw new Error("Users not found!");

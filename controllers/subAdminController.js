@@ -175,7 +175,8 @@ const AllUser = asyncHandler(async (req, res) => {
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
-    .limit(limits);
+    .limit(limits)
+    .sort({ updatedAt: -1 });
   if (!all || all.length === 0) {
     res.status(400);
     throw new Error("data not found");

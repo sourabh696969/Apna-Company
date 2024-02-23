@@ -18,6 +18,6 @@ router.get("/read", getReadNotification);
 
 ///// Delete Routes /////
 router.delete("/delete/:id", deleteNotificationById);
-router.delete("/unRead", deleteUnreadNotification);
+router.delete("/read", deleteUnreadNotification);
 
 module.exports = router;

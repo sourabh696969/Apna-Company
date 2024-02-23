@@ -5,6 +5,9 @@ const agentSchema = mongoose.Schema(
     username: {
       type: String,
     },
+    profileImg: {
+      type: String,
+    },
     phone: {
       type: String,
       required: true,

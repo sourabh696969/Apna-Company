@@ -31,11 +31,15 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("phone number is invalid!");
   }
+  const image = req.files["profileImg"]
+    ? req.files["profileImg"][0].path
+    : null;
 
   userPhone.username = username;
   userPhone.phone = phone;
   userPhone.address = address;
   userPhone.status = true;
+  userPhone.profileImg = image == null ? userPhone.profileImg : image;
 
   userPhone.save();
 

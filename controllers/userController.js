@@ -42,7 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (userPhone) {
     res.status(201).json({ message: "Agent Registered!", userPhone });
     await Notification.create({
-      notification: `New User registered with phone number ${phone} and name ${username}`,
+      notification: `${username} !! New User registered.`,
     });
   } else {
     res.status(400);

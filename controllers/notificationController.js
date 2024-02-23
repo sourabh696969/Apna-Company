@@ -50,8 +50,34 @@ const updateNotificationStatus = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Notification updated successfully!" });
 });
 
+const deleteNotificationById = asyncHandler(async(req, res) => {
+  const notificationId = req.params.id;
+
+  const deleteNotification = await Notification.findByIdAndDelete(notificationId);
+
+  if (!deleteNotification) {
+    res.status(404);
+    throw new Error("Notification not found!");
+  }
+
+  res.status(200).json({ message: "Notification deleted successfully!" });
+});
+
+const deleteUnreadNotification = asyncHandler(async(req, res) => {
+  const deleteNotification = await Notification.deleteMany({ status: true });
+
+  if (!deleteNotification) {
+    res.status(404);
+    throw new Error("Notification not found!");
+  }
+
+  res.status(200).json({ message: "Notification deleted successfully!" });
+});
+
 module.exports = {
   getUnreadNotification,
   getReadNotification,
   updateNotificationStatus,
+  deleteNotificationById,
+  deleteUnreadNotification,
 };

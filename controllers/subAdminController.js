@@ -29,7 +29,7 @@ const registerSubAdmin = asyncHandler(async (req, res) => {
     subAdminImg: null,
   });
   await Notification.create({
-    notification: `New SubAdmin registered with phone number ${phone} and name ${name}`,
+    notification: `${name} !! New SubAdmin registered.`,
   });
   res
     .status(200)

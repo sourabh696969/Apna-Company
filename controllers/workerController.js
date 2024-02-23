@@ -63,7 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (worker) {
     res.status(201).json({ message: "User Registered!", worker });
     await Notification.create({
-      notification: `New Worker registered with phone number ${phone} and name ${username}`,
+      notification: `${username} !! New Worker registered.`,
     });
   } else {
     res.status(400);

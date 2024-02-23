@@ -28,7 +28,7 @@ const createWorkPost = asyncHandler(async (req, res) => {
   if (workpost) {
     res.status(201).json({ message: "Work Post Created!", workpost });
     await Notification.create({
-      notification: `WorkPost created by ${userData.username}`,
+      notification: `${userData.username} Posted new job!!`,
     });
   } else {
     res.status(400);

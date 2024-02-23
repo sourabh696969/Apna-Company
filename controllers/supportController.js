@@ -28,7 +28,7 @@ const createSupportUser = asyncHandler(async (req, res) => {
 
   res.status(201).json({ message: "Support Created!", support });
   await Notification.create({
-    notification: `Quary raised by User named ${userData.username}`,
+    notification: `Quary raised by U-${userData.username}`,
   });
 });
 
@@ -111,7 +111,7 @@ const createSupportWorker = asyncHandler(async (req, res) => {
 
   res.status(201).json({ message: "Support Created!", support });
   await Notification.create({
-    notification: `Quary raised by Worker named ${workerData.username}`,
+    notification: `Quary raised by W-${userData.username}`,
   });
 });
 

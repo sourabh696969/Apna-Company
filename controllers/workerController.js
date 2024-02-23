@@ -232,7 +232,7 @@ const AllUser = asyncHandler(async (req, res) => {
     .limit(limits)
     .sort({ updatedAt: -1 });
   if (!all || all.length === 0) {
-    res.status(400);
+    res.status(404);
     throw new Error("data not found");
   }
   res.status(200).json(all);
@@ -260,7 +260,7 @@ const AllUserById = asyncHandler(async (req, res) => {
     .limit(limits)
     .sort({ updatedAt: -1 });
   if (!data || data.length === 0) {
-    res.status(400);
+    res.status(404);
     throw new Error("data not found");
   }
   res.status(200).json(data);
@@ -289,7 +289,7 @@ const AllUserByRole = asyncHandler(async (req, res) => {
     .limit(limits)
     .sort({ updatedAt: -1 });
   if (!data || data.length === 0) {
-    res.status(400);
+    res.status(404);
     throw new Error("data not found");
   }
   res.status(200).json(data);

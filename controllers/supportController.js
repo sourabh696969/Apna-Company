@@ -26,6 +26,10 @@ const createSupportUser = asyncHandler(async (req, res) => {
     userData: userId,
   });
 
+  setTimeout(async () => {
+    await UserSupport.findByIdAndDelete(support._id);
+  }, 604800000);
+
   res.status(201).json({ message: "Support Created!", support });
   await Notification.create({
     notification: `Quary raised by U-${userData.username}`,
@@ -108,6 +112,10 @@ const createSupportWorker = asyncHandler(async (req, res) => {
     description,
     workerData: userId,
   });
+
+  setTimeout(async () => {
+    await WorkerSupport.findByIdAndDelete(support._id);
+  }, 604800000);
 
   res.status(201).json({ message: "Support Created!", support });
   await Notification.create({

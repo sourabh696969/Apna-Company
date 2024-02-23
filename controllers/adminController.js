@@ -281,6 +281,9 @@ const getLengthOfData = asyncHandler(async (req, res) => {
   const allWorkPost = await WorkPost.find().count();
   const userSupport = await UserSupport.find().count();
   const workerSupport = await WorkerSupport.find().count();
+  const allCategory = await Category.find().count();
+  const allRole = await Role.find().count();
+  const allSubAdmin = await SubAdmin.find().count();
 
   res.status(200).json({
     UserCount: allUser,
@@ -288,6 +291,9 @@ const getLengthOfData = asyncHandler(async (req, res) => {
     UserSupportCount: userSupport,
     WorkerSupportCount: workerSupport,
     WorkPostCount: allWorkPost,
+    CategoryCount: allCategory,
+    RoleCount: allRole,
+    SubAdminCount: allSubAdmin,
   });
 });
 

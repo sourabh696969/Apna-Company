@@ -197,7 +197,7 @@ const getAllUser = asyncHandler(async (req, res) => {
     ],
   })
     .skip(skip)
-    .limit(limits);
+    .limit(limits).sort({updatedAt: -1});
   if (!allUser || allUser.length === 0) {
     res.status(404);
     throw new Error("Users not found!");

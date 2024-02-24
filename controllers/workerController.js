@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
-const Notification = require("../model/notificationModel");
+const { Notification } = require("../model/notificationModel");
 const Role = require("../model/roleModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
@@ -10,9 +10,9 @@ let otp;
 
 const registerUser = asyncHandler(async (req, res) => {
   const userId = req.user;
-  const { username, roleId, categoryId, phone, address, price } = req.body;
+  const { username, roleId, categoryId, phone, address, city, state, pincode, price } = req.body;
 
-  if ((!username, !roleId, !categoryId, !phone, !address, !price)) {
+  if ((!username, !roleId, !categoryId, !phone, !address, !city, !state, !pincode, !price)) {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -54,6 +54,9 @@ const registerUser = asyncHandler(async (req, res) => {
   worker.category = category._id;
   worker.phone = phone;
   worker.address = address;
+  worker.city = city;
+  worker.state = state;
+  worker.pincode = pincode;
   worker.price = price;
   worker.status = true;
   worker.profileImg = image;

@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../model/userModel");
+const Worker = require("../model/workerModel");
 const { Notification } = require("../model/notificationModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
@@ -8,9 +9,9 @@ let otp;
 
 const registerUser = asyncHandler(async (req, res) => {
   const userId = req.user;
-  const { username, phone, address } = req.body;
+  const { username, phone, address, city, state, pincode } = req.body;
 
-  if ((!username, !phone, !address)) {
+  if ((!username, !phone, !address, !city, !state, !pincode)) {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -37,7 +38,10 @@ const registerUser = asyncHandler(async (req, res) => {
 
   userPhone.username = username;
   userPhone.phone = phone;
+  userPhone.city = city;
   userPhone.address = address;
+  userPhone.state = state;
+  userPhone.pincode = pincode;
   userPhone.status = true;
   userPhone.profileImg = image == null ? userPhone.profileImg : image;
 
@@ -186,7 +190,6 @@ const getUserById = asyncHandler(async (req, res) => {
 
 const getAllUser = asyncHandler(async (req, res) => {
   const { page, limit, searchQuary } = req.query;
-  console.log(searchQuary);
 
   const pages = Number(page);
   const limits = Number(limit);
@@ -203,6 +206,56 @@ const getAllUser = asyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limits)
     .sort({ updatedAt: -1 });
+  if (!allUser || allUser.length === 0) {
+    res.status(404);
+    throw new Error("Users not found!");
+  }
+  res.status(200).json(allUser);
+});
+
+const getAllUserByLocation = asyncHandler(async (req, res) => {
+  const { page, limit, searchQuary } = req.query;
+  const workerId = req.user;
+
+  const workerData = await Worker.findById(workerId);
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
+
+  const allUser = await User.find([
+    {
+      $match: {
+        status: true,
+        $or: [
+          { username: { $regex: searchQuary, $options: "i" } },
+          { phone: { $regex: searchQuary, $options: "i" } },
+          { address: { $regex: searchQuary, $options: "i" } },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        cityMatch: { $eq: ["$city", workerData.city] },
+        stateMatch: { $eq: ["$state", workerData.state] },
+        pincodeMatch: { $eq: ["$pincode", workerData.pincode] },
+      },
+    },
+    {
+      $sort: {
+        cityMatch: -1,
+        stateMatch: -1,
+        pincodeMatch: -1,
+        updatedAt: -1,
+      },
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limits,
+    },
+  ]);
   if (!allUser || allUser.length === 0) {
     res.status(404);
     throw new Error("Users not found!");

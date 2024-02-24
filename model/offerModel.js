@@ -4,7 +4,6 @@ const offerSchema = mongoose.Schema(
   {
     offerName: {
       type: String,
-      required: true,
     },
     offerImg: {
       type: String,

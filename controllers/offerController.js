@@ -4,10 +4,6 @@ const Offer = require("../model/offerModel");
 const createOffer = asyncHandler(async (req, res) => {
   const { offerName } = req.body;
 
-  if (!offerName) {
-    res.status(404);
-    throw new Error("All fields required!");
-  }
   const offerImg = req.files["offerImg"] ? req.files["offerImg"][0].path : null;
   if (!offerImg) {
     res.status(404);
@@ -25,10 +21,6 @@ const updateOffer = asyncHandler(async (req, res) => {
   const { offerName } = req.body;
   const offerId = req.params.id;
 
-  if (!offerName) {
-    res.status(404);
-    throw new Error("All fields required!");
-  }
   const offerImg = req.files["offerImg"] ? req.files["offerImg"][0].path : null;
   if (!offerImg) {
     res.status(404);

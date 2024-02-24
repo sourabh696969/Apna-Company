@@ -6,7 +6,7 @@ const Role = require("../model/roleModel");
 const createCategory = asyncHandler(async (req, res) => {
   const { categoryName, categoryNameHindi } = req.body;
 
-  if (!categoryName, !categoryNameHindi) {
+  if ((!categoryName, !categoryNameHindi)) {
     res.status(404);
     throw new Error("All Fields required!");
   }
@@ -53,11 +53,22 @@ const deleteCategory = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Category Deleted successfully!" });
 });
 
+const getSingleCategory = asyncHandler(async (req, res) => {
+  const catId = req.params.id;
+
+  const category = await Category.findById(catId);
+  if (!category) {
+    res.status(404);
+    throw new Error("category not found!");
+  }
+  res.status(200).json(category);
+});
+
 const updateCategory = asyncHandler(async (req, res) => {
   const catId = req.params.id;
   const { categoryName, categoryNameHindi } = req.body;
 
-  if (!categoryName, !categoryNameHindi) {
+  if ((!categoryName, !categoryNameHindi)) {
     res.status(404);
     throw new Error("All Fields required!");
   }
@@ -166,6 +177,7 @@ const updateRoleStatus = asyncHandler(async (req, res) => {
 module.exports = {
   createCategory,
   getCategory,
+  getSingleCategory,
   createRole,
   getRole,
   deleteCategory,

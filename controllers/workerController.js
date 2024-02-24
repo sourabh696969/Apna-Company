@@ -262,6 +262,59 @@ const AllUser = asyncHandler(async (req, res) => {
   res.status(200).json(all);
 });
 
+const AllUserByLocation = asyncHandler(async (req, res) => {
+  const { page, limit, searchQuary } = req.query;
+  const userId = req.user;
+  const userData = await User.findById(userId);
+
+  const pages = Number(page);
+  const limits = Number(limit);
+  const skip = (pages - 1) * limits;
+
+  const allWithMatchingLocation = await Worker.find({
+    status: true,
+    $or: [
+      { username: { $regex: searchQuary, $options: "i" } },
+      { phone: { $regex: searchQuary, $options: "i" } },
+      { address: { $regex: searchQuary, $options: "i" } },
+    ],
+    city: userData.city,
+    state: userData.state,
+    pincode: userData.pincode
+  })
+  .populate("subAdminData", "name phone email")
+  .populate("role", "roleName")
+  .populate("category", "categoryName categoryNameHindi categoryImg")
+  .skip(skip)
+  .limit(limits);
+  
+  const allWithDifferentLocation = await Worker.find({
+    status: true,
+    $or: [
+      { username: { $regex: searchQuary, $options: "i" } },
+      { phone: { $regex: searchQuary, $options: "i" } },
+      { address: { $regex: searchQuary, $options: "i" } },
+    ],
+    $or: [
+      { city: { $ne: userData.city } },
+      { state: { $ne: userData.state } },
+      { pincode: { $ne: userData.pincode } }
+    ]
+  })
+  .populate("subAdminData", "name phone email")
+  .populate("role", "roleName")
+  .populate("category", "categoryName categoryNameHindi categoryImg")
+  .skip(skip)
+  .limit(limits);
+  
+  const all = allWithMatchingLocation.concat(allWithDifferentLocation);
+  if (!all) {
+    res.status(404);
+    throw new Error("data not found");
+  }
+  res.status(200).json(all);
+});
+
 const AllUserById = asyncHandler(async (req, res) => {
   const userId = req.user;
   const { page, limit, searchQuary } = req.query;
@@ -273,7 +326,6 @@ const AllUserById = asyncHandler(async (req, res) => {
   const limits = Number(limit) || 10;
   const skip = (pages - 1) * limits;
 
-  // First, fetch workers with matching location
   const matchingWorkers = await Worker.find({
     category: categoryId,
     status: true,
@@ -292,7 +344,6 @@ const AllUserById = asyncHandler(async (req, res) => {
     .limit(limits)
     .sort({ updatedAt: -1 });
 
-  // Next, fetch other workers
   const otherWorkers = await Worker.find({
     category: categoryId,
     status: true,
@@ -313,7 +364,6 @@ const AllUserById = asyncHandler(async (req, res) => {
     .limit(limits)
     .sort({ updatedAt: -1 });
 
-  // Combine the results
   const data = matchingWorkers.concat(otherWorkers);
   if (!data) {
     res.status(404);
@@ -397,4 +447,5 @@ module.exports = {
   signupUser,
   deleteUser,
   AllUserByRole,
+  AllUserByLocation
 };

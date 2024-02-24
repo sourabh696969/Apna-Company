@@ -105,10 +105,10 @@ const forgotPasswordSubAdmin = asyncHandler(async (req, res) => {
 });
 
 const createWorker = asyncHandler(async (req, res) => {
-  const { username, roleId, categoryId, phone, address, price } = req.body;
+  const { username, roleId, categoryId, phone, address, city, state, pincode, price } = req.body;
   const subAdminId = req.user;
 
-  if ((!username, !roleId, !categoryId, !phone, !address, !price)) {
+  if ((!username, !roleId, !categoryId, !phone, !address, !city, !state, !pincode, !price)) {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -147,6 +147,9 @@ const createWorker = asyncHandler(async (req, res) => {
       category,
       phone,
       address,
+      city,
+      state,
+      pincode,
       price,
       status: true,
       profileImg: image,
@@ -186,9 +189,9 @@ const AllUser = asyncHandler(async (req, res) => {
 
 const updateWorker = asyncHandler(async (req, res) => {
   const userId = req.params.id;
-  const { username, roleId, categoryId, phone, address, price } = req.body;
+  const { username, roleId, categoryId, phone, address, city, state, pincode, price } = req.body;
 
-  if ((!username, !roleId, !categoryId, !phone, !address, !price)) {
+  if ((!username, !roleId, !categoryId, !phone, !address, !city, !state, !pincode, !price)) {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -229,6 +232,9 @@ const updateWorker = asyncHandler(async (req, res) => {
   worker.category = category._id;
   worker.phone = phone;
   worker.address = address;
+  worker.city = city;
+  worker.state = state;
+  worker.pincode = pincode;
   worker.price = price;
   worker.status = true;
   worker.profileImg = image == null ? worker.profileImg : image;

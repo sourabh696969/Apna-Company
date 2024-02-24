@@ -8,6 +8,7 @@ const {
   getUserById,
   deleteUser,
   AllUserByRole,
+  AllUserByLocation,
 } = require("../controllers/workerController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const {
@@ -16,6 +17,7 @@ const {
   deleteRole,
   updateRole,
   updateRoleStatus,
+  getSingleCategory,
 } = require("../controllers/categoryController");
 const {
   createCategory,
@@ -62,6 +64,7 @@ router.post("/verify", veifyOtp);
 router.get("/single/:id", getUserById);
 router.get("/single/:catid/:roleid", validateUserToken, AllUserByRole);
 router.get("/all", AllUser);
+router.get("/allByLocation", validateUserToken, AllUserByLocation);
 router.delete("/:id", deleteUser);
 
 /////// Role ////////
@@ -84,6 +87,7 @@ router.put(
   updateCategory
 );
 router.get("/category", getCategory);
+router.get("/singleCategory/:id", getSingleCategory);
 router.get("/category/:id", validateUserToken, AllUserById);
 
 module.exports = router;

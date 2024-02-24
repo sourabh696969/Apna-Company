@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
-const { Notification } = require("../model/notificationModel");
+const Notification = require("../model/notificationModel");
 const Role = require("../model/roleModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");

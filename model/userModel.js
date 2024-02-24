@@ -13,7 +13,15 @@ const agentSchema = mongoose.Schema(
       required: true,
     },
     address: {
-      type: String,
+      state: {
+        type: String,
+      },
+      city: {
+        type: String,
+      },
+      pincode: {
+        type: String,
+      },
     },
     status: {
       type: Boolean,

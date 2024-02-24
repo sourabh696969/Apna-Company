@@ -7,6 +7,8 @@ const { WorkPost } = require("../model/workPostModel");
 const User = require("../model/userModel");
 const { UserSupport, WorkerSupport } = require("../model/supportModel");
 const SubAdmin = require("../model/subAdminModel");
+const { AppNotificationUser, AppNotificationWorker } = require("../model/notificationModel");
+
 const jwt = require("jsonwebtoken");
 
 const registerAdmin = asyncHandler(async (req, res) => {
@@ -343,6 +345,38 @@ const getWorkerBySubAdminId = asyncHandler(async (req, res) => {
   res.status(200).json(subAdmin);
 });
 
+const createAppNotificationUser = asyncHandler(async (req, res) => {
+  const { title, description, userId } = req.body;
+
+  if (!title, !description, !userId) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  const notification = await AppNotificationUser.create({
+    title,
+    description,
+    userId,
+  });
+  res.status(201).json({ message: "Notification created successfully!" });
+});
+
+const createAppNotificationWorker = asyncHandler(async (req, res) => {
+  const { title, description, workerId } = req.body;
+
+  if (!title, !description, !workerId) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  const notification = await AppNotificationWorker.create({
+    title,
+    description,
+    workerId,
+  });
+  res.status(201).json({ message: "Notification created successfully!" });
+});
+
 module.exports = {
   registerAdmin,
   loginAdmin,
@@ -357,4 +391,6 @@ module.exports = {
   deleteSubAdmin,
   getAllSubAdmin,
   getWorkerBySubAdminId,
+  createAppNotificationUser,
+  createAppNotificationWorker
 };

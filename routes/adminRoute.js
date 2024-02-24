@@ -13,6 +13,8 @@ const {
   getWorkerBySubAdminId,
   updateUserSupport,
   updateWorkerSupport,
+  createAppNotificationUser,
+  createAppNotificationWorker,
 } = require("../controllers/adminController");
 const multer = require("multer");
 const path = require("path");
@@ -47,6 +49,9 @@ router.post(
   upload.fields([{ name: "profileImg", maxCount: 1 }]),
   createWorker
 );
+router.post("/notificationUser", createAppNotificationUser);
+router.post("/notificationWorker", createAppNotificationWorker);
+
 
 ///// PUT & PATCH Routes /////
 router.put("/verifyPost/:id", verifyPosts);

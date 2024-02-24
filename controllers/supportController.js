@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../model/userModel");
 const Worker = require("../model/workerModel");
 const { UserSupport, WorkerSupport } = require("../model/supportModel");
-const Notification = require("../model/notificationModel");
+const { Notification } = require("../model/notificationModel");
 
 ///// User Support /////
 const createSupportUser = asyncHandler(async (req, res) => {

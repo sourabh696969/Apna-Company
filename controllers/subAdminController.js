@@ -3,7 +3,7 @@ const SubAdmin = require("../model/subAdminModel");
 const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
-const Notification = require("../model/notificationModel");
+const { Notification } = require("../model/notificationModel");
 const jwt = require("jsonwebtoken");
 
 const registerSubAdmin = asyncHandler(async (req, res) => {

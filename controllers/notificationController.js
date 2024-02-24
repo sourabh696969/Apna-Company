@@ -1,5 +1,9 @@
 const asyncHandler = require("express-async-handler");
-const Notification = require("../model/notificationModel");
+const {
+  Notification,
+  AppNotificationUser,
+  AppNotificationWorker,
+} = require("../model/notificationModel");
 
 const getUnreadNotification = asyncHandler(async (req, res) => {
   const notificationData = await Notification.find({ status: false });
@@ -50,10 +54,12 @@ const updateNotificationStatus = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Notification updated successfully!" });
 });
 
-const deleteNotificationById = asyncHandler(async(req, res) => {
+const deleteNotificationById = asyncHandler(async (req, res) => {
   const notificationId = req.params.id;
 
-  const deleteNotification = await Notification.findByIdAndDelete(notificationId);
+  const deleteNotification = await Notification.findByIdAndDelete(
+    notificationId
+  );
 
   if (!deleteNotification) {
     res.status(404);
@@ -63,7 +69,7 @@ const deleteNotificationById = asyncHandler(async(req, res) => {
   res.status(200).json({ message: "Notification deleted successfully!" });
 });
 
-const deleteUnreadNotification = asyncHandler(async(req, res) => {
+const deleteUnreadNotification = asyncHandler(async (req, res) => {
   const deleteNotification = await Notification.deleteMany({ status: true });
 
   if (!deleteNotification) {
@@ -74,10 +80,106 @@ const deleteUnreadNotification = asyncHandler(async(req, res) => {
   res.status(200).json({ message: "Notification deleted successfully!" });
 });
 
+///// In App Notifications For User /////
+
+const getAppReadNotificationUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const notificationData = await AppNotificationUser.find({ status: true, userId: userId });
+
+  if (!notificationData) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res
+    .status(200)
+    .json({ totalNotification: notificationData.length, notificationData });
+});
+
+const getAppUnreadNotificationUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const notificationData = await AppNotificationUser.find({ status: false, userId: userId });
+
+  if (!notificationData) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res
+    .status(200)
+    .json({ totalNotification: notificationData.length, notificationData });
+});
+
+const getSingleAppNotificationUser = asyncHandler(async (req, res) => {
+  const notificationId = req.params.id;
+
+  const notificationData = await AppNotificationUser.findById(notificationId);
+
+  if (!notificationData) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res.status(200).json(notificationData);
+});
+
+///// In App Notifications For Worker /////
+
+const getAppReadNotificationWorker = asyncHandler(async (req, res) => {
+  const workerId = req.params.id;
+
+  const notificationData = await AppNotificationWorker.find({ status: true, workerId: workerId });
+
+  if (!notificationData) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res
+    .status(200)
+    .json({ totalNotification: notificationData.length, notificationData });
+});
+
+const getAppUnreadNotificationWorker = asyncHandler(async (req, res) => {
+  const workerId = req.params.id;
+
+  const notificationData = await AppNotificationWorker.find({ status: false, workerId: workerId });
+
+  if (!notificationData) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res
+    .status(200)
+    .json({ totalNotification: notificationData.length, notificationData });
+});
+
+const getSingleAppNotificationWorker = asyncHandler(async (req, res) => {
+  const notificationId = req.params.id;
+
+  const notificationData = await AppNotificationWorker.findById(notificationId);
+
+  if (!notificationData) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res.status(200).json(notificationData);
+});
+
 module.exports = {
   getUnreadNotification,
   getReadNotification,
   updateNotificationStatus,
   deleteNotificationById,
   deleteUnreadNotification,
+  getAppReadNotificationUser,
+  getAppReadNotificationWorker,
+  getAppUnreadNotificationUser,
+  getAppUnreadNotificationWorker,
+  getSingleAppNotificationUser,
+  getSingleAppNotificationWorker,
 };

@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { WorkPost, SavedWorkPost } = require("../model/workPostModel");
-const Notification = require("../model/notificationModel");
+const { Notification } = require("../model/notificationModel");
 const User = require("../model/userModel");
 
 const createWorkPost = asyncHandler(async (req, res) => {

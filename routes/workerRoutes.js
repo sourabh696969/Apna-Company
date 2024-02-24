@@ -60,7 +60,7 @@ router.post("/login", loginUser);
 router.post("/signup", signupUser);
 router.post("/verify", veifyOtp);
 router.get("/single/:id", getUserById);
-router.get("/single/:catid/:roleid", AllUserByRole);
+router.get("/single/:catid/:roleid", validateUserToken, AllUserByRole);
 router.get("/all", AllUser);
 router.delete("/:id", deleteUser);
 
@@ -84,6 +84,6 @@ router.put(
   updateCategory
 );
 router.get("/category", getCategory);
-router.get("/category/:id", AllUserById);
+router.get("/category/:id", validateUserToken, AllUserById);
 
 module.exports = router;

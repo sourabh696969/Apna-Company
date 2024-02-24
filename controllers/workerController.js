@@ -10,9 +10,29 @@ let otp;
 
 const registerUser = asyncHandler(async (req, res) => {
   const userId = req.user;
-  const { username, roleId, categoryId, phone, address, city, state, pincode, price } = req.body;
+  const {
+    username,
+    roleId,
+    categoryId,
+    phone,
+    address,
+    city,
+    state,
+    pincode,
+    price,
+  } = req.body;
 
-  if ((!username, !roleId, !categoryId, !phone, !address, !city, !state, !pincode, !price)) {
+  if (
+    (!username,
+    !roleId,
+    !categoryId,
+    !phone,
+    !address,
+    !city,
+    !state,
+    !pincode,
+    !price)
+  ) {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -289,8 +309,7 @@ const AllUserByRole = asyncHandler(async (req, res) => {
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
-    .limit(limits)
-    .sort({ updatedAt: -1 });
+    .limit(limits);
   if (!data || data.length === 0) {
     res.status(404);
     throw new Error("data not found");

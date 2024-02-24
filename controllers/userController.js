@@ -213,56 +213,6 @@ const getAllUser = asyncHandler(async (req, res) => {
   res.status(200).json(allUser);
 });
 
-const getAllUserByLocation = asyncHandler(async (req, res) => {
-  const { page, limit, searchQuary } = req.query;
-  const workerId = req.user;
-
-  const workerData = await Worker.findById(workerId);
-
-  const pages = Number(page);
-  const limits = Number(limit);
-  const skip = (pages - 1) * limits;
-
-  const allUser = await User.find([
-    {
-      $match: {
-        status: true,
-        $or: [
-          { username: { $regex: searchQuary, $options: "i" } },
-          { phone: { $regex: searchQuary, $options: "i" } },
-          { address: { $regex: searchQuary, $options: "i" } },
-        ],
-      },
-    },
-    {
-      $addFields: {
-        cityMatch: { $eq: ["$city", workerData.city] },
-        stateMatch: { $eq: ["$state", workerData.state] },
-        pincodeMatch: { $eq: ["$pincode", workerData.pincode] },
-      },
-    },
-    {
-      $sort: {
-        cityMatch: -1,
-        stateMatch: -1,
-        pincodeMatch: -1,
-        updatedAt: -1,
-      },
-    },
-    {
-      $skip: skip,
-    },
-    {
-      $limit: limits,
-    },
-  ]);
-  if (!allUser || allUser.length === 0) {
-    res.status(404);
-    throw new Error("Users not found!");
-  }
-  res.status(200).json(allUser);
-});
-
 const deleteUser = asyncHandler(async (req, res) => {
   const userId = req.params.id;
   const user = await User.findByIdAndDelete(userId);

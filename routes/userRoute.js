@@ -7,6 +7,7 @@ const {
   getAllUser,
   getUserById,
   deleteUser,
+  getAllUserByLocation,
 } = require("../controllers/userController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const multer = require("multer");

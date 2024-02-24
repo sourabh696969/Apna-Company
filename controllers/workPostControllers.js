@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { WorkPost, SavedWorkPost } = require("../model/workPostModel");
 const { Notification } = require("../model/notificationModel");
 const User = require("../model/userModel");
+const Worker = require("../model/workerModel");
 
 const createWorkPost = asyncHandler(async (req, res) => {
   const { description, work, duration } = req.body;
@@ -127,14 +128,40 @@ const getSingleWorkPost = asyncHandler(async (req, res) => {
 const getWorkPostByWork = asyncHandler(async (req, res) => {
   const workId = req.params.id;
   const { page, limit, searchQuary } = req.query;
+  const workerId = req.user;
 
+  const workerData = await Worker.findById(workerId);
   const pages = Number(page);
   const limits = Number(limit) || 20;
   const skip = (pages - 1) * limits;
 
-  const post = await WorkPost.find({
-    work: workId,
+  const postWithMatchingLocation = await WorkPost.find({
     status: true,
+    work: workId,
+    $or: [
+      {
+        user: {
+          $in: await User.find({
+            $or: [
+              { username: { $regex: searchQuary, $options: "i" } },
+              { phone: { $regex: searchQuary, $options: "i" } },
+            ],
+            city: workerData.city,
+            state: workerData.state,
+            pincode: workerData.pincode,
+          }).distinct("_id"),
+        },
+      },
+    ],
+  })
+    .populate("user", "phone username address city state pincode")
+    .populate("work", "categoryName categoryNameHindi categoryImg")
+    .skip(skip)
+    .limit(limits);
+
+  const postWithDifferentLocation = await WorkPost.find({
+    status: true,
+    work: workId,
     $or: [
       {
         user: {
@@ -147,11 +174,28 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
         },
       },
     ],
+    $or: [
+      { "user.city": { $ne: workerData.city } },
+      { "user.state": { $ne: workerData.state } },
+      { "user.pincode": { $ne: workerData.pincode } },
+    ],
   })
-    .populate("user", "phone username address")
+    .populate("user", "phone username address city state pincode")
     .populate("work", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
+
+  const postMap = new Map();
+
+  [...postWithMatchingLocation, ...postWithDifferentLocation].forEach(
+    (postItem) => {
+      if (!postMap.has(postItem._id.toString())) {
+        postMap.set(postItem._id.toString(), postItem);
+      }
+    }
+  );
+
+  const post = Array.from(postMap.values());
 
   if (!post) {
     res.status(404);
@@ -201,12 +245,38 @@ const getAllWorkPost = asyncHandler(async (req, res) => {
 
 const getAllVerifiedWorkPost = asyncHandler(async (req, res) => {
   const { page, limit, searchQuary } = req.query;
+  const workerId = req.user;
+
+  const workerData = await Worker.findById(workerId);
 
   const pages = Number(page);
   const limits = Number(limit);
   const skip = (pages - 1) * limits;
 
-  const post = await WorkPost.find({
+  const allWithMatchingLocation = await WorkPost.find({
+    status: true,
+    $or: [
+      {
+        user: {
+          $in: await User.find({
+            $or: [
+              { username: { $regex: searchQuary, $options: "i" } },
+              { phone: { $regex: searchQuary, $options: "i" } },
+            ],
+            city: workerData.city,
+            state: workerData.state,
+            pincode: workerData.pincode,
+          }).distinct("_id"),
+        },
+      },
+    ],
+  })
+    .populate("user", "phone username address city state pincode")
+    .populate("work", "categoryName categoryNameHindi categoryImg")
+    .skip(skip)
+    .limit(limits);
+
+  const allWithDifferentLocation = await WorkPost.find({
     status: true,
     $or: [
       {
@@ -220,11 +290,28 @@ const getAllVerifiedWorkPost = asyncHandler(async (req, res) => {
         },
       },
     ],
+    $or: [
+      { "user.city": { $ne: workerData.city } },
+      { "user.state": { $ne: workerData.state } },
+      { "user.pincode": { $ne: workerData.pincode } },
+    ],
   })
-    .populate("user", "phone username address")
+    .populate("user", "phone username address city state pincode")
     .populate("work", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
+
+  const postMap = new Map();
+
+  [...allWithMatchingLocation, ...allWithDifferentLocation].forEach(
+    (postItem) => {
+      if (!postMap.has(postItem._id.toString())) {
+        postMap.set(postItem._id.toString(), postItem);
+      }
+    }
+  );
+
+  const post = Array.from(postMap.values());
 
   if (post.length === 0) {
     res.status(404);

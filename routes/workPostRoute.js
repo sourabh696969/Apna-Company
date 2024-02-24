@@ -24,8 +24,8 @@ router.put("/:id", updateWorkPost);
 ///// GET Routes /////
 router.get("/", validateUserToken, getWorkPostById);
 router.get("/all", getAllWorkPost);
-router.get("/verified", getAllVerifiedWorkPost);
-router.get("/:id", getWorkPostByWork);
+router.get("/verified", validateUserToken, getAllVerifiedWorkPost);
+router.get("/:id", validateUserToken, getWorkPostByWork);
 router.get("/single/:id", getSingleWorkPost);
 
 ///// DELETE Routes /////

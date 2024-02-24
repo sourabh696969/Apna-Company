@@ -144,7 +144,7 @@ const createWorker = asyncHandler(async (req, res) => {
       pincode,
       price,
       status: true,
-      profileImg: image == null ? userAvailable.profileImg : image,
+      profileImg: image,
       createdBy: "Admin",
     });
     res.status(201).json({ message: "User Registered!", worker });

@@ -254,7 +254,7 @@ const AllUser = asyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limits)
     .sort({ updatedAt: -1 });
-  if (!all || all.length === 0) {
+  if (!all) {
     res.status(404);
     throw new Error("data not found");
   }
@@ -282,7 +282,7 @@ const AllUserById = asyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limits)
     .sort({ updatedAt: -1 });
-  if (!data || data.length === 0) {
+  if (!data) {
     res.status(404);
     throw new Error("data not found");
   }
@@ -310,7 +310,7 @@ const AllUserByRole = asyncHandler(async (req, res) => {
     .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
     .limit(limits);
-  if (!data || data.length === 0) {
+  if (!data) {
     res.status(404);
     throw new Error("data not found");
   }

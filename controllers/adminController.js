@@ -7,7 +7,10 @@ const { WorkPost } = require("../model/workPostModel");
 const User = require("../model/userModel");
 const { UserSupport, WorkerSupport } = require("../model/supportModel");
 const SubAdmin = require("../model/subAdminModel");
-const { AppNotificationUser, AppNotificationWorker } = require("../model/notificationModel");
+const {
+  AppNotificationUser,
+  AppNotificationWorker,
+} = require("../model/notificationModel");
 
 const jwt = require("jsonwebtoken");
 
@@ -348,7 +351,7 @@ const getWorkerBySubAdminId = asyncHandler(async (req, res) => {
 const createAppNotificationUser = asyncHandler(async (req, res) => {
   const { title, description, userId } = req.body;
 
-  if (!title, !description, !userId) {
+  if ((!title, !description, !userId)) {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -364,7 +367,7 @@ const createAppNotificationUser = asyncHandler(async (req, res) => {
 const createAppNotificationWorker = asyncHandler(async (req, res) => {
   const { title, description, workerId } = req.body;
 
-  if (!title, !description, !workerId) {
+  if ((!title, !description, !workerId)) {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -375,6 +378,56 @@ const createAppNotificationWorker = asyncHandler(async (req, res) => {
     workerId,
   });
   res.status(201).json({ message: "Notification created successfully!" });
+});
+
+const createAppNotificationForAllUsers = asyncHandler(async (req, res) => {
+  const { title, description } = req.body;
+
+  if (!title || !description) {
+    res.status(400);
+    throw new Error("Title and description are required!");
+  }
+
+  const userIds = await User.find().distinct("_id"); // Assuming User is your mongoose model for users
+
+  const notifications = await Promise.all(
+    userIds.map(async (userId) => {
+      return await AppNotificationUser.create({
+        title,
+        description,
+        userId,
+      });
+    })
+  );
+
+  res
+    .status(201)
+    .json({ message: "Notifications created successfully!", notifications });
+});
+
+const createAppNotificationForAllWorkers = asyncHandler(async (req, res) => {
+  const { title, description } = req.body;
+
+  if (!title || !description) {
+    res.status(400);
+    throw new Error("Title and description are required!");
+  }
+
+  const workerIds = await Worker.find().distinct("_id"); // Assuming User is your mongoose model for users
+
+  const notifications = await Promise.all(
+    workerIds.map(async (workerId) => {
+      return await AppNotificationWorker.create({
+        title,
+        description,
+        workerId,
+      });
+    })
+  );
+
+  res
+    .status(201)
+    .json({ message: "Notifications created successfully!", notifications });
 });
 
 module.exports = {
@@ -392,5 +445,7 @@ module.exports = {
   getAllSubAdmin,
   getWorkerBySubAdminId,
   createAppNotificationUser,
-  createAppNotificationWorker
+  createAppNotificationWorker,
+  createAppNotificationForAllUsers,
+  createAppNotificationForAllWorkers,
 };

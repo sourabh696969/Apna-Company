@@ -11,12 +11,16 @@ const {
   getAppUnreadNotificationWorker,
   getAppReadNotificationWorker,
   getSingleAppNotificationWorker,
+  updateInAppNotificationStatusUser,
+  updateInAppNotificationStatusWorker,
 } = require("../controllers/notificationController");
 
 const router = express.Router();
 
 ///// PATCH Routes /////
 router.patch("/update/:id", updateNotificationStatus);
+router.patch("/user/updateNotification/:id", updateInAppNotificationStatusUser);
+router.patch("/worker/updateNotification/:id", updateInAppNotificationStatusWorker);
 
 ///// GET Routes /////
 router.get("/unread", getUnreadNotification);

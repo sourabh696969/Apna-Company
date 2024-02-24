@@ -15,6 +15,8 @@ const {
   updateWorkerSupport,
   createAppNotificationUser,
   createAppNotificationWorker,
+  createAppNotificationForAllUsers,
+  createAppNotificationForAllWorkers,
 } = require("../controllers/adminController");
 const multer = require("multer");
 const path = require("path");
@@ -51,6 +53,8 @@ router.post(
 );
 router.post("/notificationUser", createAppNotificationUser);
 router.post("/notificationWorker", createAppNotificationWorker);
+router.post("/notificationAllUser", createAppNotificationForAllUsers);
+router.post("/notificationAllWorker", createAppNotificationForAllWorkers);
 
 
 ///// PUT & PATCH Routes /////

@@ -125,6 +125,29 @@ const getSingleAppNotificationUser = asyncHandler(async (req, res) => {
   res.status(200).json(notificationData);
 });
 
+const updateInAppNotificationStatusUser = asyncHandler(async (req, res) => {
+  const notificationId = req.params.id;
+  const { status } = req.body;
+
+  if (status === undefined || status === null || status === "") {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+  const updateNotification = await AppNotificationUser.findByIdAndUpdate(
+    notificationId,
+    {
+      status: status,
+    }
+  );
+
+  if (!updateNotification) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res.status(200).json({ message: "Notification updated successfully!" });
+});
+
 ///// In App Notifications For Worker /////
 
 const getAppReadNotificationWorker = asyncHandler(async (req, res) => {
@@ -170,6 +193,29 @@ const getSingleAppNotificationWorker = asyncHandler(async (req, res) => {
   res.status(200).json(notificationData);
 });
 
+const updateInAppNotificationStatusWorker = asyncHandler(async (req, res) => {
+  const notificationId = req.params.id;
+  const { status } = req.body;
+
+  if (status === undefined || status === null || status === "") {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+  const updateNotification = await AppNotificationWorker.findByIdAndUpdate(
+    notificationId,
+    {
+      status: status,
+    }
+  );
+
+  if (!updateNotification) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res.status(200).json({ message: "Notification updated successfully!" });
+});
+
 module.exports = {
   getUnreadNotification,
   getReadNotification,
@@ -182,4 +228,6 @@ module.exports = {
   getAppUnreadNotificationWorker,
   getSingleAppNotificationUser,
   getSingleAppNotificationWorker,
+  updateInAppNotificationStatusUser,
+  updateInAppNotificationStatusWorker
 };

@@ -4,6 +4,7 @@ const Worker = require("../model/workerModel");
 const { Notification } = require("../model/notificationModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
+const { WorkPost } = require("../model/workPostModel");
 
 let otp;
 
@@ -220,6 +221,8 @@ const deleteUser = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Users not found!");
   }
+  await WorkPost.deleteMany({ user: userId });
+
   res.status(200).json({ message: "User Deleted Successfully!" });
 });
 

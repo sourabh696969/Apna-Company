@@ -3,6 +3,7 @@ const Worker = require("../model/workerModel");
 const User = require("../model/userModel");
 const Category = require("../model/categoryModel");
 const { Notification } = require("../model/notificationModel");
+const { SavedWorkPost } = require("../model/workPostModel");
 const Role = require("../model/roleModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
@@ -280,14 +281,14 @@ const AllUserByLocation = asyncHandler(async (req, res) => {
     ],
     city: userData.city,
     state: userData.state,
-    pincode: userData.pincode
+    pincode: userData.pincode,
   })
-  .populate("subAdminData", "name phone email")
-  .populate("role", "roleName")
-  .populate("category", "categoryName categoryNameHindi categoryImg")
-  .skip(skip)
-  .limit(limits);
-  
+    .populate("subAdminData", "name phone email")
+    .populate("role", "roleName")
+    .populate("category", "categoryName categoryNameHindi categoryImg")
+    .skip(skip)
+    .limit(limits);
+
   const allWithDifferentLocation = await Worker.find({
     status: true,
     $or: [
@@ -298,15 +299,15 @@ const AllUserByLocation = asyncHandler(async (req, res) => {
     $or: [
       { city: { $ne: userData.city } },
       { state: { $ne: userData.state } },
-      { pincode: { $ne: userData.pincode } }
-    ]
+      { pincode: { $ne: userData.pincode } },
+    ],
   })
-  .populate("subAdminData", "name phone email")
-  .populate("role", "roleName")
-  .populate("category", "categoryName categoryNameHindi categoryImg")
-  .skip(skip)
-  .limit(limits);
-  
+    .populate("subAdminData", "name phone email")
+    .populate("role", "roleName")
+    .populate("category", "categoryName categoryNameHindi categoryImg")
+    .skip(skip)
+    .limit(limits);
+
   const all = allWithMatchingLocation.concat(allWithDifferentLocation);
   if (!all) {
     res.status(404);
@@ -434,6 +435,8 @@ const deleteUser = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Users not found!");
   }
+
+  await SavedWorkPost.deleteMany({ worker: userId });
   res.status(200).json({ message: "User Deleted Successfully!" });
 });
 
@@ -447,5 +450,5 @@ module.exports = {
   signupUser,
   deleteUser,
   AllUserByRole,
-  AllUserByLocation
+  AllUserByLocation,
 };

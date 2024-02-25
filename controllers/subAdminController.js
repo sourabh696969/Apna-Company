@@ -47,7 +47,7 @@ const loginSubAdmin = asyncHandler(async (req, res) => {
   const subAdminAvailable = await SubAdmin.findOne({
     email: email,
     status: true,
-  });
+  }).populate('role', 'role');
 
   if (!subAdminAvailable) {
     res.status(404);
@@ -67,11 +67,12 @@ const loginSubAdmin = asyncHandler(async (req, res) => {
     },
     process.env.SECRET_KEY
   );
+  const roles = subAdminAvailable.role.map(role => role.role);
   res.status(200).json({
     message: "Admin logged In successfully!",
     _id: subAdminAvailable._id,
     token: accessToken,
-    role: subAdminAvailable.role,
+    role: roles,
   });
 });
 

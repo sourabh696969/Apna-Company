@@ -264,7 +264,7 @@ const AllUser = asyncHandler(async (req, res) => {
 });
 
 const AllUserByLocation = asyncHandler(async (req, res) => {
-  const { page, limit, searchQuary } = req.query;
+  const { page, limit } = req.query;
   const userId = req.user;
   const userData = await User.findById(userId);
 
@@ -275,11 +275,6 @@ const AllUserByLocation = asyncHandler(async (req, res) => {
   const allWithMatchingLocation = await Worker.find({
     status: true,
     isAvailable: true,
-    $or: [
-      { username: { $regex: searchQuary, $options: "i" } },
-      { phone: { $regex: searchQuary, $options: "i" } },
-      { address: { $regex: searchQuary, $options: "i" } },
-    ],
     city: userData.city,
     state: userData.state,
     pincode: userData.pincode,
@@ -293,11 +288,6 @@ const AllUserByLocation = asyncHandler(async (req, res) => {
   const allWithDifferentLocation = await Worker.find({
     status: true,
     isAvailable: true,
-    $or: [
-      { username: { $regex: searchQuary, $options: "i" } },
-      { phone: { $regex: searchQuary, $options: "i" } },
-      { address: { $regex: searchQuary, $options: "i" } },
-    ],
     $or: [
       { city: { $ne: userData.city } },
       { state: { $ne: userData.state } },
@@ -316,6 +306,29 @@ const AllUserByLocation = asyncHandler(async (req, res) => {
     throw new Error("data not found");
   }
   res.status(200).json(all);
+});
+
+const searchUser = asyncHandler(async (req, res) => {
+  const { searchQuary } = req.query;
+
+  const data = await Worker.find({
+    status: true,
+    isAvailable: true,
+    $or: [
+      { username: { $regex: searchQuary, $options: "i" } },
+      { phone: { $regex: searchQuary, $options: "i" } },
+      { address: { $regex: searchQuary, $options: "i" } },
+    ],
+  })
+    .populate("subAdminData", "name phone email")
+    .populate("role", "roleName")
+    .populate("category", "categoryName categoryNameHindi categoryImg");
+
+  if (!data) {
+    res.status(404);
+    throw new Error("data not found");
+  }
+  res.status(200).json(data);
 });
 
 const AllUserById = asyncHandler(async (req, res) => {
@@ -477,5 +490,6 @@ module.exports = {
   deleteUser,
   AllUserByRole,
   AllUserByLocation,
-  updateWorkerAvailablity
+  updateWorkerAvailablity,
+  searchUser
 };

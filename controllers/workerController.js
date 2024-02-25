@@ -274,6 +274,7 @@ const AllUserByLocation = asyncHandler(async (req, res) => {
 
   const allWithMatchingLocation = await Worker.find({
     status: true,
+    isAvailable: true,
     $or: [
       { username: { $regex: searchQuary, $options: "i" } },
       { phone: { $regex: searchQuary, $options: "i" } },
@@ -291,6 +292,7 @@ const AllUserByLocation = asyncHandler(async (req, res) => {
 
   const allWithDifferentLocation = await Worker.find({
     status: true,
+    isAvailable: true,
     $or: [
       { username: { $regex: searchQuary, $options: "i" } },
       { phone: { $regex: searchQuary, $options: "i" } },
@@ -330,6 +332,7 @@ const AllUserById = asyncHandler(async (req, res) => {
   const matchingWorkers = await Worker.find({
     category: categoryId,
     status: true,
+    isAvailable: true,
     $or: [
       { username: { $regex: searchQuary, $options: "i" } },
       { phone: { $regex: searchQuary, $options: "i" } },
@@ -348,6 +351,7 @@ const AllUserById = asyncHandler(async (req, res) => {
   const otherWorkers = await Worker.find({
     category: categoryId,
     status: true,
+    isAvailable: true,
     $or: [
       { username: { $regex: searchQuary, $options: "i" } },
       { phone: { $regex: searchQuary, $options: "i" } },
@@ -386,6 +390,7 @@ const AllUserByRole = asyncHandler(async (req, res) => {
     category: req.params.catid,
     role: req.params.roleid,
     status: true,
+    isAvailable: true,
     $or: [
       { username: { $regex: searchQuary, $options: "i" } },
       { phone: { $regex: searchQuary, $options: "i" } },
@@ -404,6 +409,7 @@ const AllUserByRole = asyncHandler(async (req, res) => {
     category: req.params.catid,
     role: req.params.roleid,
     status: true,
+    isAvailable: true,
     $or: [
       { username: { $regex: searchQuary, $options: "i" } },
       { phone: { $regex: searchQuary, $options: "i" } },

@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
 
+///// Category Controllers /////
 const createCategory = asyncHandler(async (req, res) => {
   const { categoryName, categoryNameHindi } = req.body;
 
@@ -95,6 +96,7 @@ const updateCategory = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Category Updated successfully!" });
 });
 
+///// Role Controllers /////
 const createRole = asyncHandler(async (req, res) => {
   const { roleName } = req.body;
 
@@ -178,10 +180,10 @@ module.exports = {
   createCategory,
   getCategory,
   getSingleCategory,
-  createRole,
-  getRole,
   deleteCategory,
   updateCategory,
+  createRole,
+  getRole,
   deleteRole,
   updateRole,
   updateRoleStatus,

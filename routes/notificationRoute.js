@@ -19,6 +19,8 @@ const {
 
 const router = express.Router();
 
+///// Admin Notification Routes /////
+
 ///// PATCH Routes /////
 router.patch("/update/:id", updateNotificationStatus);
 router.patch("/user/updateNotification/:id", updateInAppNotificationStatusUser);

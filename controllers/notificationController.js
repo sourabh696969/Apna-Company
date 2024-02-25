@@ -5,6 +5,7 @@ const {
   AppNotificationWorker,
 } = require("../model/notificationModel");
 
+///// Notification Controllers for Admin /////
 const getUnreadNotification = asyncHandler(async (req, res) => {
   const notificationData = await Notification.find({ status: false });
 
@@ -81,7 +82,6 @@ const deleteUnreadNotification = asyncHandler(async (req, res) => {
 });
 
 ///// In App Notifications For User /////
-
 const getAppReadNotificationUser = asyncHandler(async (req, res) => {
   const userId = req.params.id;
 
@@ -154,8 +154,22 @@ const updateInAppNotificationStatusUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Notification updated successfully!" });
 });
 
-///// In App Notifications For Worker /////
+const deleteSingleInAppNotificationUser = asyncHandler(async (req, res) => {
+  const notificationId = req.params.id;
 
+  const deleteNotification = await AppNotificationUser.findByIdAndDelete(
+    notificationId
+  );
+
+  if (!deleteNotification) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res.status(200).json({ message: "Notification deleted successfully!" });
+});
+
+///// In App Notifications For Worker /////
 const getAppReadNotificationWorker = asyncHandler(async (req, res) => {
   const workerId = req.params.id;
 
@@ -228,21 +242,6 @@ const updateInAppNotificationStatusWorker = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Notification updated successfully!" });
 });
 
-const deleteSingleInAppNotificationUser = asyncHandler(async (req, res) => {
-  const notificationId = req.params.id;
-
-  const deleteNotification = await AppNotificationUser.findByIdAndDelete(
-    notificationId
-  );
-
-  if (!deleteNotification) {
-    res.status(404);
-    throw new Error("data not found!");
-  }
-
-  res.status(200).json({ message: "Notification deleted successfully!" });
-});
-
 const deleteSingleInAppNotificationWorker = asyncHandler(async (req, res) => {
   const notificationId = req.params.id;
 
@@ -273,5 +272,5 @@ module.exports = {
   updateInAppNotificationStatusUser,
   updateInAppNotificationStatusWorker,
   deleteSingleInAppNotificationUser,
-  deleteSingleInAppNotificationWorker
+  deleteSingleInAppNotificationWorker,
 };

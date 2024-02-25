@@ -11,9 +11,9 @@ const {
   AppNotificationUser,
   AppNotificationWorker,
 } = require("../model/notificationModel");
-
 const jwt = require("jsonwebtoken");
 
+///// Admin Authentication
 const registerAdmin = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -102,10 +102,31 @@ const forgotPasswordAdmin = asyncHandler(async (req, res) => {
   });
 });
 
+///// Worker Controllers /////
 const createWorker = asyncHandler(async (req, res) => {
-  const { username, roleId, categoryId, phone, address, city, state, pincode, price } = req.body;
+  const {
+    username,
+    roleId,
+    categoryId,
+    phone,
+    address,
+    city,
+    state,
+    pincode,
+    price,
+  } = req.body;
 
-  if ((!username, !roleId, !categoryId, !phone, !address, !city, !state, !pincode, !price)) {
+  if (
+    (!username,
+    !roleId,
+    !categoryId,
+    !phone,
+    !address,
+    !city,
+    !state,
+    !pincode,
+    !price)
+  ) {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -153,9 +174,29 @@ const createWorker = asyncHandler(async (req, res) => {
 
 const updateWorker = asyncHandler(async (req, res) => {
   const userId = req.params.id;
-  const { username, roleId, categoryId, phone, address, city, state, pincode, price } = req.body;
+  const {
+    username,
+    roleId,
+    categoryId,
+    phone,
+    address,
+    city,
+    state,
+    pincode,
+    price,
+  } = req.body;
 
-  if ((!username, !roleId, !categoryId, !phone, !address, !city, !state, !pincode, !price)) {
+  if (
+    (!username,
+    !roleId,
+    !categoryId,
+    !phone,
+    !address,
+    !city,
+    !state,
+    !pincode,
+    !price)
+  ) {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -206,26 +247,6 @@ const updateWorker = asyncHandler(async (req, res) => {
   }
 });
 
-const verifyPosts = asyncHandler(async (req, res) => {
-  const { status } = req.body;
-  const postId = req.params.id;
-
-  if (status === undefined || status === null || status === "") {
-    res.status(404);
-    throw new Error("All fields required!");
-  }
-  const post = await WorkPost.findByIdAndUpdate(postId, {
-    status: status,
-  });
-
-  if (!post) {
-    res.status(404);
-    throw new Error("post not found!");
-  }
-
-  res.status(201).json({ message: "Post status changed successfully!" });
-});
-
 const updateUserSupport = asyncHandler(async (req, res) => {
   const { status } = req.body;
   const supportId = req.params.id;
@@ -266,58 +287,7 @@ const updateWorkerSupport = asyncHandler(async (req, res) => {
   res.status(201).json({ message: "Support status changed successfully!" });
 });
 
-const verifySubAdmin = asyncHandler(async (req, res) => {
-  const { status } = req.body;
-  const subAdminId = req.params.id;
-
-  if (status === undefined || status === null || status === "") {
-    res.status(404);
-    throw new Error("All fields required!");
-  }
-  const subAdmin = await SubAdmin.findByIdAndUpdate(subAdminId, {
-    status: status,
-  });
-
-  if (!subAdmin) {
-    res.status(404);
-    throw new Error("SubAdmin not found!");
-  }
-
-  res.status(201).json({ message: "SubAdmin status changed successfully!" });
-});
-
-const getLengthOfData = asyncHandler(async (req, res) => {
-  const allWorker = await Worker.find({ status: true }).count();
-  const allUser = await User.find({ status: true }).count();
-  const allWorkPost = await WorkPost.find().count();
-  const userSupport = await UserSupport.find().count();
-  const workerSupport = await WorkerSupport.find().count();
-  const allCategory = await Category.find().count();
-  const allRole = await Role.find().count();
-  const allSubAdmin = await SubAdmin.find().count();
-
-  res.status(200).json({
-    UserCount: allUser,
-    WorkerCount: allWorker,
-    UserSupportCount: userSupport,
-    WorkerSupportCount: workerSupport,
-    WorkPostCount: allWorkPost,
-    CategoryCount: allCategory,
-    RoleCount: allRole,
-    SubAdminCount: allSubAdmin,
-  });
-});
-
-const deleteSubAdmin = asyncHandler(async (req, res) => {
-  const subAdminId = req.params.id;
-  const subAdmin = await SubAdmin.findByIdAndDelete(subAdminId);
-  if (!subAdmin) {
-    res.status(404);
-    throw new Error("SubAdmin not found!");
-  }
-  res.status(200).json({ message: "SubAdmin Deleted Successfully!" });
-});
-
+///// SubAdmin Controllers /////
 const getAllSubAdmin = asyncHandler(async (req, res) => {
   const subAdmin = await SubAdmin.find({}, "-password").sort({ updatedAt: -1 });
   if (!subAdmin) {
@@ -354,6 +324,37 @@ const getWorkerBySubAdminId = asyncHandler(async (req, res) => {
   res.status(200).json(subAdmin);
 });
 
+const verifySubAdmin = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const subAdminId = req.params.id;
+
+  if (status === undefined || status === null || status === "") {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+  const subAdmin = await SubAdmin.findByIdAndUpdate(subAdminId, {
+    status: status,
+  });
+
+  if (!subAdmin) {
+    res.status(404);
+    throw new Error("SubAdmin not found!");
+  }
+
+  res.status(201).json({ message: "SubAdmin status changed successfully!" });
+});
+
+const deleteSubAdmin = asyncHandler(async (req, res) => {
+  const subAdminId = req.params.id;
+  const subAdmin = await SubAdmin.findByIdAndDelete(subAdminId);
+  if (!subAdmin) {
+    res.status(404);
+    throw new Error("SubAdmin not found!");
+  }
+  res.status(200).json({ message: "SubAdmin Deleted Successfully!" });
+});
+
+///// In App Notification Controllers For Users /////
 const createAppNotificationUser = asyncHandler(async (req, res) => {
   const { title, description, userId } = req.body;
 
@@ -370,22 +371,6 @@ const createAppNotificationUser = asyncHandler(async (req, res) => {
   res.status(201).json({ message: "Notification Sent successfully!" });
 });
 
-const createAppNotificationWorker = asyncHandler(async (req, res) => {
-  const { title, description, workerId } = req.body;
-
-  if ((!title, !description, !workerId)) {
-    res.status(404);
-    throw new Error("All fields required!");
-  }
-
-  const notification = await AppNotificationWorker.create({
-    title,
-    description,
-    workerId,
-  });
-  res.status(201).json({ message: "Notification Sent successfully!" });
-});
-
 const createAppNotificationForAllUsers = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
 
@@ -394,7 +379,7 @@ const createAppNotificationForAllUsers = asyncHandler(async (req, res) => {
     throw new Error("Title and description are required!");
   }
 
-  const userIds = await User.find().distinct("_id"); // Assuming User is your mongoose model for users
+  const userIds = await User.find().distinct("_id");
 
   const notifications = await Promise.all(
     userIds.map(async (userId) => {
@@ -411,6 +396,23 @@ const createAppNotificationForAllUsers = asyncHandler(async (req, res) => {
     .json({ message: "Notifications Sent successfully!", notifications });
 });
 
+///// In App Notification Controllers For Workers /////
+const createAppNotificationWorker = asyncHandler(async (req, res) => {
+  const { title, description, workerId } = req.body;
+
+  if ((!title, !description, !workerId)) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  const notification = await AppNotificationWorker.create({
+    title,
+    description,
+    workerId,
+  });
+  res.status(201).json({ message: "Notification Sent successfully!" });
+});
+
 const createAppNotificationForAllWorkers = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
 
@@ -419,7 +421,7 @@ const createAppNotificationForAllWorkers = asyncHandler(async (req, res) => {
     throw new Error("Title and description are required!");
   }
 
-  const workerIds = await Worker.find().distinct("_id"); // Assuming User is your mongoose model for users
+  const workerIds = await Worker.find().distinct("_id");
 
   const notifications = await Promise.all(
     workerIds.map(async (workerId) => {
@@ -436,22 +438,65 @@ const createAppNotificationForAllWorkers = asyncHandler(async (req, res) => {
     .json({ message: "Notifications Sent successfully!", notifications });
 });
 
+///// Other Controllers /////
+const verifyPosts = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const postId = req.params.id;
+
+  if (status === undefined || status === null || status === "") {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+  const post = await WorkPost.findByIdAndUpdate(postId, {
+    status: status,
+  });
+
+  if (!post) {
+    res.status(404);
+    throw new Error("post not found!");
+  }
+
+  res.status(201).json({ message: "Post status changed successfully!" });
+});
+
+const getLengthOfData = asyncHandler(async (req, res) => {
+  const allWorker = await Worker.find({ status: true }).count();
+  const allUser = await User.find({ status: true }).count();
+  const allWorkPost = await WorkPost.find().count();
+  const userSupport = await UserSupport.find().count();
+  const workerSupport = await WorkerSupport.find().count();
+  const allCategory = await Category.find().count();
+  const allRole = await Role.find().count();
+  const allSubAdmin = await SubAdmin.find().count();
+
+  res.status(200).json({
+    UserCount: allUser,
+    WorkerCount: allWorker,
+    UserSupportCount: userSupport,
+    WorkerSupportCount: workerSupport,
+    WorkPostCount: allWorkPost,
+    CategoryCount: allCategory,
+    RoleCount: allRole,
+    SubAdminCount: allSubAdmin,
+  });
+});
+
 module.exports = {
   registerAdmin,
   loginAdmin,
   forgotPasswordAdmin,
   createWorker,
   updateWorker,
-  verifyPosts,
   updateUserSupport,
   updateWorkerSupport,
-  getLengthOfData,
   verifySubAdmin,
-  deleteSubAdmin,
   getAllSubAdmin,
   getWorkerBySubAdminId,
+  deleteSubAdmin,
   createAppNotificationUser,
   createAppNotificationWorker,
   createAppNotificationForAllUsers,
   createAppNotificationForAllWorkers,
+  verifyPosts,
+  getLengthOfData,
 };

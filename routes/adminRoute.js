@@ -52,8 +52,8 @@ router.post(
   createWorker
 );
 router.post("/notificationUser", createAppNotificationUser);
-router.post("/notificationWorker", createAppNotificationWorker);
 router.post("/notificationAllUser", createAppNotificationForAllUsers);
+router.post("/notificationWorker", createAppNotificationWorker);
 router.post("/notificationAllWorker", createAppNotificationForAllWorkers);
 
 

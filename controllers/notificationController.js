@@ -85,7 +85,10 @@ const deleteUnreadNotification = asyncHandler(async (req, res) => {
 const getAppReadNotificationUser = asyncHandler(async (req, res) => {
   const userId = req.params.id;
 
-  const notificationData = await AppNotificationUser.find({ status: true, userId: userId });
+  const notificationData = await AppNotificationUser.find({
+    status: true,
+    userId: userId,
+  });
 
   if (!notificationData) {
     res.status(404);
@@ -100,7 +103,10 @@ const getAppReadNotificationUser = asyncHandler(async (req, res) => {
 const getAppUnreadNotificationUser = asyncHandler(async (req, res) => {
   const userId = req.params.id;
 
-  const notificationData = await AppNotificationUser.find({ status: false, userId: userId });
+  const notificationData = await AppNotificationUser.find({
+    status: false,
+    userId: userId,
+  });
 
   if (!notificationData) {
     res.status(404);
@@ -153,7 +159,10 @@ const updateInAppNotificationStatusUser = asyncHandler(async (req, res) => {
 const getAppReadNotificationWorker = asyncHandler(async (req, res) => {
   const workerId = req.params.id;
 
-  const notificationData = await AppNotificationWorker.find({ status: true, workerId: workerId });
+  const notificationData = await AppNotificationWorker.find({
+    status: true,
+    workerId: workerId,
+  });
 
   if (!notificationData) {
     res.status(404);
@@ -168,7 +177,10 @@ const getAppReadNotificationWorker = asyncHandler(async (req, res) => {
 const getAppUnreadNotificationWorker = asyncHandler(async (req, res) => {
   const workerId = req.params.id;
 
-  const notificationData = await AppNotificationWorker.find({ status: false, workerId: workerId });
+  const notificationData = await AppNotificationWorker.find({
+    status: false,
+    workerId: workerId,
+  });
 
   if (!notificationData) {
     res.status(404);
@@ -216,6 +228,36 @@ const updateInAppNotificationStatusWorker = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Notification updated successfully!" });
 });
 
+const deleteSingleInAppNotificationUser = asyncHandler(async (req, res) => {
+  const notificationId = req.params.id;
+
+  const deleteNotification = await AppNotificationUser.findByIdAndDelete(
+    notificationId
+  );
+
+  if (!deleteNotification) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res.status(200).json({ message: "Notification deleted successfully!" });
+});
+
+const deleteSingleInAppNotificationWorker = asyncHandler(async (req, res) => {
+  const notificationId = req.params.id;
+
+  const deleteNotification = await AppNotificationWorker.findByIdAndDelete(
+    notificationId
+  );
+
+  if (!deleteNotification) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+
+  res.status(200).json({ message: "Notification deleted successfully!" });
+});
+
 module.exports = {
   getUnreadNotification,
   getReadNotification,
@@ -229,5 +271,7 @@ module.exports = {
   getSingleAppNotificationUser,
   getSingleAppNotificationWorker,
   updateInAppNotificationStatusUser,
-  updateInAppNotificationStatusWorker
+  updateInAppNotificationStatusWorker,
+  deleteSingleInAppNotificationUser,
+  deleteSingleInAppNotificationWorker
 };

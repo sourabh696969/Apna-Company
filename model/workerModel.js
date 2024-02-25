@@ -39,6 +39,10 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
     subAdminData: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SubAdmin",

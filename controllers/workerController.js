@@ -440,6 +440,26 @@ const deleteUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "User Deleted Successfully!" });
 });
 
+const updateWorkerAvailablity = asyncHandler(async (req, res) => {
+  const { isAvailable } = req.body;
+  const workerId = req.params.id;
+
+  if (!isAvailable) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  const Availablity = await Worker.findByIdAndUpdate(workerId, {
+    isAvailable: isAvailable,
+  });
+  if (!Availablity) {
+    res.status(404);
+    throw new Error("Worker not found!");
+  }
+
+  res.status(200).json({ message: "Availability updated Successfully!" });
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -451,4 +471,5 @@ module.exports = {
   deleteUser,
   AllUserByRole,
   AllUserByLocation,
+  updateWorkerAvailablity
 };

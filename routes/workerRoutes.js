@@ -9,6 +9,7 @@ const {
   deleteUser,
   AllUserByRole,
   AllUserByLocation,
+  updateWorkerAvailablity,
 } = require("../controllers/workerController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const {
@@ -66,6 +67,7 @@ router.get("/single/:catid/:roleid", validateUserToken, AllUserByRole);
 router.get("/all", AllUser);
 router.get("/allByLocation", validateUserToken, AllUserByLocation);
 router.delete("/:id", deleteUser);
+router.patch("/available/:id", updateWorkerAvailablity);
 
 /////// Role ////////
 router.post("/role", createRole);

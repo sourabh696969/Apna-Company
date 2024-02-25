@@ -367,7 +367,7 @@ const createAppNotificationUser = asyncHandler(async (req, res) => {
     description,
     userId,
   });
-  res.status(201).json({ message: "Notification created successfully!" });
+  res.status(201).json({ message: "Notification Sent successfully!" });
 });
 
 const createAppNotificationWorker = asyncHandler(async (req, res) => {
@@ -383,7 +383,7 @@ const createAppNotificationWorker = asyncHandler(async (req, res) => {
     description,
     workerId,
   });
-  res.status(201).json({ message: "Notification created successfully!" });
+  res.status(201).json({ message: "Notification Sent successfully!" });
 });
 
 const createAppNotificationForAllUsers = asyncHandler(async (req, res) => {
@@ -408,7 +408,7 @@ const createAppNotificationForAllUsers = asyncHandler(async (req, res) => {
 
   res
     .status(201)
-    .json({ message: "Notifications created successfully!", notifications });
+    .json({ message: "Notifications Sent successfully!", notifications });
 });
 
 const createAppNotificationForAllWorkers = asyncHandler(async (req, res) => {
@@ -433,7 +433,7 @@ const createAppNotificationForAllWorkers = asyncHandler(async (req, res) => {
 
   res
     .status(201)
-    .json({ message: "Notifications created successfully!", notifications });
+    .json({ message: "Notifications Sent successfully!", notifications });
 });
 
 module.exports = {

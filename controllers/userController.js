@@ -68,6 +68,7 @@ const signupUser = asyncHandler(async (req, res) => {
   const { phone } = req.body;
 
   if (!phone.match(/^[6789]\d{9}$/)) {
+    res.status(404);
     throw new Error("Invalid mobile number");
   }
 
@@ -107,6 +108,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const { phone } = req.body;
 
   if (!phone.match(/^[6789]\d{9}$/)) {
+    res.status(404);
     throw new Error("Invalid mobile number");
   }
 
@@ -152,6 +154,7 @@ const veifyOtp = asyncHandler(async (req, res) => {
   const { phone, Otp } = req.body;
 
   if (!phone.match(/^[6789]\d{9}$/)) {
+    res.status(404);
     throw new Error("Invalid mobile number");
   }
 

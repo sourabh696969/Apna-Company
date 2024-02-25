@@ -12,7 +12,6 @@ const categorySchema = mongoose.Schema(
     },
     categoryImg: {
       type: String,
-      required: true,
     },
   },
   {

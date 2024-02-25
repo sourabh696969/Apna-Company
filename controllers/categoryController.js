@@ -74,10 +74,12 @@ const updateCategory = asyncHandler(async (req, res) => {
     ? req.files["categoryImg"][0].path
     : null;
 
+  const categoryData = await Category.findById(catId);
+
   const updateCategory = await Category.findByIdAndUpdate(catId, {
     categoryName,
     categoryNameHindi,
-    categoryImg: images == null ? updateCategory.categoryImg : images,
+    categoryImg: images == null ? categoryData.categoryImg : images,
   });
 
   if (!updateCategory) {

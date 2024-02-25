@@ -18,50 +18,46 @@ const {
   createAppNotificationForAllUsers,
   createAppNotificationForAllWorkers,
 } = require("../controllers/adminController");
-const multer = require("multer");
-const path = require("path");
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+// const multer = require("multer");
+// const path = require("path");
+// const cloudinary = require("cloudinary").v2;
+// const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const uploadToCloudinary = require("../middleware/uploadToCloudnary");
 
 const router = express.Router();
 
 // Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
-});
+// cloudinary.config({
+//   cloud_name: process.env.CLOUD_NAME,
+//   api_key: process.env.API_KEY,
+//   api_secret: process.env.API_SECRET,
+// });
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "upload", // Specify the folder in Cloudinary where you want to store the files
-    allowed_formats: ["jpg", "jpeg", "png", "gif"], // Specify allowed file formats
-    //  transformation: [{ width: 150, height: 150, crop: 'limit' }], // Optional: image transformations
-  },
-});
+// const storage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+//   params: {
+//     folder: "upload", // Specify the folder in Cloudinary where you want to store the files
+//     allowed_formats: ["jpg", "jpeg", "png", "gif"], // Specify allowed file formats
+//     //  transformation: [{ width: 150, height: 150, crop: 'limit' }], // Optional: image transformations
+//   },
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
 ///// POST Routes /////
 router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
-router.post(
-  "/createWorker",
-  upload.fields([{ name: "profileImg", maxCount: 1 }]),
-  createWorker
-);
+router.post("/createWorker", uploadToCloudinary("profileImg"), createWorker);
 router.post("/notificationUser", createAppNotificationUser);
 router.post("/notificationAllUser", createAppNotificationForAllUsers);
 router.post("/notificationWorker", createAppNotificationWorker);
 router.post("/notificationAllWorker", createAppNotificationForAllWorkers);
 
-
 ///// PUT & PATCH Routes /////
 router.put("/verifyPost/:id", verifyPosts);
 router.put(
   "/updateWorker/:id",
-  upload.fields([{ name: "profileImg", maxCount: 1 }]),
+  uploadToCloudinary("profileImg"),
   updateWorker
 );
 router.put("/forgotPassword", forgotPasswordAdmin);

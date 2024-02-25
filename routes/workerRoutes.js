@@ -27,36 +27,15 @@ const {
   updateCategory,
 } = require("../controllers/categoryController");
 const { AllUserById } = require("../controllers/workerController");
-const multer = require("multer");
-const path = require("path");
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const uploadToCloudinary = require("../middleware/uploadToCloudnary");
 
 const router = express.Router();
-
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
-});
-
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "upload", // Specify the folder in Cloudinary where you want to store the files
-    allowed_formats: ["jpg", "jpeg", "png", "gif"], // Specify allowed file formats
-    //  transformation: [{ width: 150, height: 150, crop: 'limit' }], // Optional: image transformations
-  },
-});
-
-const upload = multer({ storage: storage });
 
 /////// Authentication ////////
 router.post(
   "/register",
   validateUserToken,
-  upload.fields([{ name: "profileImg", maxCount: 1 }]),
+  uploadToCloudinary("profileImg"),
   registerUser
 );
 router.post("/login", loginUser);
@@ -77,17 +56,9 @@ router.put("/role/:id", updateRole);
 router.patch("/role/:id", updateRoleStatus);
 
 /////// Category ////////
-router.post(
-  "/category",
-  upload.fields([{ name: "categoryImg", maxCount: 1 }]),
-  createCategory
-);
+router.post("/category", uploadToCloudinary("categoryImg"), createCategory);
 router.delete("/category/:id", deleteCategory);
-router.put(
-  "/category/:id",
-  upload.fields([{ name: "categoryImg", maxCount: 1 }]),
-  updateCategory
-);
+router.put("/category/:id", uploadToCloudinary("categoryImg"), updateCategory);
 router.get("/category", getCategory);
 router.get("/singleCategory/:id", getSingleCategory);
 router.get("/category/:id", validateUserToken, AllUserById);

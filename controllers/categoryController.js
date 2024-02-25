@@ -21,10 +21,6 @@ const createCategory = asyncHandler(async (req, res) => {
   const images = req.files["categoryImg"]
     ? req.files["categoryImg"][0].path
     : null;
-  if (!images) {
-    res.status(404);
-    throw new Error("image is required!");
-  }
 
   const category = await Category.create({
     categoryName,
@@ -77,11 +73,6 @@ const updateCategory = asyncHandler(async (req, res) => {
   const images = req.files["categoryImg"]
     ? req.files["categoryImg"][0].path
     : null;
-
-  if (!images) {
-    res.status(404);
-    throw new Error("image is required!");
-  }
 
   const updateCategory = await Category.findByIdAndUpdate(catId, {
     categoryName,

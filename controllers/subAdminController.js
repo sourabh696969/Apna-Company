@@ -63,7 +63,6 @@ const loginSubAdmin = asyncHandler(async (req, res) => {
     {
       user: {
         _id: subAdminAvailable._id,
-        role: subAdminAvailable.role,
       },
     },
     process.env.SECRET_KEY
@@ -72,6 +71,7 @@ const loginSubAdmin = asyncHandler(async (req, res) => {
     message: "Admin logged In successfully!",
     _id: subAdminAvailable._id,
     token: accessToken,
+    role: subAdminAvailable.role,
   });
 });
 

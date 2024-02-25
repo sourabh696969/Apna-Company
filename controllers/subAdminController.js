@@ -200,8 +200,9 @@ const removeSubAdminRoles = asyncHandler(async (req, res) => {
       return;
     }
 
-    // Assuming roles are stored as ObjectIds in the SubAdmin model
-    subAdminData.role = subAdminData.role.filter(roleId => !roles.includes(roleId.toString()));
+    subAdminData.role = subAdminData.role.filter(
+      (roleId) => !roles.includes(roleId.toString())
+    );
 
     subAdminData = await subAdminData.save();
 
@@ -210,7 +211,6 @@ const removeSubAdminRoles = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 });
-
 
 ///// Roles for SubAdmin /////
 const createSubAdminRole = asyncHandler(async (req, res) => {

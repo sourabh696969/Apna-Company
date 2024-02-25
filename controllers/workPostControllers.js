@@ -3,6 +3,7 @@ const { WorkPost, SavedWorkPost } = require("../model/workPostModel");
 const { Notification } = require("../model/notificationModel");
 const User = require("../model/userModel");
 const Worker = require("../model/workerModel");
+const Category = require("../model/categoryModel");
 
 const createWorkPost = asyncHandler(async (req, res) => {
   const { description, work, duration } = req.body;
@@ -270,6 +271,18 @@ const getAllVerifiedWorkPost = asyncHandler(async (req, res) => {
         },
       },
     ],
+    $or: [
+      {
+        work: {
+          $in: await Category.find({
+            $or: [
+              { categoryName: { $regex: searchQuary, $options: "i" } },
+              { categoryNameHindi: { $regex: searchQuary, $options: "i" } },
+            ],
+          }),
+        },
+      },
+    ],
   })
     .populate("user", "phone username address city state pincode")
     .populate("work", "categoryName categoryNameHindi categoryImg")
@@ -287,6 +300,18 @@ const getAllVerifiedWorkPost = asyncHandler(async (req, res) => {
               { phone: { $regex: searchQuary, $options: "i" } },
             ],
           }).distinct("_id"),
+        },
+      },
+    ],
+    $or: [
+      {
+        work: {
+          $in: await Category.find({
+            $or: [
+              { categoryName: { $regex: searchQuary, $options: "i" } },
+              { categoryNameHindi: { $regex: searchQuary, $options: "i" } },
+            ],
+          }),
         },
       },
     ],

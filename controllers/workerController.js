@@ -452,7 +452,7 @@ const updateWorkerAvailablity = asyncHandler(async (req, res) => {
   const Availablity = await Worker.findByIdAndUpdate(workerId, {
     isAvailable: isAvailable,
   });
-  if (!Availablity) {
+  if (isAvailable === undefined || isAvailable === null || isAvailable === "") {
     res.status(404);
     throw new Error("Worker not found!");
   }

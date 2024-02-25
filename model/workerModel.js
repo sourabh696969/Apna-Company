@@ -17,6 +17,16 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    otp: {
+      type: String,
+      default: "123456"
+    },
+    otpExpiration: {
+      type: Date,
+      default: Date.now,
+      get: (otpExpiration) => otpExpiration.getTime(),
+      set: (otpExpiration) => new Date(otpExpiration),
+    },
     address: {
       type: String,
     },

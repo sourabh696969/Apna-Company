@@ -12,6 +12,15 @@ const agentSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    otp: {
+      type: String,
+    },
+    otpExpiration: {
+      type: Date,
+      default: Date.now,
+      get: (otpExpiration) => otpExpiration.getTime(),
+      set: (otpExpiration) => new Date(otpExpiration),
+    },
     address: {
       type: String,
     },

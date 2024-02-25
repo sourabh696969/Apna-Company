@@ -315,6 +315,7 @@ const getWorkerBySubAdminId = asyncHandler(async (req, res) => {
       { address: { $regex: searchQuary, $options: "i" } },
     ],
   })
+    .select("-otp -otpExpiration")
     .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")

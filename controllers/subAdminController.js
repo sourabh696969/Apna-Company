@@ -47,7 +47,7 @@ const loginSubAdmin = asyncHandler(async (req, res) => {
   const subAdminAvailable = await SubAdmin.findOne({
     email: email,
     status: true,
-  }).populate('role', 'role');
+  }).populate("role", "role");
 
   if (!subAdminAvailable) {
     res.status(404);
@@ -67,7 +67,7 @@ const loginSubAdmin = asyncHandler(async (req, res) => {
     },
     process.env.SECRET_KEY
   );
-  const roles = subAdminAvailable.role.map(role => role.role);
+  const roles = subAdminAvailable.role.map((role) => role.role);
   res.status(200).json({
     message: "Admin logged In successfully!",
     _id: subAdminAvailable._id,
@@ -110,7 +110,7 @@ const forgotPasswordSubAdmin = asyncHandler(async (req, res) => {
 const getSingleSubAdmin = asyncHandler(async (req, res) => {
   const subAdminId = req.params.id;
 
-  const subAdmin = await SubAdmin.findById(subAdminId).populate('role', 'role');
+  const subAdmin = await SubAdmin.findById(subAdminId).populate("role", "role");
   if (!subAdmin) {
     res.status(404);
     throw new Error("SubAdmin not found!");
@@ -345,6 +345,7 @@ const AllUser = asyncHandler(async (req, res) => {
       { address: { $regex: searchQuary, $options: "i" } },
     ],
   })
+    .select("-otp -otpExpiration")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)

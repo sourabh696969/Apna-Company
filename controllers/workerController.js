@@ -7,8 +7,13 @@ const { SavedWorkPost } = require("../model/workPostModel");
 const Role = require("../model/roleModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
-let otp;
+const twilio = require("twilio");
+const validateOTP = require("../helper/validateOtp");
+
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+const twilioClient = new twilio(accountSid, authToken);
 
 const registerUser = asyncHandler(async (req, res) => {
   const userId = req.user;
@@ -99,6 +104,50 @@ const registerUser = asyncHandler(async (req, res) => {
 const signupUser = asyncHandler(async (req, res) => {
   const { phone } = req.body;
 
+  if (!phone.match(/^[6789]\d{9}$/)) {
+    throw new Error("Invalid mobile number");
+  }
+
+  if (!phone) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  const otp = otpGenerator.generate(6, {
+    digits: true,
+    lowerCaseAlphabets: false,
+    upperCaseAlphabets: false,
+    specialChars: false,
+  });
+
+  const currentDate = new Date();
+
+  const userAvailable = await Worker.findOneAndUpdate(
+    { phone },
+    { otp, otpExpiration: new Date(currentDate.getTime()) },
+    {
+      upsert: true,
+      new: true,
+      setDefaultsOnInsert: true,
+    }
+  );
+
+  await twilioClient.messages.create({
+    body: `Your OTP is: ${otp}`,
+    to: `+91${phone}`,
+    from: process.env.TWILIO_PHONE_NUMBER,
+  });
+
+  res.status(201).json({ message: "OTP send Successfully!" });
+});
+
+const loginUser = asyncHandler(async (req, res) => {
+  const { phone } = req.body;
+
+  if (!phone.match(/^[6789]\d{9}$/)) {
+    throw new Error("Invalid mobile number");
+  }
+
   if (!phone) {
     res.status(404);
     throw new Error("All fields required!");
@@ -107,99 +156,60 @@ const signupUser = asyncHandler(async (req, res) => {
   const userAvailable = await Worker.findOne({ phone: phone });
 
   if (!userAvailable) {
-    const OTP = otpGenerator.generate(6, {
-      digits: true,
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-
-    otp = OTP;
-
-    if (otp) {
-      const user = await Worker.create({
-        phone: phone,
-      });
-      res.status(201).json({ message: "OTP send Successfully!", otp: otp });
-    } else {
-      res.status(400);
-      throw new Error("data is not valid");
-    }
-  } else {
-    const OTP = otpGenerator.generate(6, {
-      digits: true,
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-
-    otp = OTP;
-
-    if (otp) {
-      const user = await Worker.updateOne({
-        phone: phone,
-      });
-      res.status(201).json({ message: "OTP send Successfully!", otp: otp });
-    } else {
-      res.status(400);
-      throw new Error("data is not valid");
-    }
-  }
-});
-
-const loginUser = asyncHandler(async (req, res) => {
-  const { phone } = req.body;
-
-  if (!phone) {
     res.status(404);
-    throw new Error("All fields required!");
+    throw new Error("User not exist!");
   }
+  const otp = otpGenerator.generate(6, {
+    digits: true,
+    lowerCaseAlphabets: false,
+    upperCaseAlphabets: false,
+    specialChars: false,
+  });
+  const currentDate = new Date();
 
-  const userAvailable = await Worker.findOne({ phone: phone });
-
-  if (userAvailable) {
-    const OTP = otpGenerator.generate(6, {
-      digits: true,
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-
-    otp = OTP;
-
-    if (otp) {
-      res.status(201).json({ message: "OTP send Successfully!", otp: otp });
-    } else {
-      res.status(400);
-      throw new Error("data is not valid");
+  const loginUser = await Worker.findOneAndUpdate(
+    { phone },
+    { otp, otpExpiration: new Date(currentDate.getTime()) },
+    {
+      upsert: true,
+      new: true,
+      setDefaultsOnInsert: true,
     }
-  } else {
-    res.status(404);
-    throw new Error("User data is not valid!");
-  }
+  );
+
+  await twilioClient.messages.create({
+    body: `Your OTP is: ${otp}`,
+    to: `+91${phone}`,
+    from: process.env.TWILIO_PHONE_NUMBER,
+  });
+
+  res.status(201).json({ message: "OTP send Successfully!" });
 });
 
 const veifyOtp = asyncHandler(async (req, res) => {
   const { phone, Otp } = req.body;
-  console.log(otp);
+
+  if (!phone.match(/^[6789]\d{9}$/)) {
+    throw new Error("Invalid mobile number");
+  }
 
   if ((!phone, !Otp)) {
     res.status(404);
     throw new Error("All fields required!");
   }
 
-  const phoneAvalaible = await Worker.findOne({ phone });
+  const phoneAvalaible = await Worker.findOne({ phone, otp: Otp });
 
   if (!phoneAvalaible) {
-    res.status(400);
-    throw new Error("User with this phone number does not exists!");
-  }
-
-  if (otp != Otp) {
     res.status(400);
     throw new Error("Incorrect OTP!");
   }
 
+  const isOtpExpired = await validateOTP(phoneAvalaible.otpExpiration);
+  if (isOtpExpired) {
+    res.status(400);
+    throw new Error("You OTP has been Expired!");
+  }
   const accessToken = jwt.sign(
     {
       user: {
@@ -209,12 +219,6 @@ const veifyOtp = asyncHandler(async (req, res) => {
     process.env.SECRET_KEY,
     { expiresIn: "1d" }
   );
-
-  if (!accessToken) {
-    res.status(500);
-    throw new Error("Server Error!");
-  }
-
   res.status(201).json({
     message: "User Verified successfully!",
     phone: phone,
@@ -226,6 +230,7 @@ const veifyOtp = asyncHandler(async (req, res) => {
 const getUserById = asyncHandler(async (req, res) => {
   const userId = req.params.id;
   const singleUser = await Worker.findById(userId)
+    .select("-otp -otpExpiration")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg");
   if (!singleUser) {
@@ -250,6 +255,7 @@ const AllUser = asyncHandler(async (req, res) => {
       { address: { $regex: searchQuary, $options: "i" } },
     ],
   })
+    .select("-otp -otpExpiration")
     .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
@@ -279,6 +285,7 @@ const AllUserByLocation = asyncHandler(async (req, res) => {
     state: userData.state,
     pincode: userData.pincode,
   })
+    .select("-otp -otpExpiration")
     .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
@@ -294,6 +301,7 @@ const AllUserByLocation = asyncHandler(async (req, res) => {
       { pincode: { $ne: userData.pincode } },
     ],
   })
+    .select("-otp -otpExpiration")
     .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
@@ -320,6 +328,7 @@ const searchUser = asyncHandler(async (req, res) => {
       { address: { $regex: searchQuary, $options: "i" } },
     ],
   })
+    .select("-otp -otpExpiration")
     .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg");
@@ -355,6 +364,7 @@ const AllUserById = asyncHandler(async (req, res) => {
     state: userData.state,
     pincode: userData.pincode,
   })
+    .select("-otp -otpExpiration")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
@@ -376,6 +386,7 @@ const AllUserById = asyncHandler(async (req, res) => {
       { pincode: { $ne: userData.pincode } },
     ],
   })
+    .select("-otp -otpExpiration")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
@@ -413,6 +424,7 @@ const AllUserByRole = asyncHandler(async (req, res) => {
     state: userData.state,
     pincode: userData.pincode,
   })
+    .select("-otp -otpExpiration")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
@@ -434,6 +446,7 @@ const AllUserByRole = asyncHandler(async (req, res) => {
       { pincode: { $ne: userData.pincode } },
     ],
   })
+    .select("-otp -otpExpiration")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
@@ -491,5 +504,5 @@ module.exports = {
   AllUserByRole,
   AllUserByLocation,
   updateWorkerAvailablity,
-  searchUser
+  searchUser,
 };

@@ -444,7 +444,7 @@ const updateWorkerAvailablity = asyncHandler(async (req, res) => {
   const { isAvailable } = req.body;
   const workerId = req.params.id;
 
-  if (!isAvailable) {
+  if (isAvailable === undefined || isAvailable === null || isAvailable === "") {
     res.status(404);
     throw new Error("All fields required!");
   }
@@ -452,7 +452,7 @@ const updateWorkerAvailablity = asyncHandler(async (req, res) => {
   const Availablity = await Worker.findByIdAndUpdate(workerId, {
     isAvailable: isAvailable,
   });
-  if (isAvailable === undefined || isAvailable === null || isAvailable === "") {
+  if (!Availablity) {
     res.status(404);
     throw new Error("Worker not found!");
   }

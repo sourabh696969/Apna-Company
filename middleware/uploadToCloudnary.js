@@ -19,7 +19,7 @@ const uploadToCloudinary = (folderName) => {
 
   const upload = multer({ storage: storage });
 
-  return upload.fields([{ name: "profileImg", maxCount: 1 }]);
+  return upload.fields([{ name: folderName, maxCount: 1 }]);
 };
 
 module.exports = uploadToCloudinary;

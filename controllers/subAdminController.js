@@ -162,7 +162,7 @@ const addSubAdminImage = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "SubAdmin Updated!" });
 });
 
-const updateSubAdminRole = asyncHandler(async(req, res) => {
+const updateSubAdminRole = asyncHandler(async (req, res) => {
   const subAdminId = req.params.id;
   const { role } = req.body;
 
@@ -178,13 +178,42 @@ const updateSubAdminRole = asyncHandler(async(req, res) => {
     throw new Error("data not found!");
   }
   subAdminData.role = subAdminData.role || [];
-  subAdminData.role.push(role);
+  subAdminData.role.push(...role);
   await subAdminData.save();
   res.status(200).json({ message: "SubAdmin role updated!" });
 });
 
+const removeSubAdminRoles = asyncHandler(async (req, res) => {
+  const subAdminId = req.params.id;
+  const { roles } = req.body;
+
+  if (!roles || !Array.isArray(roles) || roles.length === 0) {
+    res.status(400).json({ message: "Please provide roles to delete." });
+    return;
+  }
+
+  try {
+    let subAdminData = await SubAdmin.findById(subAdminId);
+
+    if (!subAdminData) {
+      res.status(404).json({ message: "SubAdmin not found." });
+      return;
+    }
+
+    // Assuming roles are stored as ObjectIds in the SubAdmin model
+    subAdminData.role = subAdminData.role.filter(roleId => !roles.includes(roleId.toString()));
+
+    subAdminData = await subAdminData.save();
+
+    res.status(200).json({ message: "Roles deleted successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+
 ///// Roles for SubAdmin /////
-const createSubAdminRole = asyncHandler(async(req, res) => {
+const createSubAdminRole = asyncHandler(async (req, res) => {
   const { role } = req.body;
 
   if (!role) {
@@ -193,13 +222,13 @@ const createSubAdminRole = asyncHandler(async(req, res) => {
   }
 
   const newrole = await SubAdminRole.create({
-    role
+    role,
   });
 
   res.status(201).json({ message: "SubAdmin Role created!" });
 });
 
-const getSubAdminRole = asyncHandler(async(req, res) => {
+const getSubAdminRole = asyncHandler(async (req, res) => {
   const roles = await SubAdminRole.find();
 
   if (!roles) {
@@ -210,7 +239,7 @@ const getSubAdminRole = asyncHandler(async(req, res) => {
   res.status(200).json(roles);
 });
 
-const deleteSubAdminRole = asyncHandler(async(req, res) => {
+const deleteSubAdminRole = asyncHandler(async (req, res) => {
   const roleId = req.params.id;
 
   const roles = await SubAdminRole.findByIdAndDelete(roleId);
@@ -220,9 +249,8 @@ const deleteSubAdminRole = asyncHandler(async(req, res) => {
     throw new Error("All fields required!");
   }
 
-  res.status(200).json({ message: 'Role deleted successfully!' });
+  res.status(200).json({ message: "Role deleted successfully!" });
 });
-
 
 ///// Worker Controllers /////
 const createWorker = asyncHandler(async (req, res) => {
@@ -423,5 +451,6 @@ module.exports = {
   updateSubAdmin,
   createSubAdminRole,
   getSubAdminRole,
-  deleteSubAdminRole
+  deleteSubAdminRole,
+  removeSubAdminRoles,
 };

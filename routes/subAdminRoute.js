@@ -10,6 +10,7 @@ const {
   addSubAdminImage,
   updateSubAdmin,
   updateSubAdminRole,
+  removeSubAdminRoles,
 } = require("../controllers/subAdminController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const uploadToCloudinary = require("../middleware/uploadToCloudnary");
@@ -40,5 +41,8 @@ router.put("/update/role/:id", updateSubAdminRole);
 ///// GET Routes /////
 router.get("/all", AllUser);
 router.get("/profile/:id", getSingleSubAdmin);
+
+///// DELETE Routes /////
+router.delete("/delete/role/:id", removeSubAdminRoles);
 
 module.exports = router;

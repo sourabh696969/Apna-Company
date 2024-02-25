@@ -9,6 +9,7 @@ const {
   getSingleSubAdmin,
   addSubAdminImage,
   updateSubAdmin,
+  updateSubAdminRole,
 } = require("../controllers/subAdminController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const uploadToCloudinary = require("../middleware/uploadToCloudnary");
@@ -34,6 +35,7 @@ router.put(
   addSubAdminImage
 );
 router.put("/update/:id", updateSubAdmin);
+router.put("/update/role/:id", updateSubAdminRole);
 
 ///// GET Routes /////
 router.get("/all", AllUser);

@@ -289,7 +289,7 @@ const updateWorkerSupport = asyncHandler(async (req, res) => {
 
 ///// SubAdmin Controllers /////
 const getAllSubAdmin = asyncHandler(async (req, res) => {
-  const subAdmin = await SubAdmin.find({}, "-password").sort({ updatedAt: -1 });
+  const subAdmin = await SubAdmin.find({}, "-password").populate('role', 'role').sort({ updatedAt: -1 });
   if (!subAdmin) {
     res.status(404);
     throw new Error("SubAdmin not found!");

@@ -20,6 +20,12 @@ const subAdminSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  role: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubAdminRole",
+    },
+  ],
 });
 
 module.exports = mongoose.model("SubAdmin", subAdminSchema);

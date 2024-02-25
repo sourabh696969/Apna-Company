@@ -3,6 +3,7 @@ const SubAdmin = require("../model/subAdminModel");
 const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
+const SubAdminRole = require("../model/subAdminRolesModel");
 const { Notification } = require("../model/notificationModel");
 const jwt = require("jsonwebtoken");
 
@@ -62,6 +63,7 @@ const loginSubAdmin = asyncHandler(async (req, res) => {
     {
       user: {
         _id: subAdminAvailable._id,
+        role: subAdminAvailable.role,
       },
     },
     process.env.SECRET_KEY
@@ -153,12 +155,74 @@ const addSubAdminImage = asyncHandler(async (req, res) => {
   });
 
   if (!subAdmin) {
-    res.status(403);
+    res.status(404);
     throw new Error("data not found!");
   }
 
   res.status(200).json({ message: "SubAdmin Updated!" });
 });
+
+const updateSubAdminRole = asyncHandler(async(req, res) => {
+  const subAdminId = req.params.id;
+  const { role } = req.body;
+
+  const subAdminData = await SubAdmin.findById(subAdminId);
+
+  if (!role) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  if (!subAdminData) {
+    res.status(404);
+    throw new Error("data not found!");
+  }
+  subAdminData.role = subAdminData.role || [];
+  subAdminData.role.push(role);
+  await subAdminData.save();
+  res.status(200).json({ message: "SubAdmin role updated!" });
+});
+
+///// Roles for SubAdmin /////
+const createSubAdminRole = asyncHandler(async(req, res) => {
+  const { role } = req.body;
+
+  if (!role) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  const newrole = await SubAdminRole.create({
+    role
+  });
+
+  res.status(201).json({ message: "SubAdmin Role created!" });
+});
+
+const getSubAdminRole = asyncHandler(async(req, res) => {
+  const roles = await SubAdminRole.find();
+
+  if (!roles) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  res.status(200).json(roles);
+});
+
+const deleteSubAdminRole = asyncHandler(async(req, res) => {
+  const roleId = req.params.id;
+
+  const roles = await SubAdminRole.findByIdAndDelete(roleId);
+
+  if (!roles) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  res.status(200).json({ message: 'Role deleted successfully!' });
+});
+
 
 ///// Worker Controllers /////
 const createWorker = asyncHandler(async (req, res) => {
@@ -350,10 +414,14 @@ module.exports = {
   registerSubAdmin,
   loginSubAdmin,
   forgotPasswordSubAdmin,
+  updateSubAdminRole,
   createWorker,
   AllUser,
   updateWorker,
   getSingleSubAdmin,
   addSubAdminImage,
   updateSubAdmin,
+  createSubAdminRole,
+  getSubAdminRole,
+  deleteSubAdminRole
 };

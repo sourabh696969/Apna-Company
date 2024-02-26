@@ -178,8 +178,17 @@ const updateSubAdminRole = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("data not found!");
   }
-  subAdminData.role = subAdminData.role || [];
-  subAdminData.role.push(...role);
+  const rolesToAdd = role.filter(
+    (newRole) => !subAdminData.role.includes(newRole)
+  );
+
+  if (rolesToAdd.length === 0) {
+    res.status(400).json({ message: "Roles already exist!" });
+    return;
+  }
+
+  subAdminData.role.push(...rolesToAdd);
+
   await subAdminData.save();
   res.status(200).json({ message: "SubAdmin role updated!" });
 });
@@ -201,11 +210,22 @@ const removeSubAdminRoles = asyncHandler(async (req, res) => {
       return;
     }
 
+    const originalRoleCount = subAdminData.role.length;
+
     subAdminData.role = subAdminData.role.filter(
       (roleId) => !roles.includes(roleId.toString())
     );
 
     subAdminData = await subAdminData.save();
+
+    const newRoleCount = subAdminData.role.length;
+
+    if (newRoleCount === originalRoleCount) {
+      res
+        .status(404)
+        .json({ message: "roles not found in SubAdmin to delete." });
+      return;
+    }
 
     res.status(200).json({ message: "Roles deleted successfully." });
   } catch (error) {

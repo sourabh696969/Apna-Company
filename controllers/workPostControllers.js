@@ -203,7 +203,7 @@ const getWorkPostByWork = asyncHandler(async (req, res) => {
     throw new Error("Post not found!");
   }
 
-  if (post || post.length === 0) {
+  if (post) {
     res.status(200).json(post);
   } else {
     res.status(400);

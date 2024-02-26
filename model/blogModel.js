@@ -8,7 +8,13 @@ const blogSchema = mongooose.Schema(
     title: {
       type: String,
     },
-    images: [String],
+    images: {
+      type: String,
+    },
+    contentImg: {
+      type: String,
+      default: null
+    },
   },
   {
     timestamps: true,

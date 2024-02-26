@@ -2,21 +2,57 @@ const asyncHandler = require("express-async-handler");
 const Blog = require("../model/blogModel");
 
 const createBlog = asyncHandler(async (req, res) => {
+  const { title } = req.body;
+
+  if (!title) {
+    res.status(404);
+    throw new Error("All fields Required!");
+  }
+
+  const images = req.files["images"] ? req.files["images"][0].path : null;
+
+  const blog = await Blog.create({
+    title,
+    images,
+  });
+
+  if (!blog) {
+    res.status(404);
+    throw new Error("Blog Not Found!");
+  }
+
+  res.status(200).json({ message: "Blog created successfully!" });
+});
+
+const addBlogContent = asyncHandler(async (req, res) => {
   const { content } = req.body;
+  const blogId = req.params.id;
 
   if (!content) {
     res.status(404);
     throw new Error("All fields Required!");
   }
 
-  const blog = await Blog.create({
+  const blog = await Blog.findByIdAndUpdate(blogId, {
     content,
   });
 
-  res.status(201).json({ message: "Blog created successfully!" });
+  res.status(201).json({ message: "Content added successfully!" });
 });
 
-const AddBlogImage = asyncHandler(async (req, res) => {
+const addBlogImage = asyncHandler(async (req, res) => {
+  const blogId = req.params.id;
+
+  const contentImg = req.files["contentImg"] ? req.files["contentImg"][0].path : null;
+
+  const blog = await Blog.findByIdAndUpdate(blogId, {
+    contentImg,
+  });
+
+  res.status(201).json({ message: "Content Image added successfully!" });
+});
+
+const updateBlog = asyncHandler(async (req, res) => {
   const { title } = req.body;
   const blogId = req.params.id;
 
@@ -25,34 +61,11 @@ const AddBlogImage = asyncHandler(async (req, res) => {
     throw new Error("All fields Required!");
   }
 
-  let images = [];
-  if (req.files && req.files["images"]) {
-    images = req.files["images"].map((file) => file.path);
-  }
+  const images = req.files["images"] ? req.files["images"][0].path : null;
+
   const blog = await Blog.findByIdAndUpdate(blogId, {
     title,
-    $push: { images: { $each: images } },
-  });
-
-  if (!blog) {
-    res.status(404);
-    throw new Error("Blog Not Found!");
-  }
-
-  res.status(200).json({ message: "Image and title Added successfully!" });
-});
-
-const updateBlog = asyncHandler(async (req, res) => {
-  const { content } = req.body;
-  const blogId = req.params.id;
-
-  if (!content) {
-    res.status(404);
-    throw new Error("All fields Required!");
-  }
-
-  const blog = await Blog.findByIdAndUpdate(blogId, {
-    content,
+    images,
   });
 
   if (!blog) {
@@ -63,8 +76,20 @@ const updateBlog = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Blog updated successfully!" });
 });
 
+const getBlogContentImg = asyncHandler(async (req, res) => {
+  const blogId = req.params.id;
+  const blog = await Blog.findById(blogId).select("-images -title -content");
+
+  if (!blog) {
+    res.status(404);
+    throw new Error("Blog Not Found!");
+  }
+
+  res.status(200).json(blog);
+});
+
 const getAllBlog = asyncHandler(async (req, res) => {
-  const blog = await Blog.find().select('-content');
+  const blog = await Blog.find().select("-content -contentImg");
 
   if (blog.length == 0) {
     res.status(404);
@@ -76,7 +101,7 @@ const getAllBlog = asyncHandler(async (req, res) => {
 
 const getBlogById = asyncHandler(async (req, res) => {
   const blogId = req.params.id;
-  const blog = await Blog.findById(blogId);
+  const blog = await Blog.findById(blogId).select("-images -title -contentImg");
 
   if (!blog) {
     res.status(404);
@@ -104,5 +129,7 @@ module.exports = {
   getAllBlog,
   getBlogById,
   deleteBlog,
-  AddBlogImage,
+  addBlogContent,
+  addBlogImage,
+  getBlogContentImg,
 };

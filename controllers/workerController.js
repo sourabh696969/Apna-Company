@@ -133,11 +133,11 @@ const signupUser = asyncHandler(async (req, res) => {
     }
   );
 
-  await twilioClient.messages.create({
-    body: `Your OTP is: ${otp}`,
-    to: `+91${phone}`,
-    from: process.env.TWILIO_PHONE_NUMBER,
-  });
+  // await twilioClient.messages.create({
+  //   body: `Your OTP is: ${otp}`,
+  //   to: `+91${phone}`,
+  //   from: process.env.TWILIO_PHONE_NUMBER,
+  // });
 
   res.status(201).json({ message: "OTP send Successfully!" });
 });
@@ -179,11 +179,11 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   );
 
-  await twilioClient.messages.create({
-    body: `Your OTP is: ${otp}`,
-    to: `+91${phone}`,
-    from: process.env.TWILIO_PHONE_NUMBER,
-  });
+  // await twilioClient.messages.create({
+  //   body: `Your OTP is: ${otp}`,
+  //   to: `+91${phone}`,
+  //   from: process.env.TWILIO_PHONE_NUMBER,
+  // });
 
   res.status(201).json({ message: "OTP send Successfully!" });
 });

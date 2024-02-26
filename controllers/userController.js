@@ -101,7 +101,7 @@ const signupUser = asyncHandler(async (req, res) => {
   //   from: process.env.TWILIO_PHONE_NUMBER,
   // });
 
-  res.status(201).json({ message: "OTP send Successfully!" });
+  res.status(201).json({ message: "OTP send Successfully!", otp: otp });
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -131,23 +131,23 @@ const loginUser = asyncHandler(async (req, res) => {
   });
   const currentDate = new Date();
 
-  // const loginUser = await User.findOneAndUpdate(
-  //   { phone },
-  //   { otp, otpExpiration: new Date(currentDate.getTime()) },
-  //   {
-  //     upsert: true,
-  //     new: true,
-  //     setDefaultsOnInsert: true,
-  //   }
-  // );
+  const loginUser = await User.findOneAndUpdate(
+    { phone },
+    { otp, otpExpiration: new Date(currentDate.getTime()) },
+    {
+      upsert: true,
+      new: true,
+      setDefaultsOnInsert: true,
+    }
+  );
 
-  await twilioClient.messages.create({
-    body: `Your OTP is: ${otp}`,
-    to: `+91${phone}`,
-    from: process.env.TWILIO_PHONE_NUMBER,
-  });
+  // await twilioClient.messages.create({
+  //   body: `Your OTP is: ${otp}`,
+  //   to: `+91${phone}`,
+  //   from: process.env.TWILIO_PHONE_NUMBER,
+  // });
 
-  res.status(201).json({ message: "OTP send Successfully!" });
+  res.status(201).json({ message: "OTP send Successfully!", otp: otp });
 });
 
 const veifyOtp = asyncHandler(async (req, res) => {

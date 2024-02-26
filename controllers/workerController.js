@@ -139,7 +139,7 @@ const signupUser = asyncHandler(async (req, res) => {
   //   from: process.env.TWILIO_PHONE_NUMBER,
   // });
 
-  res.status(201).json({ message: "OTP send Successfully!" });
+  res.status(201).json({ message: "OTP send Successfully!", otp: otp });
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -185,7 +185,7 @@ const loginUser = asyncHandler(async (req, res) => {
   //   from: process.env.TWILIO_PHONE_NUMBER,
   // });
 
-  res.status(201).json({ message: "OTP send Successfully!" });
+  res.status(201).json({ message: "OTP send Successfully!", otp: otp });
 });
 
 const veifyOtp = asyncHandler(async (req, res) => {

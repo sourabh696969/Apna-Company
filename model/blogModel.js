@@ -5,6 +5,10 @@ const blogSchema = mongooose.Schema(
     content: {
       type: String,
     },
+    title: {
+      type: String,
+    },
+    images: [String],
   },
   {
     timestamps: true,

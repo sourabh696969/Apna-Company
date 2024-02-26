@@ -11,5 +11,6 @@ router.use("/offer", require("./offerRoute"));
 router.use("/subAdmin", require("./subAdminRoute"));
 router.use("/notification", require("./notificationRoute"));
 router.use("/blog", require("./blogRoute"));
+router.use("/rating", require("./ratingAndReviewRoute"));
 
 module.exports = router;

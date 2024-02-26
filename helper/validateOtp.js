@@ -1,7 +1,7 @@
 const validateOTP = async (otpTime) => {
   try {
     const currentDateTime = new Date();
-    let differenceValue = (otpTime - cDateTime.get()) / 1000;
+    let differenceValue = (otpTime - currentDateTime.get()) / 1000;
     differenceValue /= 60;
 
     const ExpiryMinutes = Math.abs(differenceValue);
@@ -16,4 +16,4 @@ const validateOTP = async (otpTime) => {
   }
 };
 
-module.exports = validateOTP
+module.exports = validateOTP;

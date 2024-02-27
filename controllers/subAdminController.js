@@ -6,6 +6,7 @@ const Role = require("../model/roleModel");
 const SubAdminRole = require("../model/subAdminRolesModel");
 const { Notification } = require("../model/notificationModel");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const registerSubAdmin = asyncHandler(async (req, res) => {
   const { name, email, phone, password } = req.body;
@@ -22,11 +23,13 @@ const registerSubAdmin = asyncHandler(async (req, res) => {
     throw new Error("SubAdmin already exist with this email!");
   }
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   const subAdmin = await SubAdmin.create({
     name,
     email,
     phone,
-    password,
+    password: hashedPassword,
     subAdminImg: null,
   });
   await Notification.create({
@@ -54,7 +57,7 @@ const loginSubAdmin = asyncHandler(async (req, res) => {
     throw new Error("Admin not found or account under process!");
   }
 
-  if (password != subAdminAvailable.password) {
+  if (!(await bcrypt.compare(password, subAdminAvailable.password))) {
     res.status(404);
     throw new Error("email or password is wrong!");
   }
@@ -92,14 +95,16 @@ const forgotPasswordSubAdmin = asyncHandler(async (req, res) => {
     throw new Error("Admin not found or account under process!");
   }
 
-  if (password == subAdminAvailable.password) {
+  if (!(await bcrypt.compare(password, subAdminAvailable.password))) {
     res.status(403);
     throw new Error("Please enter new password!");
   }
 
+  const newPasswordHashed = await bcrypt.hash(password, 10);
+
   if (email == subAdminAvailable.email) {
     const newPassword = await SubAdmin.updateOne({
-      password: password,
+      password: newPasswordHashed,
     });
   }
   res.status(200).json({

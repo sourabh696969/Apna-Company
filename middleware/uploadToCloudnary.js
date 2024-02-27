@@ -14,6 +14,7 @@ const uploadToCloudinary = (folderName) => {
     params: {
       folder: folderName,
       allowed_formats: ["jpg", "jpeg", "png", "gif"],
+      quality: 80,
     },
   });
 

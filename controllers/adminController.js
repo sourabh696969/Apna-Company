@@ -12,6 +12,7 @@ const {
   AppNotificationWorker,
 } = require("../model/notificationModel");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 ///// Admin Authentication
 const registerAdmin = asyncHandler(async (req, res) => {
@@ -30,11 +31,13 @@ const registerAdmin = asyncHandler(async (req, res) => {
     throw new Error("Admin already exist with this email!");
   }
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   if (adminCount === 0) {
     const admin = await Admin.create({
       name,
       email,
-      password,
+      password: hashedPassword,
     });
 
     res.status(201).json({ message: "Admin Registered!", admin });
@@ -55,7 +58,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
     throw new Error("Admin not found!");
   }
 
-  if (password != adminAvailable.password) {
+  if (!(await bcrypt.compare(password, adminAvailable.password))) {
     res.status(404);
     throw new Error("email or password is wrong!");
   }
@@ -87,14 +90,16 @@ const forgotPasswordAdmin = asyncHandler(async (req, res) => {
     throw new Error("Admin not found!");
   }
 
-  if (password == adminAvailable.password) {
+  if (!(await bcrypt.compare(password, adminAvailable.password))) {
     res.status(403);
     throw new Error("Please enter new password!");
   }
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   if (email == adminAvailable.email) {
     const newPassword = await Admin.updateOne({
-      password: password,
+      password: hashedPassword,
     });
   }
   res.status(200).json({

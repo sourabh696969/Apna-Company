@@ -24,7 +24,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
   }
 
   const adminEmail = await Admin.findOne({ email });
-  const adminCount = await Admin.find();
+  const adminCount = await Admin.find().count();
 
   if (adminEmail) {
     res.status(403);
@@ -33,7 +33,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  if (adminCount == 1) {
+  if (adminCount < 1) {
     const admin = await Admin.create({
       name,
       email,

@@ -8,7 +8,7 @@ const RatingAndReviewSchema = new mongoose.Schema(
     },
     worker: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Worker",
     },
     rating: {
       type: Number,

@@ -101,9 +101,35 @@ const getAverageWorkerRating = asyncHandler(async (req, res) => {
   res.status(200).json({ averageRating, noOfRatings });
 });
 
+const getRatingByWorker = asyncHandler(async (req, res) => {
+  const workerId = req.params.id;
+  const ratings = await RatingAndReview.find({ worker: workerId });
+
+  if (ratings.length === 0) {
+    return res.status(404).json({ error: "No ratings found for the product" });
+  }
+
+  res.status(200).json(ratings);
+});
+
+const getAllRating = asyncHandler(async (req, res) => {
+  const ratings = await RatingAndReview.find().populate(
+    "worker",
+    "username phone address"
+  );
+
+  if (ratings.length === 0) {
+    return res.status(404).json({ error: "No ratings found for the product" });
+  }
+
+  res.status(200).json(ratings);
+});
+
 module.exports = {
   createRatingAndReview,
   updateRatingAndReview,
   getAverageWorkerRating,
   deleteRatingAndReview,
+  getRatingByWorker,
+  getAllRating
 };

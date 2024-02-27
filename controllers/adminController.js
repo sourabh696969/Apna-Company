@@ -33,7 +33,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  if (adminCount === 0) {
+  if (adminCount == 1) {
     const admin = await Admin.create({
       name,
       email,

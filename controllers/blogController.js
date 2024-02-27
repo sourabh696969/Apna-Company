@@ -3,6 +3,7 @@ const Blog = require("../model/blogModel");
 
 const createBlog = asyncHandler(async (req, res) => {
   const { title } = req.body;
+  const subAdminId = req.user;
 
   if (!title) {
     res.status(404);
@@ -14,6 +15,7 @@ const createBlog = asyncHandler(async (req, res) => {
   const blog = await Blog.create({
     title,
     images,
+    subAdmin: subAdminId,
   });
 
   if (!blog) {
@@ -43,7 +45,9 @@ const addBlogContent = asyncHandler(async (req, res) => {
 const addBlogImage = asyncHandler(async (req, res) => {
   const blogId = req.params.id;
 
-  const contentImg = req.files["contentImg"] ? req.files["contentImg"][0].path : null;
+  const contentImg = req.files["contentImg"]
+    ? req.files["contentImg"][0].path
+    : null;
 
   const blog = await Blog.findByIdAndUpdate(blogId, {
     contentImg,
@@ -99,9 +103,26 @@ const getAllBlog = asyncHandler(async (req, res) => {
   res.status(200).json(blog);
 });
 
+const getAllBlogBySubAdmin = asyncHandler(async (req, res) => {
+  const subAdminId = req.params.id;
+
+  const blog = await Blog.find({ subAdmin: subAdminId })
+    .select("-content -contentImg")
+    .populate("subAdmin", "name phone");
+
+  if (blog.length == 0) {
+    res.status(404);
+    throw new Error("Blog Not Found!");
+  }
+
+  res.status(200).json(blog);
+});
+
 const getBlogById = asyncHandler(async (req, res) => {
   const blogId = req.params.id;
-  const blog = await Blog.findById(blogId).select("-images -title -contentImg");
+  const blog = await Blog.findById(blogId)
+    .select("-images -title -contentImg")
+    .populate("subAdmin", "name phone");
 
   if (!blog) {
     res.status(404);
@@ -132,4 +153,5 @@ module.exports = {
   addBlogContent,
   addBlogImage,
   getBlogContentImg,
+  getAllBlogBySubAdmin
 };

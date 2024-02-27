@@ -8,6 +8,7 @@ const {
   addBlogContent,
   addBlogImage,
   getBlogContentImg,
+  getAllBlogBySubAdmin,
 } = require("../controllers/blogController");
 const {
   createSubAdminRole,
@@ -15,16 +16,23 @@ const {
   deleteSubAdminRole,
 } = require("../controllers/subAdminController");
 const uploadToCloudinary = require("../middleware/uploadToCloudnary");
+const { validateUserToken } = require("../middleware/validateTokenHandler");
 
 const router = express.Router();
 
-router.post("/create", uploadToCloudinary("images"), createBlog);
+router.post(
+  "/create",
+  validateUserToken,
+  uploadToCloudinary("images"),
+  createBlog
+);
 router.put("/content/:id", addBlogContent);
 router.put("/image/:id", uploadToCloudinary("contentImg"), addBlogImage);
 router.put("/update/:id", uploadToCloudinary("images"), updateBlog);
 router.get("/", getAllBlog);
 router.get("/:id", getBlogById);
 router.get("/image/:id", getBlogContentImg);
+router.get("/subAdmin/:id", getAllBlogBySubAdmin);
 router.delete("/:id", deleteBlog);
 
 ///// SubAdmin Roles /////

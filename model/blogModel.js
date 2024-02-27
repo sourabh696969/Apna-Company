@@ -1,6 +1,6 @@
-const mongooose = require("mongoose");
+const mongoose = require("mongoose");
 
-const blogSchema = mongooose.Schema(
+const blogSchema = mongoose.Schema(
   {
     content: {
       type: String,
@@ -8,12 +8,16 @@ const blogSchema = mongooose.Schema(
     title: {
       type: String,
     },
+    subAdmin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubAdmin",
+    },
     images: {
       type: String,
     },
     contentImg: {
       type: String,
-      default: null
+      default: null,
     },
   },
   {
@@ -21,4 +25,4 @@ const blogSchema = mongooose.Schema(
   }
 );
 
-module.exports = mongooose.model("Blog", blogSchema);
+module.exports = mongoose.model("Blog", blogSchema);

@@ -103,7 +103,10 @@ const getAverageWorkerRating = asyncHandler(async (req, res) => {
 
 const getRatingByWorker = asyncHandler(async (req, res) => {
   const workerId = req.params.id;
-  const ratings = await RatingAndReview.find({ worker: workerId });
+  const ratings = await RatingAndReview.find({ worker: workerId }).populate(
+    "user",
+    "username phone address"
+  );
 
   if (ratings.length === 0) {
     return res.status(404).json({ error: "No ratings found for the product" });
@@ -131,5 +134,5 @@ module.exports = {
   getAverageWorkerRating,
   deleteRatingAndReview,
   getRatingByWorker,
-  getAllRating
+  getAllRating,
 };

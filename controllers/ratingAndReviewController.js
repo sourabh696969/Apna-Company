@@ -105,7 +105,7 @@ const getRatingByWorker = asyncHandler(async (req, res) => {
   const workerId = req.params.id;
   const ratings = await RatingAndReview.find({ worker: workerId }).populate(
     "user",
-    "username phone address"
+    "username profileImg"
   );
 
   if (ratings.length === 0) {

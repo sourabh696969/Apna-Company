@@ -11,6 +11,7 @@ const {
   saveWorkpost,
   deleteSavedWorkPost,
   getSavedWorkPost,
+  getVerifiedWorkPost,
 } = require("../controllers/workPostControllers");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const router = express.Router();
@@ -27,6 +28,7 @@ router.get("/all", getAllWorkPost);
 router.get("/verified", validateUserToken, getAllVerifiedWorkPost);
 router.get("/:id", validateUserToken, getWorkPostByWork);
 router.get("/single/:id", getSingleWorkPost);
+router.get("/website/all", getVerifiedWorkPost);
 
 ///// DELETE Routes /////
 router.delete("/:id", deleteWorkPost);

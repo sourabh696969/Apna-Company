@@ -25,4 +25,22 @@ const blogSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Blog", blogSchema);
+const imgSchema = mongoose.Schema(
+  {
+    contentImg: {
+      type: String,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const Blog = mongoose.model("Blog", blogSchema);
+const Img = mongoose.model("Img", imgSchema);
+
+module.exports = {
+  Blog,
+  Img,
+};

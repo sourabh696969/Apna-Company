@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Blog = require("../model/blogModel");
+const { Blog, Img } = require("../model/blogModel");
 
 const createBlog = asyncHandler(async (req, res) => {
   const { title } = req.body;
@@ -43,13 +43,11 @@ const addBlogContent = asyncHandler(async (req, res) => {
 });
 
 const addBlogImage = asyncHandler(async (req, res) => {
-  const blogId = req.params.id;
-
   const contentImg = req.files["contentImg"]
     ? req.files["contentImg"][0].path
     : null;
 
-  const blog = await Blog.findByIdAndUpdate(blogId, {
+  const blog = await Img.create({
     contentImg,
   });
 
@@ -82,7 +80,8 @@ const updateBlog = asyncHandler(async (req, res) => {
 
 const getBlogContentImg = asyncHandler(async (req, res) => {
   const blogId = req.params.id;
-  const blog = await Blog.findById(blogId).select("-images -title -content");
+
+  const blog = await Img.findById(blogId);
 
   if (!blog) {
     res.status(404);
@@ -153,5 +152,5 @@ module.exports = {
   addBlogContent,
   addBlogImage,
   getBlogContentImg,
-  getAllBlogBySubAdmin
+  getAllBlogBySubAdmin,
 };

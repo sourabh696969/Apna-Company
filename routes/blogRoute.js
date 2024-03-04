@@ -27,7 +27,7 @@ router.post(
   createBlog
 );
 router.put("/content/:id", addBlogContent);
-router.put("/image/:id", uploadToCloudinary("contentImg"), addBlogImage);
+router.post("/image", uploadToCloudinary("contentImg"), addBlogImage);
 router.put("/update/:id", uploadToCloudinary("images"), updateBlog);
 router.get("/", getAllBlog);
 router.get("/:id", getBlogById);

@@ -3,6 +3,7 @@ const Admin = require("../model/adminModel");
 const Worker = require("../model/workerModel");
 const Category = require("../model/categoryModel");
 const Role = require("../model/roleModel");
+const Blog = require("../model/blogModel");
 const { WorkPost } = require("../model/workPostModel");
 const User = require("../model/userModel");
 const { UserSupport, WorkerSupport } = require("../model/supportModel");
@@ -476,6 +477,7 @@ const getLengthOfData = asyncHandler(async (req, res) => {
   const allCategory = await Category.find().count();
   const allRole = await Role.find().count();
   const allSubAdmin = await SubAdmin.find().count();
+  const blogCount = await Blog.find().count();
 
   res.status(200).json({
     UserCount: allUser,
@@ -486,6 +488,7 @@ const getLengthOfData = asyncHandler(async (req, res) => {
     CategoryCount: allCategory,
     RoleCount: allRole,
     SubAdminCount: allSubAdmin,
+    BlogCount: blogCount,
   });
 });
 

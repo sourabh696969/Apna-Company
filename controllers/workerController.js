@@ -368,6 +368,7 @@ const AllUserById = asyncHandler(async (req, res) => {
     pincode: userData.pincode,
   })
     .select("-otp -otpExpiration")
+    .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)
@@ -390,6 +391,7 @@ const AllUserById = asyncHandler(async (req, res) => {
     ],
   })
     .select("-otp -otpExpiration")
+    .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg")
     .skip(skip)

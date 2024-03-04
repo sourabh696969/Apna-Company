@@ -234,6 +234,7 @@ const getUserById = asyncHandler(async (req, res) => {
   const userId = req.params.id;
   const singleUser = await Worker.findById(userId)
     .select("-otp -otpExpiration")
+    .populate("subAdminData", "name phone email")
     .populate("role", "roleName")
     .populate("category", "categoryName categoryNameHindi categoryImg");
   if (!singleUser) {

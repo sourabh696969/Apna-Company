@@ -79,16 +79,14 @@ const updateBlog = asyncHandler(async (req, res) => {
 });
 
 const getBlogContentImg = asyncHandler(async (req, res) => {
-  const blogId = req.params.id;
-
-  const blog = await Img.findById(blogId);
+  const blog = await Img.find().sort({ createdAt: -1 });
 
   if (!blog) {
     res.status(404);
     throw new Error("Blog Not Found!");
   }
 
-  res.status(200).json(blog);
+  res.status(200).json(blog[0]);
 });
 
 const getAllBlog = asyncHandler(async (req, res) => {

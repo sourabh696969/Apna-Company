@@ -31,7 +31,7 @@ router.post("/image", uploadToCloudinary("contentImg"), addBlogImage);
 router.put("/update/:id", uploadToCloudinary("images"), updateBlog);
 router.get("/", getAllBlog);
 router.get("/:id", getBlogById);
-router.get("/image/:id", getBlogContentImg);
+router.get("/image/single", getBlogContentImg);
 router.get("/subAdmin/:id", getAllBlogBySubAdmin);
 router.delete("/:id", deleteBlog);
 

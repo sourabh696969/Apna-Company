@@ -51,7 +51,7 @@ const addBlogImage = asyncHandler(async (req, res) => {
     contentImg,
   });
 
-  res.status(201).json({ message: "Content Image added successfully!" });
+  res.status(201).json({ message: "Content Image added successfully!", blog });
 });
 
 const updateBlog = asyncHandler(async (req, res) => {
@@ -86,7 +86,7 @@ const getBlogContentImg = asyncHandler(async (req, res) => {
     throw new Error("Blog Not Found!");
   }
 
-  res.status(200).json(blog[0]);
+  res.status(200).json(blog);
 });
 
 const getAllBlog = asyncHandler(async (req, res) => {

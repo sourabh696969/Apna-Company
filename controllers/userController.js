@@ -7,6 +7,13 @@ const jwt = require("jsonwebtoken");
 const { WorkPost } = require("../model/workPostModel");
 const twilio = require("twilio");
 const validateOTP = require("../helper/validateOtp");
+const admin = require("firebase-admin");
+const serviceAccount = require("../workerlinx-b03ba-firebase-adminsdk-i3ejq-20b32e4942.json"); // Path to your service account key file
+
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: "https://workerlinx-b03ba.firebaseio.com",
+// });
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -85,6 +92,11 @@ const signupUser = asyncHandler(async (req, res) => {
   });
   const currentDate = new Date();
 
+  // const userRecord = await admin.auth().createUser({ phone });
+  // const sessionInfo = await admin
+  //   .auth()
+  //   .createSessionCookie(userRecord.uid, { expiresIn: 60000 * 6 }); // 1 minute
+
   const userAvailable = await User.findOneAndUpdate(
     { phone },
     { otp, otpExpiration: new Date(currentDate.getTime()) },
@@ -151,19 +163,19 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const veifyOtp = asyncHandler(async (req, res) => {
-  const { phone, Otp } = req.body;
+  const { phone } = req.body;
 
   if (!phone.match(/^[6789]\d{9}$/)) {
     res.status(404);
     throw new Error("Invalid mobile number");
   }
 
-  if ((!phone, !Otp)) {
+  if (!phone) {
     res.status(404);
     throw new Error("All fields required!");
   }
 
-  const phoneAvalaible = await User.findOne({ phone, otp: Otp });
+  const phoneAvalaible = await User.findOne({ phone });
 
   if (!phoneAvalaible) {
     res.status(400);
@@ -182,7 +194,7 @@ const veifyOtp = asyncHandler(async (req, res) => {
       },
     },
     process.env.SECRET_KEY,
-    { expiresIn: "1d" }
+    { expiresIn: "30d" }
   );
   res.status(201).json({
     message: "User Verified successfully!",

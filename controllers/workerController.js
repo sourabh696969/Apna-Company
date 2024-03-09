@@ -44,7 +44,6 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("All fields required!");
   }
 
-  // console.log(userId._id)
   const worker = await Worker.findById(userId._id);
   const userAvailable = await Worker.findOne({ phone });
   const category = await Category.findById(categoryId);
@@ -220,7 +219,7 @@ const veifyOtp = asyncHandler(async (req, res) => {
       },
     },
     process.env.SECRET_KEY,
-    { expiresIn: "1d" }
+    { expiresIn: "30d" }
   );
   res.status(201).json({
     message: "User Verified successfully!",

@@ -5,20 +5,8 @@ const { Notification } = require("../model/notificationModel");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
 const { WorkPost } = require("../model/workPostModel");
-const twilio = require("twilio");
 const validateOTP = require("../helper/validateOtp");
-const admin = require("firebase-admin");
-const serviceAccount = require("../workerlinx-b03ba-firebase-adminsdk-i3ejq-20b32e4942.json"); // Path to your service account key file
-
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: "https://workerlinx-b03ba.firebaseio.com",
-// });
-
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-
-const twilioClient = new twilio(accountSid, authToken);
+const sendOTP = require("../helper/sendOtp");
 
 const registerUser = asyncHandler(async (req, res) => {
   const userId = req.user;
@@ -92,10 +80,7 @@ const signupUser = asyncHandler(async (req, res) => {
   });
   const currentDate = new Date();
 
-  // const userRecord = await admin.auth().createUser({ phone });
-  // const sessionInfo = await admin
-  //   .auth()
-  //   .createSessionCookie(userRecord.uid, { expiresIn: 60000 * 6 }); // 1 minute
+  await sendOTP(phone, Number(otp));
 
   const userAvailable = await User.findOneAndUpdate(
     { phone },
@@ -106,12 +91,6 @@ const signupUser = asyncHandler(async (req, res) => {
       setDefaultsOnInsert: true,
     }
   );
-
-  // await twilioClient.messages.create({
-  //   body: `Your OTP is: ${otp}`,
-  //   to: `+91${phone}`,
-  //   from: process.env.TWILIO_PHONE_NUMBER,
-  // });
 
   res.status(201).json({ message: "OTP send Successfully!", otp: otp });
 });
@@ -143,6 +122,8 @@ const loginUser = asyncHandler(async (req, res) => {
   });
   const currentDate = new Date();
 
+  await sendOTP(phone, Number(otp));
+
   const loginUser = await User.findOneAndUpdate(
     { phone },
     { otp, otpExpiration: new Date(currentDate.getTime()) },
@@ -152,12 +133,6 @@ const loginUser = asyncHandler(async (req, res) => {
       setDefaultsOnInsert: true,
     }
   );
-
-  // await twilioClient.messages.create({
-  //   body: `Your OTP is: ${otp}`,
-  //   to: `+91${phone}`,
-  //   from: process.env.TWILIO_PHONE_NUMBER,
-  // });
 
   res.status(201).json({ message: "OTP send Successfully!", otp: otp });
 });

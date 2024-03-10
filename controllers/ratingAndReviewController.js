@@ -118,7 +118,7 @@ const getRatingByWorker = asyncHandler(async (req, res) => {
 const getAllRating = asyncHandler(async (req, res) => {
   const ratings = await RatingAndReview.find().populate(
     "worker",
-    "username phone address"
+    "username phone address age gender"
   );
 
   if (ratings.length === 0) {

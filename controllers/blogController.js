@@ -89,8 +89,55 @@ const getBlogContentImg = asyncHandler(async (req, res) => {
   res.status(200).json(blog);
 });
 
+const updateBlogStatus = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const blogId = req.params.id;
+
+  if (status === undefined || status === null || status === "") {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+  const blog = await Blog.findByIdAndUpdate(blogId, {
+    status: status,
+  });
+
+  if (!blog) {
+    res.status(404);
+    throw new Error("blog not found!");
+  }
+
+  res.status(201).json({ message: "Post status changed successfully!" });
+});
+
 const getAllBlog = asyncHandler(async (req, res) => {
   const blog = await Blog.find().select("-content -contentImg");
+
+  if (blog.length == 0) {
+    res.status(404);
+    throw new Error("Blog Not Found!");
+  }
+
+  res.status(200).json(blog);
+});
+
+const getVerifiedBlog = asyncHandler(async (req, res) => {
+  const { page, limit, searchQuary } = req.query;
+
+  const pages = Number(page) || 1;
+  const limits = Number(limit) || 10;
+  const skip = (pages - 1) * limits;
+
+  const blog = await Blog.find({
+    status: true,
+    $or: [
+      { title: { $regex: searchQuary, $options: "i" } },
+      { content: { $regex: searchQuary, $options: "i" } },
+    ],
+  })
+    .select("-content -contentImg")
+    .skip(skip)
+    .limit(limits)
+    .sort({ updatedAt: -1 });
 
   if (blog.length == 0) {
     res.status(404);
@@ -151,4 +198,6 @@ module.exports = {
   addBlogImage,
   getBlogContentImg,
   getAllBlogBySubAdmin,
+  getVerifiedBlog,
+  updateBlogStatus,
 };

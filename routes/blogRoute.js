@@ -9,6 +9,8 @@ const {
   addBlogImage,
   getBlogContentImg,
   getAllBlogBySubAdmin,
+  getVerifiedBlog,
+  updateBlogStatus,
 } = require("../controllers/blogController");
 const {
   createSubAdminRole,
@@ -29,7 +31,9 @@ router.post(
 router.put("/content/:id", addBlogContent);
 router.post("/image", uploadToCloudinary("contentImg"), addBlogImage);
 router.put("/update/:id", uploadToCloudinary("images"), updateBlog);
+router.patch("/status/:id", updateBlogStatus);
 router.get("/", getAllBlog);
+router.get("/verified", getVerifiedBlog);
 router.get("/:id", getBlogById);
 router.get("/image/single", getBlogContentImg);
 router.get("/subAdmin/:id", getAllBlogBySubAdmin);

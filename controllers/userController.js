@@ -138,19 +138,19 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const veifyOtp = asyncHandler(async (req, res) => {
-  const { phone } = req.body;
+  const { phone, Otp } = req.body;
 
   if (!phone.match(/^[6789]\d{9}$/)) {
     res.status(404);
     throw new Error("Invalid mobile number");
   }
 
-  if (!phone) {
+  if ((!phone, !Otp)) {
     res.status(404);
     throw new Error("All fields required!");
   }
 
-  const phoneAvalaible = await User.findOne({ phone });
+  const phoneAvalaible = await User.findOne({ phone, otp: Otp });
 
   if (!phoneAvalaible) {
     res.status(400);
@@ -162,6 +162,43 @@ const veifyOtp = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("You OTP has been Expired!");
   }
+  const accessToken = jwt.sign(
+    {
+      user: {
+        _id: phoneAvalaible._id,
+      },
+    },
+    process.env.SECRET_KEY,
+    { expiresIn: "30d" }
+  );
+  res.status(201).json({
+    message: "User Verified successfully!",
+    phone: phone,
+    userId: phoneAvalaible._id,
+    token: accessToken,
+  });
+});
+
+const testingOtp = asyncHandler(async (req, res) => {
+  const { phone } = req.body;
+
+  if (!phone) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  if (phone != 1111111111) {
+    res.status(404);
+    throw new Error("Invalid mobile number for testing");
+  }
+
+  const phoneAvalaible = await User.findOne({ phone });
+
+  if (!phoneAvalaible) {
+    res.status(400);
+    throw new Error("Incorrect OTP!");
+  }
+
   const accessToken = jwt.sign(
     {
       user: {
@@ -235,4 +272,5 @@ module.exports = {
   signupUser,
   getAllUser,
   deleteUser,
+  testingOtp,
 };

@@ -11,6 +11,7 @@ const {
   AllUserByLocation,
   updateWorkerAvailablity,
   searchUser,
+  testingOtp,
 } = require("../controllers/workerController");
 const { validateUserToken } = require("../middleware/validateTokenHandler");
 const {
@@ -42,6 +43,7 @@ router.post(
 router.post("/login", loginUser);
 router.post("/signup", signupUser);
 router.post("/verify", veifyOtp);
+router.post("/testing", testingOtp);
 router.get("/single/:id", getUserById);
 router.get("/single/:catid/:roleid", validateUserToken, AllUserByRole);
 router.get("/all", AllUser);

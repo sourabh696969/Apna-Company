@@ -458,6 +458,8 @@ const updateWorker = asyncHandler(async (req, res) => {
   worker.category = category._id;
   worker.phone = phone;
   worker.address = address;
+  worker.gender = gender;
+  worker.age = age;
   worker.city = city;
   worker.state = state;
   worker.pincode = pincode;

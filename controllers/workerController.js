@@ -222,6 +222,43 @@ const veifyOtp = asyncHandler(async (req, res) => {
   });
 });
 
+const testingOtp = asyncHandler(async (req, res) => {
+  const { phone } = req.body;
+
+  if (!phone) {
+    res.status(404);
+    throw new Error("All fields required!");
+  }
+
+  if (phone != 1111111111) {
+    res.status(404);
+    throw new Error("Invalid mobile number for testing");
+  }
+
+  const phoneAvalaible = await Worker.findOne({ phone });
+
+  if (!phoneAvalaible) {
+    res.status(400);
+    throw new Error("Incorrect OTP!");
+  }
+
+  const accessToken = jwt.sign(
+    {
+      user: {
+        _id: phoneAvalaible._id,
+      },
+    },
+    process.env.SECRET_KEY,
+    { expiresIn: "30d" }
+  );
+  res.status(201).json({
+    message: "User Verified successfully!",
+    phone: phone,
+    userId: phoneAvalaible._id,
+    token: accessToken,
+  });
+});
+
 const getUserById = asyncHandler(async (req, res) => {
   const userId = req.params.id;
   const singleUser = await Worker.findById(userId)
@@ -501,4 +538,5 @@ module.exports = {
   AllUserByLocation,
   updateWorkerAvailablity,
   searchUser,
+  testingOtp
 };

@@ -123,7 +123,16 @@ const signupUser = asyncHandler(async (req, res) => {
 
   const currentDate = new Date();
 
-  await sendOTP(phone, Number(otp));
+  try {
+    await sendOTP(phone, otp);
+  } catch (error) {
+    console.error("Error in userController:", error);
+    res
+      .status(500)
+      .json({
+        message: "Too many OTP requests. Please try again after some time.",
+      });
+  }
 
   const userAvailable = await Worker.findOneAndUpdate(
     { phone },
@@ -165,7 +174,14 @@ const loginUser = asyncHandler(async (req, res) => {
   });
   const currentDate = new Date();
 
-  await sendOTP(phone, Number(otp));
+  try {
+    await sendOTP(phone, otp);
+  } catch (error) {
+    console.error("Error in userController:", error);
+    res.status(500).json({
+      message: "Too many OTP requests. Please try again after some time.",
+    });
+  }
 
   const loginUser = await Worker.findOneAndUpdate(
     { phone },
@@ -538,5 +554,5 @@ module.exports = {
   AllUserByLocation,
   updateWorkerAvailablity,
   searchUser,
-  testingOtp
+  testingOtp,
 };

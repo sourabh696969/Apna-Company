@@ -1,9 +1,7 @@
 const axios = require("axios");
 
-
-// Function to send OTP
 const sendOTP = async (phone, otp) => {
-  const url = " https://www.fast2sms.com/dev/bulkV2";
+  const url = "https://www.fast2sms.com/dev/bulkV2";
   const payload = {
     variables_values: otp,
     route: "otp",
@@ -24,7 +22,7 @@ const sendOTP = async (phone, otp) => {
     return response.data;
   } catch (error) {
     console.error("Error sending OTP:", error);
-    throw error;
+    throw new Error("Error sending OTP. Please try again later.");
   }
 };
 

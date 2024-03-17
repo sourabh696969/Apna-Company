@@ -42,6 +42,11 @@ const errorHandler = (err, req, res, next) => {
 
     default:
       console.log(err);
+      res.json({
+        statusCode: constants.SERVER_ERROR,
+        title: "Server Error",
+        message: err.message,
+      });
       break;
   }
 };

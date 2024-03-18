@@ -19,6 +19,9 @@ const validateUserToken = asyncHandler(async (req, res, next) => {
       res.status(401);
       throw new Error("user is not authorised or token is missing");
     }
+  } else {
+    res.status(401);
+    throw new Error("Authorization header is missing or malformed");
   }
 });
 
